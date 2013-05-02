@@ -31,7 +31,6 @@ arch='amd64'
 locale='en_US'
 charmap='UTF-8'
 timezone='UTC'
-apt_mirror='http://http.debian.net/debian'
 
 # Hardcoded params.
 # This script would explode if we had to take care of other distributions
