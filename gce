@@ -7,6 +7,7 @@ gce_project=
 # Image details
 image_name_suffix=$(date +%Y%m%d)
 volume_size='10'
+apt_mirror='http://gce_debian_mirror.storage.googleapis.com/'
 
 # List of options for gce subcommand
 help="build-debian-cloud gce
@@ -27,6 +28,7 @@ ${txtund}Bootstrapping${txtdef}
     --charmap CHARMAP             Standard charmap (${txtbld}${charmap}${txtdef})
 
     --name SUFFIX                 Image name suffix (${txtbld}${name_suffix}${txtdef})
+    --apt-mirror URL              APT mirror URL (${txtbld}${apt_mirror}${txtdef})
 
 ${txtund}GCE${txtdef}
     --gcs-dest URL                Google Cloud Storage image destination URL (${txtbld}${gcs_dest}${txtdef})
@@ -45,6 +47,7 @@ while [ $# -gt 0 ]; do
 		--filesystem)       filesystem=$2;                 shift 2 ;;
 		--volume-size)      volume_size=$2;                shift 2 ;;
 		--name)             name_suffix=$2;                shift 2 ;;
+		--apt-mirror)       apt_mirror=$2;                 shift 2 ;;
 		--gcs-dest)         gcs_dest=$2;                   shift 2 ;;
 		--gce-project)      gce_project=$2;                shift 2 ;;
 		--timezone)         timezone=$2;                   shift 2 ;;
