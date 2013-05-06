@@ -1,5 +1,5 @@
 #!/bin/bash
 # Move the image file out of our workspace
 
-log "Moving $image_name to $originaldir"
-mv $workspace/$image_name $originaldir
+log "Moving $tarball_name to $originaldir"
+mv $workspace/$tarball_name $originaldir

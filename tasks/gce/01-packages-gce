@@ -2,3 +2,4 @@
 packages+=('python')
 packages+=('sudo')
 packages+=('ntp')
+packages+=('lsb-release')
