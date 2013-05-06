@@ -5,9 +5,15 @@ gcs_dest=
 gce_project=
 
 # Image details
-image_name_suffix=$(date +%Y%m%d)
+image_name_suffix=v$(date +%Y%m%d)
+build_date=$(date +%Y-%m-%d)
 volume_size='10'
 apt_mirror='http://gce_debian_mirror.storage.googleapis.com/'
+kernel=projects/google/global/kernels/gce-v20130325
+
+# $description is set later if it has no value yet. This is
+# just for the help output.
+default_description="Debian GNU/Linux X.Y.Z (codename) built on YYYY-MM-DD"
 
 # List of options for gce subcommand
 help="build-debian-cloud gce
@@ -28,11 +34,13 @@ ${txtund}Bootstrapping${txtdef}
     --charmap CHARMAP             Standard charmap (${txtbld}${charmap}${txtdef})
 
     --name SUFFIX                 Image name suffix (${txtbld}${name_suffix}${txtdef})
+    --description DESC            Description of the image (${txtbld}${default_description}${txtdef})
     --apt-mirror URL              APT mirror URL (${txtbld}${apt_mirror}${txtdef})
 
 ${txtund}GCE${txtdef}
     --gcs-dest URL                Google Cloud Storage image destination URL (${txtbld}${gcs_dest}${txtdef})
     --gce-project PROJECT         Google Compute Engine image destination project (${txtbld}${gce_project}${txtdef})
+    --gce-kernel KERNEL           Google Compute Engine image kernel (${txtbld}${gce_kernel}${txtdef})
 
 ${txtund}Other options${txtdef}
     --debug                       Print debugging information
@@ -47,9 +55,11 @@ while [ $# -gt 0 ]; do
 		--filesystem)       filesystem=$2;                 shift 2 ;;
 		--volume-size)      volume_size=$2;                shift 2 ;;
 		--name)             name_suffix=$2;                shift 2 ;;
+		--description)      description=$2;                shift 2 ;;
 		--apt-mirror)       apt_mirror=$2;                 shift 2 ;;
 		--gcs-dest)         gcs_dest=$2;                   shift 2 ;;
 		--gce-project)      gce_project=$2;                shift 2 ;;
+		--gce-kernel)       gce_kernel=$2;                 shift 2 ;;
 		--timezone)         timezone=$2;                   shift 2 ;;
 		--locale)           locale=$2;                     shift 2 ;;
 		--charmap)          charmap=$2;                    shift 2 ;;
