@@ -8,8 +8,12 @@ include="${packages[*]}"
 exclude="${exclude_packages[*]}"
 IFS=$SAVE_IFS
 
+# For bootstrapping purposes, we just use the first-listed mirror even if
+# multiple are specified.
+bootstrap_mirror=${apt_mirrors%% *}
+
 bootstrap_args="--arch $arch --include=$include --exclude=$exclude
-$codename $imagedir $apt_mirror"
+$codename $imagedir $bootstrap_mirror"
 
 args_hash=`printf -- "$arch $include -- $exclude $codename" | sha1sum`
 
@@ -31,12 +35,12 @@ if [ ! -e "$tarball" ]; then
 	log "Creating the bootstrap tarball"
 	debootstrap --arch $arch --make-tarball=$tarball \
 		${include_param} ${exclude_param} \
-		$codename $imagedir $apt_mirror | spin
+		$codename $imagedir $bootstrap_mirror | spin
 	[ $PIPESTATUS == 1 ] || die "Creating bootstrap tarball failed!"
 fi
 
 log "Bootstrapping"
 debootstrap --arch $arch --unpack-tarball=$tarball \
 	${include_param} ${exclude_param} \
-	$codename $imagedir $apt_mirror | spin
+	$codename $imagedir $bootstrap_mirror | spin
 [ $PIPESTATUS == 0 ] || die "Bootstrapping failed!"

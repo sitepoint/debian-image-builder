@@ -7,7 +7,7 @@ description=
 snapshot_id=
 volume_id=
 volume_size='1'
-apt_mirror='http://http.debian.net/debian'
+apt_mirrors='http://http.debian.net/debian'
 
 # EC2 known regions
 known_regions=('us-east-1')
@@ -52,7 +52,7 @@ ${txtund}Bootstrapping${txtdef}
 
     --name SUFFIX                 AMI name suffix (${txtbld}${name_suffix}${txtdef})
     --description DESC            Description of the AMI
-    --apt-mirror URL              APT mirror URL (${txtbld}${apt_mirror}${txtdef})
+    --apt-mirrors \"URL[ URL...]\"  APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
 
 ${txtund}AWS${txtdef}
     --access-key ID               AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})
@@ -72,7 +72,7 @@ while [ $# -gt 0 ]; do
 		--volume-size)      volume_size=$2;                shift 2 ;;
 		--name)             name_suffix=$2;                shift 2 ;;
 		--description)      description=$2;                shift 2 ;;
-		--apt-mirror)       apt_mirror=$2;                 shift 2 ;;
+		--apt-mirrors)      apt_mirrors=$2;                shift 2 ;;
 		--access-key)       EC2_ACCESS_KEY=$2;             shift 2 ;;
 		--secret-key)       EC2_SECRET_KEY=$2;             shift 2 ;;
 		--timezone)         timezone=$2;                   shift 2 ;;
