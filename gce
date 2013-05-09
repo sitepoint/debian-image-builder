@@ -38,7 +38,7 @@ ${txtund}Bootstrapping${txtdef}
     --apt-mirrors \"URL[ URL...]\"  APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
 
 ${txtund}GCE${txtdef}
-    --gcs-dest URL                Google Cloud Storage image destination URL (${txtbld}${gcs_dest}${txtdef})
+    --gcs-dest URL                Google Cloud Storage image destination URL prefix (${txtbld}${gcs_dest}${txtdef})
     --gce-project PROJECT         Google Compute Engine image destination project (${txtbld}${gce_project}${txtdef})
     --gce-kernel KERNEL           Google Compute Engine image kernel (${txtbld}${gce_kernel}${txtdef})
 
