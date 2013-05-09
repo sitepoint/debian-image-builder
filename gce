@@ -9,7 +9,7 @@ image_name_suffix=v$(date +%Y%m%d)
 build_date=$(date +%Y-%m-%d)
 volume_size='10'
 apt_mirror='http://gce_debian_mirror.storage.googleapis.com/'
-kernel=projects/google/global/kernels/gce-v20130325
+gce_kernel=projects/google/global/kernels/gce-v20130325
 
 # $description is set later if it has no value yet. This is
 # just for the help output.
