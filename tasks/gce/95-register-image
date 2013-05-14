@@ -1,9 +1,13 @@
 #!/bin/bash
 
 if [ -z "${gcs_dest}" ]; then
-  log "No GCS destination URL defined. Not uploading the image."
+  log "No GCS destination URL prefix defined. Not uploading the image."
   exit 0
 fi
+
+# If someone puts a single slash at the end of the destination URL prefix, do
+# what they mean and don't gratuitously use a double slash.
+gcs_dest=${gcs_dest%/}
 
 log "Uploading image to \"${gcs_dest}/${tarball_name}\""
 gsutil cp "${originaldir}/${tarball_name}" "${gcs_dest}/${tarball_name}"
@@ -24,4 +28,4 @@ fi
 log "Adding image \"${image_name}\" to GCE project \"${gce_project}\""
 gcutil --project="${gce_project}" addimage "${image_name}" \
   "${gcs_dest}/${tarball_name}" --description="${description}" \
-  --preferred_kernel="${gce_kernel}
+  --preferred_kernel="${gce_kernel}"

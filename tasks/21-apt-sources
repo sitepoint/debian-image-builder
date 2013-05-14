@@ -1,8 +1,16 @@
 #!/bin/bash
 # Basic sources.list
-cat > $imagedir/etc/apt/sources.list <<EOF
+
+> $imagedir/etc/apt/sources.list
+
+for apt_mirror in $apt_mirrors; do
+cat >> $imagedir/etc/apt/sources.list <<EOF
 deb     $apt_mirror $codename         main
 deb-src $apt_mirror $codename         main
+EOF
+done
+
+cat >> $imagedir/etc/apt/sources.list <<EOF
 deb     http://security.debian.org/   $codename/updates main
 deb-src http://security.debian.org/   $codename/updates main
 EOF
