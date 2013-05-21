@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Install RightScale's RightLink package.
+declare -r version="5.8.8"
+declare -r deb="rightscale_${version}-ubuntu_10.04-amd64.deb"
+declare -r deb_md5="ee2688aef7512d119ff117b200565e0f"
+declare -r url="http://mirror.rightscale.com/rightscale_rightlink/${version}/ubuntu/${deb}"
+declare -r tmp_dir="$(mktemp -d /tmp/build-debian-cloud-XXXXXXX)"
+
+# Install dependencies
+host_packages+=('debconf')
+host_packages+=('dnsutils')
+host_packages+=('curl')
+host_packages+=('git-core')
+
+wget -P "${tmp_dir}" "${url}"
+if [ -f "${tmp_dir}/${deb}" ]; then
+    cd "${tmp_dir}"
+    if ! echo "${deb_md5}  ${tmp_dir}/${deb}" | md5sum --quiet -c -; then
+    then
+        echo "Error: ${deb} corrupted!" >&2
+        exit 1
+    fi
+else
+    echo "Error: Failed to download '${deb}'." >&2
+    exit 1
+fi
+
+mv "${tmp_dir}/${deb}" "${imagedir}/tmp/"
+chroot "${imagedir}" "dpkg -i /tmp/${deb} ; cd /var/spool ; ln -s cloud ec2"
