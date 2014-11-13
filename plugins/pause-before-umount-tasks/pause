@@ -1,0 +1,39 @@
+#!/bin/bash
+
+declare -i counter=0
+
+echo "PAUSED"
+echo
+echo "Image mountpoint: ${imagedir}"
+echo
+echo "Type CONTINUE to continue the image creation process."
+
+while read CONTINUE
+do
+    if [ "${CONTINUE}" = "CONTINUE" ]
+    then
+        if which lsof >/dev/null
+        then
+            echo
+            for pid in $(lsof -t -w +f -- ${imagedir})
+            do
+                echo ${pid}
+                (( --counter ))
+            done
+            if [ ${counter} -eq 0 ]
+            then
+                break
+            else
+                echo "WARNING: The above PIDs are still using:"
+                echo "${imagedir}."
+                echo "Fix that first, and try again."
+                counter=0
+                continue
+            fi
+        else
+            # No obvious way to check the mountpoint is unused.
+            # Assume it's all good.
+            break
+        fi
+    fi
+done
