@@ -1,0 +1,154 @@
+#!/bin/bash
+
+# Stop execution if any command fails
+set -e
+
+declare -r prog_name="$(basename ${BASH_SOURCE[0]})"
+
+# Rember various paths
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ ! -d "${scriptdir}/tasks" ]
+then
+    scriptdir="/usr/share/${prog_name}"
+    if [ ! -d "${scriptdir}/tasks" ]
+    then
+        die "Unable to locate tasks folder."
+    elif [ ! -d "${scriptdir}/providers" ]
+    then
+        die "Unable to locate the providers folder."
+    fi
+fi
+
+originaldir="$(pwd)"
+
+# Import various functions
+source "${scriptdir}/lib/utils"
+
+# Directory where the tarball created while bootstrapping should be put
+tarballdir="${scriptdir}"
+
+# Providers, Tasks, packages, plugins, boot scripts
+providers=()
+tasks=()
+packages=()
+exclude_packages=()
+host_packages=()
+plugins=()
+init_scripts=()
+
+# General options about the instance
+arch='amd64'
+locale='en_US'
+charmap='UTF-8'
+timezone='UTC'
+
+# Hardcoded params.
+# This script would explode if we had to take care of other distributions
+distribution='debian'
+codename='squeeze'
+
+# Filesystem and image info
+filesystem='ext4'
+mountoptions=
+device_path=
+imagedir=
+
+
+function get_provider_descriptions
+{
+    local -r path="${1}"
+    local -i get_desc=1
+    local provider_file
+
+    for provider_file in ${providers[@]}
+    do
+        source "${path}/${provider_file}"
+    done
+}
+
+
+if [ "$(ls -1 "${scriptdir}/providers" | wc -l)" -gt 0 ]
+then
+    for provider_file in $(ls -1 "${scriptdir}/providers")
+    do
+        providers+=(${provider_file})
+    done
+else
+    die "Could not find any providers."
+fi
+unset provider_file
+
+provider_help="${prog_name}
+
+This script creates a Debian GNU/Linux image for different providers.
+The provider is specified as one of the following subcommands:
+
+$(get_provider_descriptions "${scriptdir}/providers/")
+"
+
+provider="${1}"
+
+if ! $(contains ${provider} providers[@])
+then
+    printf -- "${provider_help}"
+    exit 0
+else
+    shift 1
+    source "${scriptdir}/providers/${provider}"
+fi
+
+
+# Check if the chosen fs is on we can handle.
+case ${filesystem} in
+    xfs)
+        ;;
+    ext2)
+        ;;
+    ext3)
+        ;;
+    ext4)
+        ;;
+    *)    die "The filesystem $filesystem was not recognized." \
+        "Valid filesystems are ext[2-4] and xfs"
+        ;;
+esac
+
+# Put all tasks in the tasks folder into an array. Tolerate the
+# absence of some possible directories.
+directories=$(ls -d ${scriptdir}/tasks ${scriptdir}/tasks/${codename} \
+    ${scriptdir}/tasks/${provider} ${scriptdir}/tasks/${provider}/${codename} \
+    2>/dev/null || true)
+tasklist=$(find ${directories} \
+    -maxdepth 1 -type f -name '[0-9][0-9]-*' \
+    -printf '%p\t%f\n' | sort -k 2 | awk '{print $1}')
+tasks=()
+for task in ${tasklist}
+do
+    if $(contains_basename $(basename ${task}) tasks[@])
+    then
+        die "The task ${task} has a naming conflict with an existing task." \
+            "Please rename the file."
+    fi
+    tasks+=($task)
+done
+
+# Invoke plugins so that they may reorder and add tasks
+for plugin in "${plugins[@]}"
+do
+    [ -e ${plugin} ] || die "The plugin file ${plugin} does not exist."
+    # Get the directory of the current plugin.
+    # This way the plugins don't have to figure it out for themselves.
+    plugindir="$(dirname ${plugin})"
+    source "${plugin}"
+done
+unset plugindir
+
+# Source all tasks in the right order
+for task in ${tasks[*]}
+do
+    [ -e ${task} ] || die "The task $task does not exist."
+    log "Run task: $(basename $task)"
+    taskdir="$(dirname $task)"
+    source "${task}" || true
+done
+unset taskdir

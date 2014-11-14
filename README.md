@@ -1,40 +1,32 @@
 # Debian bootstrapping script for Amazon machine images and Google Compute Engine images #
 
 This script bootstraps a vanilla Debian installation to create either
-an Amazon machine image or a Google Compute Engine image.
-The image contains no latent logfiles no .bash\_history or even the apt package cache.
-The machine configuration this script creates has been thoroughly tested.
+an Amazon machine image or a Google Compute Engine image.  The image
+contains no latent logfiles no .bash\_history or even the apt package
+cache.  The machine configuration this script creates has been
+thoroughly tested.
 
-*This script has been tested on Debian squeeze and wheezy.*
-*To create an AMI this bootstrapper needs to be run on an Amazon EC2 instance.*
+* This script has been tested on Debian squeeze and wheezy. *
 
-## Official AMIs provided by the Debian community and Amazon ##
-
-The Debian community and Amazon have together created AMIs using this bootstrapper
-and replicated them across AWS regions. The images have been tested for security and bugs.
-They are available on the [aws marketplace](https://aws.amazon.com/marketplace/pp/ref=csl_clsc_prd?sku=8fvdn95s5ev33cprr62nq3q7t).
-
-For each new official AMI a commit in this repository will be [tagged](https://github.com/andsens/build-debian-cloud/tags),
-marking the version the AMI was bootstrapped with.
-
-More information about these images and links to the gzipped volume images can be found on the
-[Debian wiki page](http://wiki.debian.org/Cloud/AmazonEC2Image/Squeeze) dedicated to those images.
+* To create an AMI this bootstrapper needs to be run on an Amazon EC2
+  instance. *
 
 ## Usage ##
 
-The script is started with ``./build-debian-cloud``.
-You can choose to either bootstrap a Debian AMI (``./build-debian-cloud ec2``)
-or a Google Compute Engine image (``./build-debian-cloud gce``).
-Both modes have sensible defaults and can be configured with options and plugins.
-To see a list of options use ``--help``.
-When creating an AMI the script at least needs to know your AWS credentials.
+The script is started with ``./debian-image-builder``.  You can choose
+to either bootstrap a Debian AMI (``./debian-image-builder ec2``) or a
+Google Compute Engine image (``./debian-image-builder gce``).  Both
+modes have sensible defaults and can be configured with options and
+plugins.  To see a list of options use ``--help``.  When creating an
+AMI the script at least needs to know your AWS credentials.
 
-There are no interactive prompts, the bootstrapping can run entirely unattended
-from start till finish.
+There are no interactive prompts, the bootstrapping can run entirely
+unattended from start till finish.
 
-Some plugins are included in the [plugins directory](https://github.com/andsens/build-debian-cloud/tree/master/plugins).
-A list of external plugins is also provided there. If none of those scratch
-your itch, you can of course [write your own plugin](https://github.com/andsens/build-debian-cloud/blob/master/plugins/HOWTO.md).
+Some plugins are included in the plugins directory. A list of external
+plugins is also provided there. If none of those scratch your itch,
+you can of course write your own plugin (see HOWTO.md in the plugins
+directory).
 
 ## Features ##
 

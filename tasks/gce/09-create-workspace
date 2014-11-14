@@ -8,18 +8,18 @@ function cleanup_loopback_mount () {
     # Disable exit-on-error
     set +e
 
-    if [ -n "$imagedir" ]; then
-        log "Unmounting $imagedir ahead of unclean exit."
-        umount $imagedir
+    if [ -n "${imagedir}" ]; then
+        log "Unmounting ${imagedir} ahead of unclean exit."
+        umount ${imagedir}
     fi
 
-    if [ -n "$device_path" ]; then
-        log "Deleting loopback device $device_path ahead of unclean exit."
-        losetup -d $device_path
+    if [ -n "${device_path}" ]; then
+        log "Deleting loopback device ${device_path} ahead of unclean exit."
+        losetup -d ${device_path}
     fi
 
-    if [ -d "$workspace" ]; then
-        log "$workspace still exists. Leaving alone for potential debugging."
+    if [ -d "${workspace}" ]; then
+        log "${workspace} still exists. Leaving alone for potential debugging."
     fi
 
     # Enable exit-on-error
@@ -27,5 +27,5 @@ function cleanup_loopback_mount () {
 }
 trap cleanup_loopback_mount ERR EXIT
 
-workspace="$(mktemp -d -t build-debian-cloud.XXXXXXXXXX)"
-tarballdir=$workspace
+workspace="$(mktemp -d -t ${prog_name}.XXXXXXXXXX)"
+tarballdir=${workspace}

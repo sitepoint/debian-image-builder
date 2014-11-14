@@ -25,15 +25,18 @@ user_data_file=$(tempfile --prefix ec2 --suffix .user-data --mode 700)
 $logger "Retrieving user-data"
 wget -qO $user_data_file $instance_data_url/user-data 2>&1 | $logger
 
-if [ $(file -b --mime-type $user_data_file) = 'application/x-gzip' ]; then
+if [ $(file -b --mime-type $user_data_file) = 'application/x-gzip' ]
+then
     $logger "Uncompressing gzip'd user-data"
     mv $user_data_file $user_data_file.gz
     gunzip $user_data_file.gz
 fi
 
-if [ ! -s $user_data_file ]; then
+if [ ! -s $user_data_file ]
+then
     $logger "No user-data available"
-elif head -1 $user_data_file | egrep -v '^#!'; then
+elif head -1 $user_data_file | egrep -v '^#!'
+then
     $logger "Skipping user-data as it does not begin with #!"
 else
     $logger "Running user-data"

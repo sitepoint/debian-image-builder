@@ -1,5 +1,13 @@
 #!/bin/bash
 
+declare -i get_desc=${get_desc:0}
+
+if [ "${get_desc}" -eq 1 ]
+then
+    echo "    $(basename ${BASH_SOURCE[0]}) Build a Google Compute Engine Image"
+    return
+fi
+
 # Google cloud info
 gcs_dest=
 gce_project=
@@ -16,10 +24,8 @@ gce_kernel=projects/google/global/kernels/gce-v20130325
 default_description="Debian GNU/Linux X.Y.Z (codename) built on YYYY-MM-DD"
 
 # List of options for gce subcommand
-help="build-debian-cloud gce
-This script creates a Debian Squeeze Amazon Machine Image.
-
-Options (defaults in ${txtbld}bold${txtdef}):
+help="$(basename ${BASH_SOURCE[1]}) $(basename "${BASH_SOURCE[0]}")
+This script creates a GCE image.
 
 ${txtund}Bootstrapping${txtdef}
     --arch ARCH [i386|amd64]      Processor architecture of the image (${txtbld}${arch}${txtdef})

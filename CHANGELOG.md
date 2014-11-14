@@ -1,3 +1,9 @@
+### 2014-11-14 Adam Bolte <adam.bolte@sitepoint.com> ###
+* New plugin to pause the build process prior to unmounting the image
+* Renamed the project debian-image-builder
+* Separated providers out to a separate directory
+* Separated libraries to lib
+
 ### 2013-01-23 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####
@@ -47,11 +53,11 @@
 #### Major changes: ####
 * Add `change-root-uuid` script
   (see [this issue for more info](https://github.com/andsens/build-debian-cloud/issues/40))
-* Remove contrib and non-free from apt/sources.list  
+* Remove contrib and non-free from apt/sources.list
 (thanks to zack for finding this and James for the patch)
 
 #### Bugfixes: ####
-* Autoapply patch to boto  
+* Autoapply patch to boto
 (thanks to James for the patch)
 * Fix bug in `generate-ssh-hostkeys`
 
