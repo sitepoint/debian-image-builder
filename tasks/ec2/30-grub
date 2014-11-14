@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Disable normal grub 2 cfg files
 chmod -x $imagedir/etc/grub.d/*
 
@@ -7,7 +8,8 @@ script='40_custom'
 cp "$scriptdir/grub.d/$script" "$imagedir/etc/grub.d/$script"
 chmod 755 "$imagedir/etc/grub.d/$script"
 
-sed -i "s/^GRUB_TIMEOUT=1/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" $imagedir/etc/default/grub
+sed -i "s/^GRUB_TIMEOUT=1/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" \
+    $imagedir/etc/default/grub
 
 # Update grub.cfg using the script
 chroot $imagedir update-grub

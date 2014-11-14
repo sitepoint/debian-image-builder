@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Add GCE startup scripts and packages to the image.
 
 DEBS="google-compute-daemon google-startup-scripts image-bundle"

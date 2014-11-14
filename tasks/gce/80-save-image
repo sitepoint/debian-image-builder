@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Move the image file out of our workspace
 
 log "Moving $tarball_name to $originaldir"

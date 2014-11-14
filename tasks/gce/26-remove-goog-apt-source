@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # The repository is not yet GPG-signed and has a hostname which end users might
 # not expect to host an official Google package repository, especially after apt
 # prompts them with an "unauthenticated packages" warning. To ensure user

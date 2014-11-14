@@ -65,26 +65,26 @@ ${txtund}Other options${txtdef}
 
 # Run through the parameters and save them to variables.
 while [ $# -gt 0 ]; do
-	case $1 in
-		--arch)             arch=$2;                       shift 2 ;;
-		--codename)         codename=$2;                   shift 2 ;;
-		--filesystem)       filesystem=$2;                 shift 2 ;;
-		--volume-size)      volume_size=$2;                shift 2 ;;
-		--name)             name_suffix=$2;                shift 2 ;;
-		--description)      description=$2;                shift 2 ;;
-		--apt-mirrors)      apt_mirrors=$2;                shift 2 ;;
-		--access-key)       EC2_ACCESS_KEY=$2;             shift 2 ;;
-		--secret-key)       EC2_SECRET_KEY=$2;             shift 2 ;;
-		--timezone)         timezone=$2;                   shift 2 ;;
-		--locale)           locale=$2;                     shift 2 ;;
-		--charmap)          charmap=$2;                    shift 2 ;;
-		--debootstrap-dir)  debootstrap_dir=$2;            shift 2 ;;
-		--plugin)           plugins+=("$2");               shift 2 ;;
-		--debug)            set -x;                        shift   ;;
-		-h|--help)          printf -- "$help";             exit 0  ;;
-		*)             die "Unrecognized option: $1" \
-    "Type '$0 --help' to see a list of possible options"; ;;
-	esac
+    case $1 in
+        --arch)             arch=$2;                       shift 2 ;;
+        --codename)         codename=$2;                   shift 2 ;;
+        --filesystem)       filesystem=$2;                 shift 2 ;;
+        --volume-size)      volume_size=$2;                shift 2 ;;
+        --name)             name_suffix=$2;                shift 2 ;;
+        --description)      description=$2;                shift 2 ;;
+        --apt-mirrors)      apt_mirrors=$2;                shift 2 ;;
+        --access-key)       EC2_ACCESS_KEY=$2;             shift 2 ;;
+        --secret-key)       EC2_SECRET_KEY=$2;             shift 2 ;;
+        --timezone)         timezone=$2;                   shift 2 ;;
+        --locale)           locale=$2;                     shift 2 ;;
+        --charmap)          charmap=$2;                    shift 2 ;;
+        --debootstrap-dir)  debootstrap_dir=$2;            shift 2 ;;
+        --plugin)           plugins+=("$2");               shift 2 ;;
+        --debug)            set -x;                        shift   ;;
+        -h|--help)          printf -- "$help";             exit 0  ;;
+        *)             die "Unrecognized option: $1" \
+            "Type '$0 --help' to see a list of possible options"; ;;
+    esac
 done
 
 

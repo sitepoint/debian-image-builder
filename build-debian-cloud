@@ -6,10 +6,10 @@ set -e
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 if [ ! -d "$scriptdir/tasks" ]; then
-	scriptdir='/usr/share/build-debian-cloud'
-	if [ ! -d "$scriptdir/tasks" ]; then
-		die "Unable to locate tasks folder."
-	fi
+    scriptdir='/usr/share/build-debian-cloud'
+    if [ ! -d "$scriptdir/tasks" ]; then
+        die "Unable to locate tasks folder."
+    fi
 fi
 originaldir=$(pwd)
 
@@ -58,53 +58,53 @@ platform=$1
 
 # Figure out which pvGrub kernel ID we need
 case $platform in
-	ec2|gce) shift ;;
-	*)       printf -- "$platform_help"; exit 0  ;;
+    ec2|gce) shift ;;
+    *)       printf -- "$platform_help"; exit 0  ;;
 esac
 
 source $platform
 
 # Check if the chosen fs is on we can handle.
 case $filesystem in
-	xfs)  ;;
-	ext2) ;;
-	ext3) ;;
-	ext4) ;;
-	*)    die "The filesystem $filesystem was not recognized." \
-	          "Valid filesystems are ext[2-4] and xfs"      ;;
+    xfs)  ;;
+    ext2) ;;
+    ext3) ;;
+    ext4) ;;
+    *)    die "The filesystem $filesystem was not recognized." \
+        "Valid filesystems are ext[2-4] and xfs"      ;;
 esac
 
 # Put all tasks in the tasks folder into an array. Tolerate the absence
 # of some possible directories.
 directories=`ls -d $scriptdir/tasks $scriptdir/tasks/$codename \
-	$scriptdir/tasks/$platform $scriptdir/tasks/$platform/$codename \
-	2>/dev/null || true`
+    $scriptdir/tasks/$platform $scriptdir/tasks/$platform/$codename \
+    2>/dev/null || true`
 tasklist=`find $directories \
-	-maxdepth 1 -type f -name '[0-9][0-9]-*' \
-	-printf '%p\t%f\n' | sort -k 2 | awk '{print $1}'`
+    -maxdepth 1 -type f -name '[0-9][0-9]-*' \
+    -printf '%p\t%f\n' | sort -k 2 | awk '{print $1}'`
 tasks=()
 for task in $tasklist; do
-	if $(contains_basename `basename $task` tasks[@]); then
-		die "The task $task has a naming conflict with an existing task." "Please rename the file."
-	fi
-	tasks+=($task)
+    if $(contains_basename `basename $task` tasks[@]); then
+        die "The task $task has a naming conflict with an existing task." "Please rename the file."
+    fi
+    tasks+=($task)
 done
 
 # Invoke plugins so that they may reorder and add tasks
 for plugin in "${plugins[@]}"; do
-	[ -e $plugin ] || die "The plugin file $plugin does not exist."
-	# Get the directory of the current plugin.
-	# This way the plugins don't have to figure it out for themselves.
-	plugindir=`dirname $plugin`
-	source $plugin
+    [ -e $plugin ] || die "The plugin file $plugin does not exist."
+    # Get the directory of the current plugin.
+    # This way the plugins don't have to figure it out for themselves.
+    plugindir=`dirname $plugin`
+    source $plugin
 done
 unset plugindir
 
 # Source all tasks in the right order
 for task in ${tasks[*]}; do
-	[ -e $task ] || die "The task $task does not exist."
-	log "Run task: `basename $task`"
-	taskdir=`dirname $task`
-	source $task || true
+    [ -e $task ] || die "The task $task does not exist."
+    log "Run task: `basename $task`"
+    taskdir=`dirname $task`
+    source $task || true
 done
 unset taskdir

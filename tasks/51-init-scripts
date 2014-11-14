@@ -1,10 +1,12 @@
 #!/bin/bash
+#
 # Install startup scripts.
+
 for script in ${init_scripts[*]}; do
-	scriptname=`basename $script`
-	cp "$script" "$imagedir/etc/init.d/$scriptname"
-	chmod 755 "$imagedir/etc/init.d/$scriptname"
-	chroot $imagedir insserv -d "$scriptname"
+    scriptname=`basename $script`
+    cp "$script" "$imagedir/etc/init.d/$scriptname"
+    chmod 755 "$imagedir/etc/init.d/$scriptname"
+    chroot $imagedir insserv -d "$scriptname"
 done
 
 # Inside Xen, CMOS clock is irrelevant, so save seconds at boot

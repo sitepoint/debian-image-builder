@@ -5,7 +5,8 @@
 chroot $imagedir shadowconfig on
 
 # Disallow password authentication, public/private key only
-sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/' $imagedir/etc/ssh/sshd_config
+sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/' \
+    $imagedir/etc/ssh/sshd_config
 
 # Speed up ssh login, by not looking up the DNS name of a client
 cat >> $imagedir/etc/ssh/sshd_config <<EOF

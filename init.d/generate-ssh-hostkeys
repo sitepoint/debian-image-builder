@@ -2,11 +2,11 @@
 ### BEGIN INIT INFO
 # Provides:       generate-ssh-hostkeys
 # Required-Start: $local_fs
-# Required-Stop:  
-# Should-Start:   
-# Should-Stop:    
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
 # Default-Start:  S
-# Default-Stop:   
+# Default-Stop:
 # Description:    Generate ssh host keys if they do not exist
 ### END INIT INFO
 

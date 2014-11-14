@@ -47,7 +47,7 @@ The internal workings of the bootstrapper might change from time to time, this i
 
 ### Internal variables ###
 
-If you want to install additional packages, simply append them to the `packages` variable.  
+If you want to install additional packages, simply append them to the `packages` variable.
 The `exclude_packages` excludes packages that would otherwise have been installed.
 
 If you need to install init.d scripts, simply add their path to the `init_scripts` variable and they will be automatically installed.

@@ -1,5 +1,7 @@
 #!/bin/bash
+#
 # Add some basic packages we are going to need
+
 packages+=('grub-pc')
 
 # Apparently isc-dhcp-client doesn't work properly with ec2
@@ -8,6 +10,7 @@ packages+=('dhcpcd')
 # We use dhcpcd instead
 exclude_packages+=('isc-dhcp-client')
 exclude_packages+=('isc-dhcp-common')
+
 # euca2ools dependencies
 host_packages+=('build-essential')
 host_packages+=('python-boto')

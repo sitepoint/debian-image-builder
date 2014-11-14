@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Blacklist
 
 # Prevent pcspkr from loading because we don't need it

@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Delete the loopback device
 log "Deleting the loopback device"
 losetup -d $device_path

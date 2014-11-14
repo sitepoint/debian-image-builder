@@ -1,4 +1,5 @@
 #!/bin/bash
+#
+# Let the DHCP client manage /etc/resolv.conf
 
-# let the DHCP client manage /etc/resolv.conf
 sed -i -e "s/^#*SET_DNS=.*/SET_DNS='yes'/" $imagedir/etc/default/dhcpcd

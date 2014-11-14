@@ -2,11 +2,11 @@
 ### BEGIN INIT INFO
 # Provides:       ec2-run-user-data
 # Required-Start: ec2-get-credentials
-# Required-Stop:  
-# Should-Start:   
-# Should-Stop:    
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
 # Default-Start:  2 3 4 5
-# Default-Stop:   
+# Default-Stop:
 # Description:    Run instance user-data if it looks like a script.
 ### END INIT INFO
 #
@@ -26,19 +26,19 @@ $logger "Retrieving user-data"
 wget -qO $user_data_file $instance_data_url/user-data 2>&1 | $logger
 
 if [ $(file -b --mime-type $user_data_file) = 'application/x-gzip' ]; then
-	$logger "Uncompressing gzip'd user-data"
-	mv $user_data_file $user_data_file.gz
-	gunzip $user_data_file.gz
+    $logger "Uncompressing gzip'd user-data"
+    mv $user_data_file $user_data_file.gz
+    gunzip $user_data_file.gz
 fi
 
 if [ ! -s $user_data_file ]; then
-	$logger "No user-data available"
+    $logger "No user-data available"
 elif head -1 $user_data_file | egrep -v '^#!'; then
-	$logger "Skipping user-data as it does not begin with #!"
+    $logger "Skipping user-data as it does not begin with #!"
 else
-	$logger "Running user-data"
-	$user_data_file 2>&1 | logger -t "user-data"
-	$logger "user-data exit code: $?"
+    $logger "Running user-data"
+    $user_data_file 2>&1 | logger -t "user-data"
+    $logger "user-data exit code: $?"
 fi
 rm -f $user_data_file
 

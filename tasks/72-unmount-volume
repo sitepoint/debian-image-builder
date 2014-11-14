@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Unmount the volume
 umount $imagedir
 

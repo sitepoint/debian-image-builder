@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Unmount special devices
 
 # We unmount from inside the image, otherwise the system won't boot
@@ -20,6 +21,6 @@ cd $scriptdir
 
 # Wait for the volume to idle, maybe the user is currently in it
 while [ -n "`lsof $imagedir`" ]; do
-	log "Waiting for volume to idle, before unmounting."
-	sleep 5
+    log "Waiting for volume to idle, before unmounting."
+    sleep 5
 done

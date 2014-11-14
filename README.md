@@ -2,7 +2,7 @@
 
 This script bootstraps a vanilla Debian installation to create either
 an Amazon machine image or a Google Compute Engine image.
-The image contains no latent logfiles no .bash\_history or even the apt package cache.  
+The image contains no latent logfiles no .bash\_history or even the apt package cache.
 The machine configuration this script creates has been thoroughly tested.
 
 *This script has been tested on Debian squeeze and wheezy.*
@@ -63,6 +63,6 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * Can create both 32-bit and 64-bit AMIs
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts
-* Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract).  
+* Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract).
   (In particular: The [EC2 API Tools](http://aws.amazon.com/developertools/351)
   have been replaced with [euca2ools](http://www.eucalyptus.com/download/euca2ools))

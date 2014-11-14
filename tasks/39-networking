@@ -1,5 +1,7 @@
 #!/bin/bash
+#
 # Basic networking
 
-# Delete the hostname file and DNS info, we get it from the ec2 dhcp server
+# Delete the hostname file and DNS info, we get it from the ec2 dhcp
+# server.
 rm -f $imagedir/etc/hostname $imagedir/etc/resolv.conf

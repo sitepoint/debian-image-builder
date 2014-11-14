@@ -1,3 +1,3 @@
 #!/bin/bash
 insert_task_before $TASK_UNMOUNT_SPECIALS \
-        $plugindir/pause-before-umount-tasks/pause
+    $plugindir/pause-before-umount-tasks/pause

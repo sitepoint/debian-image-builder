@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Create the compressed image file
 
 tarball_name="$distribution-$lsb_release-$codename-$image_name_suffix.tar.gz"

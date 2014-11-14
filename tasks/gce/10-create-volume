@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Create the GCE volume
 
 truncate $workspace/disk.raw --size="${volume_size}G"
