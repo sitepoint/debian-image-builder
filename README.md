@@ -1,15 +1,29 @@
-# Debian bootstrapping script for Amazon machine images and Google Compute Engine images #
+# Debian GNU/Linux image builder for multiple IaaS providers #
 
-This script bootstraps a vanilla Debian installation to create either
-an Amazon machine image or a Google Compute Engine image.  The image
-contains no latent logfiles no .bash\_history or even the apt package
-cache.  The machine configuration this script creates has been
-thoroughly tested.
+This script bootstraps a basic Debian GNU/Linux installation to create
+(currently) either an Amazon machine image or a Google Compute Engine
+image. The image contains no latent logfiles, no .bash\_history or
+even the apt package cache. In fact, the image is created via
+debootstrap and never booted during the creation process, providing a
+very clean setup without surprises.
 
-* This script has been tested on Debian squeeze and wheezy. *
+The machine configuration this script creates has been thoroughly
+tested on EC2. I no longer test GCE, but accept patches if required.
 
-* To create an AMI this bootstrapper needs to be run on an Amazon EC2
-  instance. *
+* This script has been tested on Squeeze and Wheezy, although I only
+  test Wheezy regularly.
+
+* To create an AMI, this bootstrapper needs to be run on an Amazon EC2
+  instance - we'll be attaching an EBS volume temporarily during
+  execution.
+
+This project is a fork of the Bash version of build-debian-cloud,
+prior to the project switching to Python. This was because the Python
+version was found to be too inflexible for my needs, and I was unable
+to add the functionaly required via a plugin due to the chosen
+architecture. I also feel debian-image-builder is easier to read,
+understand and possibly debug.
+
 
 ## Usage ##
 
@@ -28,6 +42,7 @@ plugins is also provided there. If none of those scratch your itch,
 you can of course write your own plugin (see HOWTO.md in the plugins
 directory).
 
+
 ## Features ##
 
 ### AMI features ###
@@ -45,7 +60,7 @@ directory).
   * `generate-ssh-hostkeys`: Generates hostkeys for sshd on first boot
   * `expand-volume`: Expands the root partition to the volume size
 
-*\*The bootup time was measured with [this script](https://gist.github.com/3813743)*
+*\*The bootup time was measured with [this script](https://gist.github.com/3813743).*
 
 ### Bootstrapper (AMI) features ###
 
@@ -55,6 +70,6 @@ directory).
 * Can create both 32-bit and 64-bit AMIs
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts
-* Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract).
-  (In particular: The [EC2 API Tools](http://aws.amazon.com/developertools/351)
-  have been replaced with [euca2ools](http://www.eucalyptus.com/download/euca2ools))
+* Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract)
+  (eg. we use [euca2ools](http://www.eucalyptus.com/download/euca2ools))
+  instead of Amazon's proprietary [EC2 API Tools](http://aws.amazon.com/developertools/351).
