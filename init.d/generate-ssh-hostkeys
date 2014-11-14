@@ -15,7 +15,7 @@ logger="logger -t ${prog}"
 
 rsa_key="/etc/ssh/ssh_host_rsa_key"
 dsa_key="/etc/ssh/ssh_host_dsa_key"
-ecdsa_key="/etc/ssh/ssh_host_dsa_key"
+ecdsa_key="/etc/ssh/ssh_host_ecdsa_key"
 
 # Exit if the hostkeys already exist
 if [ -f ${rsa_key} -a -f ${dsa_key} -a -f ${ecdsa_key} ]; then
