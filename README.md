@@ -71,5 +71,5 @@ directory).
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts
 * Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract)
-  (eg. we use [euca2ools](http://www.eucalyptus.com/download/euca2ools))
-  instead of Amazon's proprietary [EC2 API Tools](http://aws.amazon.com/developertools/351).
+  (eg. we use [euca2ools](http://www.eucalyptus.com/download/euca2ools)
+  instead of Amazon's proprietary [EC2 API Tools](http://aws.amazon.com/developertools/351)).
