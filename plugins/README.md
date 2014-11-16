@@ -1,6 +1,6 @@
 ## Plugins ##
-In this folder you will find plugins made for the bootstrapper.
-You can run them via the `--plugin` option when bootstrapping:
+In this folder you will find plugins made for the bootstrapper.  You
+can run them via the `--plugin` option when bootstrapping. eg:
 ```
 ./debian-image-builder ec2 --plugin plugins/admin-user
 ```
@@ -9,6 +9,8 @@ You can run them via the `--plugin` option when bootstrapping:
   Creates a user named 'admin', gives it sudo rights and disables the root login.
 * `build-metadata`
   Adds a build metadata output file to record the AMI and snapshot IDs for further scripting.
+* `pause-before-umount`
+  Pause the build process near the end to allow manual modifications to the image filesystem.
 * `publish-ami`
   Grants launch permission of the new AMI to everybody.
 * `publish-snapshot`
