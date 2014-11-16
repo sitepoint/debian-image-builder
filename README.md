@@ -18,11 +18,11 @@ tested on EC2. I no longer test GCE, but accept patches if required.
   execution.
 
 This project is a fork of the Bash version of build-debian-cloud,
-prior to the project switching to Python. This was because the Python
-version was found to be too inflexible for my needs, and I was unable
-to add the functionaly required via a plugin due to the chosen
-architecture. I also feel debian-image-builder is easier to read,
-understand and possibly debug.
+prior to the project switching to Python. This is due to the Python
+version proving to be too inflexible for my needs, as I was unable to
+easily add the functionaly I required via a plugin due to the chosen
+architecture. In my opinion, debian-image-builder is also easier to
+read and understand.
 
 
 ## Usage ##
