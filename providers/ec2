@@ -37,7 +37,7 @@ availability_zone=
 debootstrap_dir='/target'
 
 # List of options for this subcommand
-help="$(basename ${BASH_SOURCE[1]}) $(basename "${BASH_SOURCE[0]}")
+help="$(get_command_name)
 This subcommand creates an Amazon EC2 AMI.
 
 ${txtund}Bootstrapping${txtdef}

@@ -186,3 +186,19 @@ function contains_basename
     done
     exit 1
 }
+
+function get_command_name
+{
+    declare command
+
+    for value in ${BASH_SOURCE[@]}
+    do
+        value_basename="$(basename ${value})"
+        if [ "${value_basename}" != "utils" ]
+        then
+            command="${value_basename} ${command}"
+        fi
+    done
+
+    echo ${command}
+}

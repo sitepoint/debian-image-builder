@@ -5,8 +5,21 @@ set -e
 
 declare -r prog_name="$(basename ${BASH_SOURCE[0]})"
 
+# Import various functions
+if [ -f $(dirname ${prog_name})/lib/utils ]
+then
+    source "lib/utils"
+elif [ -f /usr/lib/$(dirname ${prog_name})/utils ]
+then
+    source /usr/lib/$(dirname ${prog_name})/utils
+else
+    echo "utils library not found. Installation corrupt." >/dev/null
+    exit 1
+fi
+
 # Rember various paths
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [ ! -d "${scriptdir}/tasks" ]
 then
     scriptdir="/usr/share/${prog_name}"
@@ -20,9 +33,6 @@ then
 fi
 
 originaldir="$(pwd)"
-
-# Import various functions
-source "${scriptdir}/lib/utils"
 
 # Directory where the tarball created while bootstrapping should be put
 tarballdir="${scriptdir}"
@@ -78,7 +88,7 @@ else
 fi
 unset provider_file
 
-provider_help="${prog_name}
+provider_help="$(get_command_name)
 
 This script creates a Debian GNU/Linux image for different providers.
 The provider is specified as one of the following subcommands:

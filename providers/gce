@@ -24,7 +24,7 @@ gce_kernel=projects/google/global/kernels/gce-v20130325
 default_description="Debian GNU/Linux X.Y.Z (codename) built on YYYY-MM-DD"
 
 # List of options for gce subcommand
-help="$(basename ${BASH_SOURCE[1]}) $(basename "${BASH_SOURCE[0]}")
+help="$(get_command_name)
 This script creates a GCE image.
 
 ${txtund}Bootstrapping${txtdef}
