@@ -43,7 +43,7 @@ temp_dir="$(mktemp -d /tmp/${prog_name}.XXXXXXXX)"
 if ! command -v euca-version > /dev/null 2>&1
 then
     install_euca2ools
-elif [ $(euca-version 2>&1 | cut -d ' ' -f 2 | cut -b 1) -ge 3 ]
+elif [ $(euca-version 2>&1 | cut -d ' ' -f 2 | cut -b 1) -lt 3 ]
 then
     install_euca2ools
 fi
