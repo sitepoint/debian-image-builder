@@ -4,7 +4,7 @@
 
 log "Formatting the device $device_path with $filesystem"
 
-if [ -n "${volume_inodes}" ]
+if [ -n "${volume_inodes}" ] && [[ "${filesytem}" =~ "ext" ]]
 then
     mkfs.${filesystem} -N ${volume_inodes} ${device_path}
 else
