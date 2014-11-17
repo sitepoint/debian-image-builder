@@ -1,2 +1,3 @@
 #!/bin/bash
-euca-modify-image-attribute --launch-permission --add all "$ami_id"
+
+euca-modify-image-attribute --launch-permission --add all "${ami_id}"

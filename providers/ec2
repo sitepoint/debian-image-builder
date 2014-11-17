@@ -29,6 +29,7 @@ known_regions+=('sa-east-1')
 known_regions+=('us-gov-west-1')
 
 # EC2 host info
+virt=paravirtual
 instance_id=
 region=
 availability_zone=
@@ -41,6 +42,7 @@ help="$(get_command_name)
 This subcommand creates an Amazon EC2 AMI.
 
 ${txtund}Bootstrapping${txtdef}
+    --virt VIRT [paravirtual|hvm] Select virtualization type (${txtbld}${virt}${txtbld})
     --arch ARCH [i386|amd64]      Processor architecture of the image (${txtbld}${arch}${txtdef})
     --codename C [squeeze|wheezy] Debian version codename to bootstrap (${txtbld}${codename}${txtdef})
     --filesystem FS [ext2..4|xfs] Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
@@ -73,6 +75,7 @@ ${txtund}Other options${txtdef}
 while [ ${#} -gt 0 ]
 do
     case ${1} in
+        --virt)             virt=${2};                     shift 2 ;;
         --arch)             arch=${2};                     shift 2 ;;
         --codename)         codename=${2};                 shift 2 ;;
         --filesystem)       filesystem=${2};               shift 2 ;;
