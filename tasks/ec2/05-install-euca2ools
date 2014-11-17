@@ -31,8 +31,7 @@ function install_euca2ools {
         -C "${temp_dir}"
 
     cd "${temp_dir}/euca2ools-${euca2ools_version}"
-    python setup.py install | spin
-    [ ${PIPESTATUS} == 0 ] || die "Bootstrapping failed!"
+    python setup.py install || die "Bootstrapping failed!"
     cd "${orig_pwd}"
 }
 
