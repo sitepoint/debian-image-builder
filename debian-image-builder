@@ -3,17 +3,18 @@
 # Stop execution if any command fails
 set -e
 
-declare -r prog_name="$(basename ${BASH_SOURCE[0]})"
+declare -r prog_path="${BASH_SOURCE[0]}"
+declare -r prog_name="$(basename ${prog_path})"
 
 # Import various functions
-if [ -f $(dirname ${prog_name})/lib/utils ]
+if [ -f "$(dirname ${prog_path})/lib/utils" ]
 then
-    source "lib/utils"
-elif [ -f /usr/lib/$(dirname ${prog_name})/utils ]
+    source "$(dirname ${prog_path})/lib/utils"
+elif [ -f "/usr/lib/$(basename ${prog_name})/utils" ]
 then
-    source /usr/lib/$(dirname ${prog_name})/utils
+    source "/usr/lib/$(basename ${prog_name})/utils"
 else
-    echo "utils library not found. Installation corrupt." >/dev/null
+    echo "utils library not found. Installation corrupt." >&2
     exit 1
 fi
 
