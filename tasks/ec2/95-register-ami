@@ -51,7 +51,9 @@ esac
 # The ":N:true:standard" is necessary so that the root volume
 # will be deleted on termination of the instance (specifically the "true" part)
 ami_name="${distribution}-${codename}-${arch}-${name_suffix}"
+
 log "Registering an AMI with the snapshot '${snapshot_id}'"
+
 ami_id=`euca-register \
     --name "${ami_name}" --description "${description}" \
     --architecture "${ami_arch}" --kernel "${aki}" \
@@ -66,10 +68,11 @@ then
     die \
         "Unable to register an AMI." \
         "You can do it manually with:" \
-        "`which euca-register` \\\\" \
+        "$(which euca-register) \\\\" \
         "--name '${ami_name}' --description '${description}' \\\\" \
         "--architecture '${ami_arch}' --kernel '${aki}' \\\\" \
         "--virtualization-type '${virt}' \\\\" \
         "--snapshot '${snapshot_id}:${volume_size}:true:standard'"
 fi
+
 log "Your AMI has been created with the ID '${ami_id}'"
