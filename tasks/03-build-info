@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# Output some info to the user about the AMI we are about to build
+# Output some info to the user about the AMI we are about to build.
+
 log \
     "Building image for $distribution $codename" \
     "architecture:      $arch" \
@@ -10,5 +11,4 @@ log \
     "charmap:           $charmap" \
     "timezone:          $timezone" \
     "packages:          ${packages[*]}" \
-    "excluded packages: ${exclude_packages[*]}" \
-    ""
+    "excluded packages: ${exclude_packages[*]}"
