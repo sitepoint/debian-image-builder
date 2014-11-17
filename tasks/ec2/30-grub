@@ -13,6 +13,3 @@ sed -i "s/^GRUB_TIMEOUT=1/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" \
 
 # Update grub.cfg using the script
 chroot $imagedir update-grub
-
-# Alias grub.cfg as menu.lst
-chroot $imagedir ln -s /boot/grub/grub.cfg /boot/grub/menu.lst
