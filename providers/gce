@@ -33,6 +33,7 @@ ${txtund}Bootstrapping${txtdef}
     --codename C [squeeze|wheezy] Debian version codename to bootstrap (${txtbld}${codename}${txtdef})
     --filesystem FS [ext2..4|xfs] Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
     --volume-size SIZE            Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
+    --volume-inodes SIZE          Optionally set a custom inode count for ext2/3/4 volumes.
     --plugin FILE                 Path to plugin script.
                                   Can be specified more than once.
 
