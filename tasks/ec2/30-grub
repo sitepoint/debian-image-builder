@@ -7,11 +7,11 @@ sed -i "s/^GRUB_TIMEOUT=1/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" \
     "${imagedir}/etc/default/grub"
 
 # Disable recovery options - we won't be able to select them anyway.
-sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/"
+sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/" \
     "${imagedir}/etc/default/grub"
 
 # Set output console.
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet console=ttyS0\"/"
+sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet console=ttyS0\"/" \
     "${imagedir}/etc/default/grub"
 
 if [ "${virt}" = "paravirtual" ]
