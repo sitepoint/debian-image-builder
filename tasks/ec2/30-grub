@@ -14,7 +14,7 @@ sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/"
 sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet console=ttyS0\"/"
     "${imagedir}/etc/default/grub"
 
-if [ "${virt}" = "pvs" ]
+if [ "${virt}" = "paravirtual" ]
 then
     # Disable normal grub 2 cfg files
     chmod -x "${imagedir}"/etc/grub.d/*

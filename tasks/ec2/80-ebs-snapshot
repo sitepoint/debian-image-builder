@@ -7,5 +7,7 @@ snapshot=`euca-create-snapshot $volume_id`
 [ -z "$snapshot" ] && die "\nUnable to create snapshot from the volume '$volume_id'"
 snapshot_id=`printf -- "$snapshot" | awk '{print $2}'`
 
-# Wait for the snapshot to be completed, can take quite some time
-dotdot "euca-describe-snapshots $snapshot_id | grep 'completed'"
+# Wait for the snapshot to be completed, can take quite some time.
+# The grep command is for compatibility with euca2ools>=3.0.0 which
+# prints all snapshots.
+dotdot "euca-describe-snapshots ${snapshot_id} | grep ${snapshot_id} | grep 'completed'"

@@ -101,7 +101,8 @@ done
 # Required and default parameters
 true ${EC2_ACCESS_KEY:?} ${EC2_SECRET_KEY:?}
 
-# Export the AWS credentials, so that we can launch ec2-tools without specifying them
+# Export the AWS access keys, so that we can launch euca2ools commands
+# without specifying the keys as arguments each time.
 export EC2_ACCESS_KEY EC2_SECRET_KEY
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
