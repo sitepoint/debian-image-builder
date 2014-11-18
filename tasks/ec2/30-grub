@@ -26,6 +26,11 @@ then
 
     # Update grub.cfg using the script
     chroot "${imagedir}" update-grub
+
+    # pv-grub-hd0_1.04-x86_64.gz is configred for the old
+    # (hd0)/boot/grub/menu.lst naming convention, but update-grub
+    # names it /boot/grub/grub.cfg.
+    chroot "${imagedir}" ln -s grub.cfg /boot/grub/menu.lst
 else
     # Update grub.cfg using the script
     chroot "${imagedir}" update-grub
