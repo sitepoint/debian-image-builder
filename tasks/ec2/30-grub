@@ -44,8 +44,8 @@ else
     # Update grub.cfg to use (hd0) instead of ${grub_device}.
     sed -i "s/${grub_device}/(hd0)/g" "${imagedir}/boot/grub/grub.cfg"
 
+    chroot "${imagedir}" grub-install --no-floppy --recheck --force "${device_path}"
+
     # Remove everything from device.map after the first line (hd0).
     sed -i '2,$d' "${device_map}"
-
-    chroot "${imagedir}" grub-install --no-floppy --recheck --force "${device_path}"
 fi
