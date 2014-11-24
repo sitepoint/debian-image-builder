@@ -39,7 +39,7 @@ else
     chroot "${imagedir}" update-grub
 
     device_map="${imagedir}/boot/grub/device.map"
-    grub_device="$(grep '${device_path}$' "${device_map}" | cut -f 1)"
+    grub_device="$(grep "${device_path}$" "${device_map}" | cut -f 1)"
 
     # Remove everything from device.map after the first line (hd0).
     head -n 1 "${device_map}" > "${device_map}.truncated" && \
