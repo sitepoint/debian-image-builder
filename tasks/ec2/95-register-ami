@@ -54,13 +54,13 @@ ami_name="${distribution}-${codename}-${arch}-${name_suffix}"
 
 log "Registering an AMI with the snapshot '${snapshot_id}'"
 
-ami_id=`euca-register \
+ami_id=$(euca-register \
     --name "${ami_name}" --description "${description}" \
     --architecture "${ami_arch}" --kernel "${aki}" \
     --virtualization-type "${virt}" \
     --snapshot "${snapshot_id}" \
     --block-device-mapping "/dev/xvda=${snapshot_id}:${volume_size}:true" \
-    | awk '{print $2}'`
+    | awk '{print $2}')
 
 # If the user has already created an unnamed AMI today,
 # this will fail, so give the AMI registration command to the user
