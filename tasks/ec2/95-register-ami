@@ -66,7 +66,7 @@ ami_id=$(euca-register \
     --architecture "${ami_arch}" ${kernel} \
     --virtualization-type "${virt}" \
     --snapshot "${snapshot_id}" \
-    --root-device-name /dev/xvda
+    --root-device-name /dev/xvda \
     | awk '{print $2}')
 
 # If the user has already created an unnamed AMI today,
