@@ -58,7 +58,7 @@ log "Registering an AMI with the snapshot '${snapshot_id}'"
 
 if [ "${virt}" = 'paravirtual' ]
 then
-    kernel="--kernel '${aki}'"
+    kernel="--kernel ${aki}"
 fi
 
 ami_id=$(euca-register \
