@@ -18,12 +18,18 @@ done
 # immediately after euca-create-volume - most probably because the
 # command now executes too quickly for AWS's API to keep up!
 
-while [ ${attempt} -ne 0 ] && \
-    ! euca-describe-volumes "${volume_id}" 1>/dev/null 2>&1
+while [ ${attempt} -ne 0 -a \
+    $(euca-describe-volumes --filter status=available \
+    "${volume_id}" 2>/dev/null | grep VOLUME | wc -l) -lt 1 ]
 do
     sleep 5
     (( --attempt ))
 done
+
+if [ ${attempt} -eq 0 ]
+then
+    die "It seems we were unable to create ${volume_id}."
+fi
 
 euca-attach-volume --instance "${instance_id}" \
     --device "/dev/xvd${device_letter}" "${volume_id}"
