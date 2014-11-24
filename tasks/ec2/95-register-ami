@@ -2,6 +2,8 @@
 #
 # Register the snapshot as a new AMI
 
+declare kernel=""
+
 # Figure out which pvGrub kernel ID we need
 case $region in
     us-east-1)
@@ -54,9 +56,14 @@ ami_name="${distribution}-${codename}-${arch}-${name_suffix}"
 
 log "Registering an AMI with the snapshot '${snapshot_id}'"
 
+if [ "${virt}" = 'paravirtual' ]
+then
+    kernel="--kernel '${aki}'"
+fi
+
 ami_id=$(euca-register \
     --name "${ami_name}" --description "${description}" \
-    --architecture "${ami_arch}" --kernel "${aki}" \
+    --architecture "${ami_arch}" ${kernel} \
     --virtualization-type "${virt}" \
     --snapshot "${snapshot_id}" \
     --block-device-mapping "/dev/xvda=${snapshot_id}:${volume_size}:true" \
@@ -71,7 +78,7 @@ then
         "You can do it manually with:" \
         "$(which euca-register) \\\\" \
         "--name '${ami_name}' --description '${description}' \\\\" \
-        "--architecture '${ami_arch}' --kernel '${aki}' \\\\" \
+        "--architecture '${ami_arch}' ${kernel} \\\\" \
         "--virtualization-type '${virt}' \\\\" \
         "--snapshot '${snapshot_id}:${volume_size}:true:standard'"
 fi
