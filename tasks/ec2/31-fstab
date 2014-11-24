@@ -3,7 +3,7 @@
 # Create the fstab
 
 # Add some mount options depending on the filesystem
-case $filesystem in
+case ${filesystem} in
     ext2) mountoptions+=',barrier=0' ;;
     ext3) mountoptions+=',barrier=0' ;;
     ext4) mountoptions+=',barrier=0' ;;
@@ -11,6 +11,6 @@ case $filesystem in
     *)    ;;
 esac
 
-cat >> $imagedir/etc/fstab <<EOF
+cat > ${imagedir}/etc/fstab <<EOF
 /dev/xvda1 /     $filesystem    defaults$mountoptions 1 1
 EOF
