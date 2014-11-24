@@ -41,11 +41,11 @@ else
     device_map="${imagedir}/boot/grub/device.map"
     grub_device="$(grep "${device_path}$" "${device_map}" | cut -f 1)"
 
-    # Remove everything from device.map after the first line (hd0).
-    head -n 1 "${device_map}" > "${device_map}.truncated" && \
-        mv -f "${device_map}.truncated" "${device_map}"
-
     # Update grub.cfg to use (hd0) instead of ${grub_device}.
     sed -i "s/${grub_device}/(hd0)/g" "${imagedir}/boot/grub/grub.cfg"
+
+    # Remove everything from device.map after the first line (hd0).
+    sed -i '2,$d' "${device_map}"
+
     chroot "${imagedir}" grub-install --no-floppy --recheck --force "${device_path}"
 fi
