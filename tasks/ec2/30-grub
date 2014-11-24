@@ -45,7 +45,7 @@ else
     sed -i "s/${grub_device}/(hd0)/g" "${imagedir}/boot/grub/grub.cfg"
 
     chroot "${imagedir}" grub-install --no-floppy --recheck --force "${device_path}"
-
-    # Remove everything from device.map after the first line (hd0).
-    sed -i '2,$d' "${device_map}"
 fi
+
+# Remove everything from device.map after the first line (hd0).
+sed -i '2,$d' "${device_map}"
