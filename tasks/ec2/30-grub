@@ -14,7 +14,7 @@ sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/" \
     "${imagedir}/etc/default/grub"
 
 # Set output console.
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet console=ttyS0\"/" \
+sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet console=ttyS0 xen_emul_unplug=unnecessary\"/" \
     "${imagedir}/etc/default/grub"
 
 if [ "${virt}" = "paravirtual" ]
