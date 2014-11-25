@@ -2,6 +2,8 @@
 #
 # Register the snapshot as a new AMI
 
+declare kernel=""
+
 # Figure out which pvGrub kernel ID we need
 case $region in
     us-east-1)
@@ -50,23 +52,36 @@ esac
 # The AMI has to start with "debian", otherwise we won't get a nice icon
 # The ":N:true:standard" is necessary so that the root volume
 # will be deleted on termination of the instance (specifically the "true" part)
-ami_name="$distribution-$codename-$arch-$name_suffix"
-log "Registering an AMI with the snapshot '$snapshot_id'"
-ami_id=`euca-register \
-    --name "$ami_name" --description "$description" \
-    --architecture "$ami_arch" --kernel "$aki" \
-    --snapshot "$snapshot_id:$volume_size:true:standard" \
-    | awk '{print $2}'`
+ami_name="${distribution}-${codename}-${arch}-${name_suffix}"
+
+log "Registering an AMI with the snapshot '${snapshot_id}'"
+
+if [ "${virt}" = 'paravirtual' ]
+then
+    kernel="--kernel ${aki}"
+fi
+
+ami_id=$(euca-register \
+    --name "${ami_name}" --description "${description}" \
+    --architecture "${ami_arch}" ${kernel} \
+    --virtualization-type "${virt}" \
+    --snapshot "${snapshot_id}" \
+    --root-device-name /dev/xvda \
+    | awk '{print $2}')
 
 # If the user has already created an unnamed AMI today,
 # this will fail, so give the AMI registration command to the user
-if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]; then
+if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]
+then
     die \
         "Unable to register an AMI." \
         "You can do it manually with:" \
-        "`which euca-register` \\\\" \
-        "--name '$ami_name' --description '$description' \\\\" \
-        "--architecture '$ami_arch' --kernel '$aki' \\\\" \
-        "--snapshot '$snapshot_id:$volume_size:true:standard'"
+        "$(which euca-register) \\\\" \
+        "--name '${ami_name}' --description '${description}' \\\\" \
+        "--architecture '${ami_arch}' ${kernel} \\\\" \
+        "--virtualization-type '${virt}' \\\\" \
+        "--snapshot '${snapshot_id}' \\\\" \
+        "--root-device-name /dev/xvda"
 fi
-log "Your AMI has been created with the ID '$ami_id'"
+
+log "Your AMI has been created with the ID '${ami_id}'"

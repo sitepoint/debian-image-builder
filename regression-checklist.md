@@ -25,5 +25,5 @@ To check a volume for any sensitive data run the following commands:
 ```
 apt-get update
 apt-get install binutils
-strings /dev/xvda1 | grep -A10 -B10 'AWS_|EC2_'
+strings /dev/xvda | grep -A10 -B10 'AWS_|EC2_'
 ```

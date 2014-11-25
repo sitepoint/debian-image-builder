@@ -2,20 +2,37 @@
 #
 # Attach the EBS volume
 
+declare -i attempt=12
+
 # Get a random device letter, we will hang forever if we try to attach
 # a volume to an already mapped device.
-for device_letter in {f..z}; do
-    device_path="/dev/xvd$device_letter"
-    [ ! -b $device_path ] && break
+for device_letter in {f..z}
+do
+    device_path="/dev/xvd${device_letter}"
+    [ ! -b ${device_path} ] && break
 done
-[ -b $device_path ] && die "No free device letters found (tried sdf to sdz)!"
+[ -b ${device_path} ] && \
+    die "No free device letters found (tried xvdf to xvdz)!"
 
-# The attach command fails in modern euca2ools versions when ran immediately
-# after euca-create-volume - most probably because the command now executes too
-# quickly for AWS's API to keep up! A small sleep period should solve this.
-sleep 5
+# The attach command fails in modern euca2ools versions when ran
+# immediately after euca-create-volume - most probably because the
+# command now executes too quickly for AWS's API to keep up!
 
-euca-attach-volume --instance "$instance_id" --device "/dev/sd$device_letter" "$volume_id"
+while [ ${attempt} -ne 0 -a \
+    $(euca-describe-volumes --filter status=available \
+    "${volume_id}" 2>/dev/null | grep VOLUME | wc -l) -lt 1 ]
+do
+    sleep 5
+    (( --attempt ))
+done
+
+if [ ${attempt} -eq 0 ]
+then
+    die "It seems we were unable to create ${volume_id}."
+fi
+
+euca-attach-volume --instance "${instance_id}" \
+    --device "/dev/xvd${device_letter}" "${volume_id}"
 
 # Wait until the volume is attached
-dotdot "test -b $device_path && echo attached"
+dotdot "test -b ${device_path} && echo attached"

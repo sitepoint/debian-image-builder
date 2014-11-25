@@ -16,6 +16,7 @@ gce_project=
 image_name_suffix=v$(date +%Y%m%d)
 build_date=$(date +%Y-%m-%d)
 volume_size='10'
+volume_inodes=
 apt_mirrors='http://gce_debian_mirror.storage.googleapis.com/ http://http.debian.net/debian'
 gce_kernel=projects/google/global/kernels/gce-v20130325
 
@@ -32,6 +33,7 @@ ${txtund}Bootstrapping${txtdef}
     --codename C [squeeze|wheezy] Debian version codename to bootstrap (${txtbld}${codename}${txtdef})
     --filesystem FS [ext2..4|xfs] Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
     --volume-size SIZE            Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
+    --volume-inodes SIZE          Optionally set a custom inode count for ext2/3/4 volumes.
     --plugin FILE                 Path to plugin script.
                                   Can be specified more than once.
 
@@ -60,6 +62,7 @@ while [ $# -gt 0 ]; do
         --codename)         codename=$2;                   shift 2 ;;
         --filesystem)       filesystem=$2;                 shift 2 ;;
         --volume-size)      volume_size=$2;                shift 2 ;;
+        --volume-inodes)    volume_inodes=$2;              shift 2 ;;
         --name)             name_suffix=$2;                shift 2 ;;
         --description)      description=$2;                shift 2 ;;
         --apt-mirrors)      apt_mirrors=$2;                shift 2 ;;

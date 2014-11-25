@@ -56,7 +56,7 @@ timezone='UTC'
 # Hardcoded params.
 # This script would explode if we had to take care of other distributions
 distribution='debian'
-codename='squeeze'
+codename='wheezy'
 
 # Filesystem and image info
 filesystem='ext4'
@@ -143,6 +143,8 @@ do
     tasks+=($task)
 done
 
+log "Loading plugins..."
+
 # Invoke plugins so that they may reorder and add tasks
 for plugin in "${plugins[@]}"
 do
@@ -153,6 +155,8 @@ do
     source "${plugin}"
 done
 unset plugindir
+
+log "Executing tasks..."
 
 # Source all tasks in the right order
 for task in ${tasks[*]}

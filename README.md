@@ -10,6 +10,9 @@ very clean setup without surprises.
 The machine configuration this script creates has been thoroughly
 tested on EC2. I no longer test GCE, but accept patches if required.
 
+* Both HVM and PVM EC2 instance types can be created, with either an
+  instance store or EBS backed root volume.
+
 * This script has been tested on Squeeze and Wheezy, although I only
   test Wheezy regularly.
 
@@ -41,6 +44,36 @@ Some plugins are included in the plugins directory. A list of external
 plugins is also provided there. If none of those scratch your itch,
 you can of course write your own plugin (see HOWTO.md in the plugins
 directory).
+
+
+## Examples ##
+
+This basic example creates a 15G EBS-backed HVM instance. Many
+defautls are used.
+
+```
+./debian-image-builder ec2 --arch amd64 --volume-size 15 \
+    --plugin plugins/standard-packages --virt hvm \
+    --name "$(date +%Y%m%d%H%M)" \
+    --description "Debian 7 (Wheezy) 15Gb"
+```
+
+This next example creates a Wheezy x86_64 image with a 10G
+instance-backed root volume, formatted to have 5000000 inodes. The
+image timezone and locales have been set, and the image name suffix is
+the date and time of execution. Instance-backed images can be created
+using the plugin debian-cloud-instance-store-ami (downloaded
+separately).
+
+```
+./debian-image-builder ec2 --arch amd64 --codename wheezy \
+    --filesystem ext4 --volume-size 10 --volume-inodes 5000000 \
+    --plugin plugins/standard-packages \
+    --plugin ../debian-cloud-instance-store-ami/instance-store-ami \
+    --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
+    --virt paravirtual --name "$(date +%Y%m%d%H%M)" \
+    --description "Debian 7 (Wheezy) 10Gb"
+```
 
 
 ## Features ##

@@ -1,12 +1,24 @@
 #!/bin/bash
+#
 # Format the volume
 
 log "Formatting the device $device_path with $filesystem"
-mkfs.$filesystem $device_path
 
-case $filesystem in
-    # Disable time based fs checks
-    ext*) tune2fs -i 0 $device_path ;;
-    # Add some tools for xfs, ext tools are built-in
-    xfs)  packages+=('xfsprogs')    ;;
+if [ -n "${volume_inodes}" ] && [[ "${filesytem}" =~ "ext" ]]
+then
+    mkfs.${filesystem} -N ${volume_inodes} ${device_path}
+else
+    mkfs.${filesystem} ${device_path}
+fi
+
+case ${filesystem} in
+    ext*)
+        # Disable time based filesystem checks
+        tune2fs -i 0 ${device_path}
+        ;;
+    xfs)
+        # Add some tools for XFS. Note that ext[2-4] tools are
+        # included by default.
+        packages+=('xfsprogs')
+        ;;
 esac

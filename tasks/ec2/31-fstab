@@ -3,7 +3,7 @@
 # Create the fstab
 
 # Add some mount options depending on the filesystem
-case $filesystem in
+case ${filesystem} in
     ext2) mountoptions+=',barrier=0' ;;
     ext3) mountoptions+=',barrier=0' ;;
     ext4) mountoptions+=',barrier=0' ;;
@@ -11,6 +11,16 @@ case $filesystem in
     *)    ;;
 esac
 
-cat >> $imagedir/etc/fstab <<EOF
-/dev/xvda1 /     $filesystem    defaults$mountoptions 1 1
+# Paravirtual instances using instance-storage need the root block
+# device to appear as a partition, to be compatible with the official
+# AWS PV-GRUB AKI images.
+if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
+then
+    root_device='/dev/xvda1'
+else
+    root_device='/dev/xvda'
+fi
+
+cat > ${imagedir}/etc/fstab <<EOF
+${root_device}  /     ${filesystem}    defaults${mountoptions} 1 1
 EOF
