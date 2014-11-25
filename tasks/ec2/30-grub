@@ -24,7 +24,12 @@ then
 
     # Install the 40_custom file, which generates a nice menu.lst
     script='40_custom'
-    cp "${scriptdir}/grub.d/${script}" "${imagedir}/etc/grub.d/${script}"
+    cp -f "${scriptdir}/grub.d/${script}" "${imagedir}/etc/grub.d/${script}"
+    if [ "${virt}" = 'paravirtual' -a "${volume_type}" = "instance" ]
+    then
+	sed -i 's/^\(GRUB_DEVICE\)=.*/\1=\/dev\/xvda1/' \
+	    "${imagedir}/etc/grub.d/${script}"
+    fi
     chmod 755 "${imagedir}/etc/grub.d/${script}"
 
     # Update grub.cfg using the script

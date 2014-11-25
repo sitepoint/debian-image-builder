@@ -11,6 +11,16 @@ case ${filesystem} in
     *)    ;;
 esac
 
+# Paravirtual instances using instance-storage need the root block
+# device to appear as a partition, to be compatible with the official
+# AWS PV-GRUB AKI images.
+if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
+then
+    root_device='/dev/xvda1'
+else
+    root_device='/dev/xvda'
+fi
+
 cat > ${imagedir}/etc/fstab <<EOF
-/dev/xvda  /     ${filesystem}    defaults${mountoptions} 1 1
+${root_device}  /     ${filesystem}    defaults${mountoptions} 1 1
 EOF
