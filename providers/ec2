@@ -24,9 +24,9 @@ function test_file()
 
     check_arg "${file_name}"
 
-    if [ ! -f "${file_name}" ]
+    if [ ! -f "${!file_name}" ]
     then
-        die "Could not find ${file_name} file ${!file_name}!"
+        die "Could not find \$${file_name} file ${!file_name}!"
     fi
 }
 
