@@ -1,4 +1,4 @@
-#!/bin/bash
+## upload-bundle
 #
 # Upload instance image bundle to S3
 

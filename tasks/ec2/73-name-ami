@@ -1,4 +1,5 @@
-#!/bin/bash
+## name-ami
+#
 
 # The AMI has to start with "debian", otherwise we won't get a nice
 # icon.

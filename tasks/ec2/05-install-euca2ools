@@ -1,4 +1,4 @@
-#!/bin/bash
+## install-euca2ools
 #
 # Make sure the minimum required version of euca2ools is installed.
 

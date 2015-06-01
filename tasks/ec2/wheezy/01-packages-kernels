@@ -1,4 +1,4 @@
-#!/bin/bash
+## packages-kernels
 #
 # There are no special xen kernels in wheezy any longer
 

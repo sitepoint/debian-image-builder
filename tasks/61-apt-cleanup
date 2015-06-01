@@ -1,11 +1,12 @@
-#!/bin/bash
+## apt-cleanup
+#
 # Cleanup after aptitude
 
 # Purge all packages that are unused
-chroot $imagedir apt-get autoremove --purge
+chroot "${imagedir}" apt-get autoremove --purge
 
 # Erase downloaded archive files
-chroot $imagedir apt-get clean
+chroot "${imagedir}" apt-get clean
 
 # Enable the daemons again
-rm -rf $imagedir/usr/sbin/policy-rc.d
+rm -rf "${imagedir}/usr/sbin/policy-rc.d"

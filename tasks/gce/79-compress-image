@@ -1,7 +1,9 @@
-#!/bin/bash
+## compress-image
 #
 # Create the compressed image file
 
-tarball_name="$distribution-$lsb_release-$codename-$image_name_suffix.tar.gz"
+tarball_name="${distribution}-${lsb_release}-${codename}-"\
+"${image_name_suffix}.tar.gz"
+
 log "Creating $tarball_name."
-tar czSpf $workspace/$tarball_name -C $workspace disk.raw
+tar czSpf "${workspace}/${tarball_name}" -C "${workspace}" disk.raw

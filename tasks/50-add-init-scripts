@@ -1,5 +1,5 @@
-#!/bin/bash
+## add-init-scripts
 #
-# Add standard startup scripts to the init_scripts list
+# Add standard startup scripts to the init_scripts list.
 
-init_scripts+=("$scriptdir/init.d/generate-ssh-hostkeys")
+init_scripts+=("${scriptdir}/init.d/generate-ssh-hostkeys")

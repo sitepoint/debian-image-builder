@@ -1,4 +1,4 @@
-#!/bin/bash
+## fstab
 #
 # Create the fstab
 
@@ -21,6 +21,6 @@ else
     root_device='/dev/xvda'
 fi
 
-cat > ${imagedir}/etc/fstab <<EOF
+cat > "${imagedir}/etc/fstab" <<EOF
 ${root_device}  /     ${filesystem}    defaults${mountoptions} 1 1
 EOF

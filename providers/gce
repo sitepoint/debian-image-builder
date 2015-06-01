@@ -13,8 +13,8 @@ gcs_dest=
 gce_project=
 
 # Image details
-image_name_suffix=v$(date +%Y%m%d)
-build_date=$(date +%Y-%m-%d)
+image_name_suffix="v$(date +%Y%m%d)"
+build_date="$(date +%Y-%m-%d)"
 volume_size='10'
 volume_inodes=
 apt_mirrors='http://gce_debian_mirror.storage.googleapis.com/ http://http.debian.net/debian'
@@ -56,27 +56,28 @@ ${txtund}Other options${txtdef}
 "
 
 # Run through the parameters and save them to variables.
-while [ $# -gt 0 ]; do
-    case $1 in
-        --arch)             arch=$2;                       shift 2 ;;
-        --codename)         codename=$2;                   shift 2 ;;
-        --filesystem)       filesystem=$2;                 shift 2 ;;
-        --volume-size)      volume_size=$2;                shift 2 ;;
-        --volume-inodes)    volume_inodes=$2;              shift 2 ;;
-        --name)             name_suffix=$2;                shift 2 ;;
-        --description)      description=$2;                shift 2 ;;
-        --apt-mirrors)      apt_mirrors=$2;                shift 2 ;;
-        --gcs-dest)         gcs_dest=$2;                   shift 2 ;;
-        --gce-project)      gce_project=$2;                shift 2 ;;
-        --gce-kernel)       gce_kernel=$2;                 shift 2 ;;
-        --timezone)         timezone=$2;                   shift 2 ;;
-        --locale)           locale=$2;                     shift 2 ;;
-        --charmap)          charmap=$2;                    shift 2 ;;
+while [ ${#} -gt 0 ]; do
+    case ${1} in
+        --arch)             arch=${2};                     shift 2 ;;
+        --codename)         codename=${2};                 shift 2 ;;
+        --filesystem)       filesystem=${2};               shift 2 ;;
+        --volume-size)      volume_size=${2};              shift 2 ;;
+        --volume-inodes)    volume_inodes=${2};            shift 2 ;;
+        --name)             name_suffix=${2};              shift 2 ;;
+        --description)      description=${2};              shift 2 ;;
+        --apt-mirrors)      apt_mirrors=${2};              shift 2 ;;
+        --gcs-dest)         gcs_dest=${2};                 shift 2 ;;
+        --gce-project)      gce_project=${2};              shift 2 ;;
+        --gce-kernel)       gce_kernel=${2};               shift 2 ;;
+        --timezone)         timezone=${2};                 shift 2 ;;
+        --locale)           locale=${2};                   shift 2 ;;
+        --charmap)          charmap=${2};                  shift 2 ;;
         --plugin)           plugins+=("$2");               shift 2 ;;
         --debug)            set -x;                        shift   ;;
-        -h|--help)          printf -- "$help";             exit 0  ;;
-        *)             die "Unrecognized option: $1" \
-            "Type '$0 --help' to see a list of possible options"; ;;
+        -h|--help)          printf -- "${help}";           exit 0  ;;
+        *)
+            die "Unrecognized option: ${1}" \
+                "Type '${0} --help' to see a list of possible options"; ;;
     esac
 done
 

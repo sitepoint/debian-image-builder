@@ -1,4 +1,4 @@
-#!/bin/bash
+## attach-volume
 #
 # Attach the EBS volume
 
@@ -9,10 +9,13 @@ declare -i attempt=12
 for device_letter in {f..z}
 do
     device_path="/dev/xvd${device_letter}"
-    [ ! -b ${device_path} ] && break
+    [ ! -b "${device_path}" ] && break
 done
-[ -b ${device_path} ] && \
+
+if [ -b "${device_path}" ]
+then
     die "No free device letters found (tried xvdf to xvdz)!"
+fi
 
 # The attach command fails in modern euca2ools versions when ran
 # immediately after euca-create-volume - most probably because the

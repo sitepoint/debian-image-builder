@@ -1,4 +1,4 @@
-#!/bin/bash
+## install-host-packages
 #
 # Install packages on the host system to make the rest of this script
 # run smoothly.

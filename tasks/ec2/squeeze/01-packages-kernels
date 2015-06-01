@@ -1,4 +1,4 @@
-#!/bin/bash
+## packages-kernels
 #
 # Kernel image installation, we need a special kernel flavor for xen
 

@@ -1,8 +1,9 @@
-#!/bin/bash
+## delete-workspace
+#
 # Remove temporary workspace
 
 log "Deleting temporary workspace"
-rm -r $workspace
+rm -r "${workspace}"
 
 # Nothing left to clean up on exit if we've gotten this far.
 trap - ERR EXIT

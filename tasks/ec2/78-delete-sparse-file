@@ -1,4 +1,5 @@
-#!/bin/bash
+## delete-sparse-file
+#
 
 if [ "${volume_type}" = 'instance' ]
 then

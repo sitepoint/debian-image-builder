@@ -1,5 +1,6 @@
-#!/bin/bash
-# Create a file for our instance image
+## create-sparese-file
+#
+# Create a file for our instance image.
 
 if [ "${volume_type}" = 'instance' ]
 then
@@ -14,5 +15,4 @@ then
     fi
 
     log "Successfully created image file."
-
 fi
