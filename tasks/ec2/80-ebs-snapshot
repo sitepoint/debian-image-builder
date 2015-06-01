@@ -1,4 +1,4 @@
-#!/bin/bash
+## ebs-snapshot
 #
 # Create a snapshot of the EBS volume
 
@@ -6,7 +6,7 @@ if [ "${volume_type}" = 'ebs' ]
 then
     logn "Creating snapshot of the EBS volume"
 
-    snapshot=$(euca-create-snapshot ${volume_id})
+    snapshot="$(euca-create-snapshot ${volume_id})"
     if [ -z "${snapshot}" ]
     then
         die "\nUnable to create snapshot from the volume '$volume_id'"

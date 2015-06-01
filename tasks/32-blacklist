@@ -1,9 +1,8 @@
-#!/bin/bash
+## blacklist
 #
-# Blacklist
 
 # Prevent pcspkr from loading because we don't need it
-cat >> $imagedir/etc/modprobe.d/blacklist.conf <<EOF
+cat >> "${imagedir}/etc/modprobe.d/blacklist.conf" <<EOF
 # disable pc speaker
 blacklist pcspkr
 EOF

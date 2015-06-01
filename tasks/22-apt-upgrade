@@ -1,19 +1,19 @@
-#!/bin/bash
+## apt-upgrade
 #
 # Upgrade packages installed by debootstrap
 
 # Don't launch daemons when upgrading
-cat > $imagedir/usr/sbin/policy-rc.d << EOF
+cat > "${imagedir}/usr/sbin/policy-rc.d" << EOF
 #!/bin/sh
 exit 101
 EOF
-chmod 755 $imagedir/usr/sbin/policy-rc.d
+chmod 755 "${imagedir}/usr/sbin/policy-rc.d"
 
 # Update the package cache
-chroot $imagedir apt-get update || die "apt-get update failed!"
+chroot "${imagedir}" apt-get update || die "apt-get update failed!"
 
 # Fix broken dependencies, if any.
-chroot $imagedir apt-get -f install -y
+chroot "${imagedir}" apt-get -f install -y
 
 # Upgrade existing packages
-chroot $imagedir apt-get -y upgrade || die "apt-get upgrade failed!"
+chroot "${imagedir}" apt-get -y upgrade || die "apt-get upgrade failed!"

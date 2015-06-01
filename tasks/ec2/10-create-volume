@@ -1,7 +1,13 @@
-#!/bin/bash
+## create-volume
 #
 # Create the EBS volume
 
-volume_id=$(euca-create-volume --size $volume_size -z "$availability_zone" | awk '{print $2}')
-[ -z "$volume_id" ] && die "Unable to create volume."
-log "The EBS volume id is $volume_id"
+volume_id=$(euca-create-volume --size ${volume_size} \
+    -z "${availability_zone}" | awk '{print $2}')
+
+if [ -z "${volume_id}" ]
+then
+    die "Unable to create volume."
+fi
+
+log "The EBS volume id is ${volume_id}"

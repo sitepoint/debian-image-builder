@@ -1,4 +1,5 @@
-#!/bin/bash
+## packages-gce
+#
 
 packages+=('python')
 packages+=('sudo')

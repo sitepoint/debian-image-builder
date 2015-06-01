@@ -1,8 +1,8 @@
-#!/bin/bash
+## label-volume
 #
 # Label the filesystem.
 
-case $filesystem in
+case ${filesystem} in
     # Add a fs label
-    ext*) e2label $device_path / ;;
+    ext*) e2label ${device_path} / ;;
 esac

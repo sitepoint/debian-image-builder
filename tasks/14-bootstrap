@@ -1,6 +1,5 @@
-#!/bin/bash
+## bootstrap
 #
-# Bootstrap
 
 # Concatenate the packages
 SAVE_IFS=${IFS}
@@ -19,16 +18,16 @@ ${codename} ${imagedir} ${bootstrap_mirror}"
 args_hash=$(printf -- "${arch} ${include} -- ${exclude} ${codename}" |
     sha1sum)
 
-tarball="$tarballdir/bootstrap-${args_hash:0:7}.tar"
+tarball="${tarballdir}/bootstrap-${args_hash:0:7}.tar"
 
 include_param=""
-if [[ ${include} != "" ]]
+if [ -n ${include} ]
 then
     include_param="--include=${include}"
 fi
 
 exclude_param=""
-if [[ ${exclude} != "" ]]
+if [ -n ${exclude} ]
 then
     exclude_param="--exclude=${exclude}"
 fi
@@ -39,15 +38,15 @@ fi
 if [ ! -e "${tarball}" ]
 then
     log "Creating the bootstrap tarball"
-    debootstrap --arch ${arch} --make-tarball=${tarball} \
+    debootstrap --arch ${arch} --make-tarball="${tarball}" \
         --keep-debootstrap-dir \
         ${include_param} ${exclude_param} \
-        ${codename} ${imagedir} ${bootstrap_mirror} \
+        ${codename} "${imagedir}" ${bootstrap_mirror} \
         || die "Creating bootstrap tarball failed!"
 fi
 
 log "Bootstrapping"
-debootstrap --arch ${arch} --unpack-tarball=${tarball} \
+debootstrap --arch ${arch} --unpack-tarball="${tarball}" \
     ${include_param} ${exclude_param} \
-    ${codename} ${imagedir} ${bootstrap_mirror} \
+    ${codename} "${imagedir}" ${bootstrap_mirror} \
     || die "Bootstrapping failed!"

@@ -1,6 +1,7 @@
-#!/bin/bash
-# The interfaces file in squeeze is empty (save for some comments)
-cat >> $imagedir/etc/network/interfaces <<EOF
+## networking-interfaces
+#
+# The interfaces file in squeeze is empty (save for some comments).
+cat >> "${imagedir}/etc/network/interfaces" <<EOF
 auto lo
 iface lo inet loopback
 

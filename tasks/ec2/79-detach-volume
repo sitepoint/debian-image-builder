@@ -1,4 +1,4 @@
-#!/bin/bash
+## detach-volume
 #
 # Detach the EBS volume
 
@@ -6,4 +6,5 @@ euca-detach-volume ${volume_id}
 
 # The grep command is for compatibility with euca2ools>=3.0.0 which
 # prints all volumes.
-dotdot "euca-describe-volumes ${volume_id} | grep ${volume_id} | grep 'available'"
+dotdot "euca-describe-volumes ${volume_id} | grep ${volume_id} "\
+"| grep 'available'"

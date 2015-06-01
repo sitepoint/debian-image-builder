@@ -1,24 +1,28 @@
-#!/bin/bash
+## create-workspace
 #
 # Prepare safe workspace for GCE files
 
-# Ensure our temporary loopback device and mount get cleaned up no matter how we
-# exit, even if it's before the usual cleanup steps.
-function cleanup_loopback_mount () {
+# Ensure our temporary loopback device and mount get cleaned up no
+# matter how we exit, even if it's before the usual cleanup steps.
+function cleanup_loopback_mount ()
+{
     # Disable exit-on-error
     set +e
 
-    if [ -n "${imagedir}" ]; then
+    if [ -n "${imagedir}" ]
+    then
         log "Unmounting ${imagedir} ahead of unclean exit."
-        umount ${imagedir}
+        umount "${imagedir}"
     fi
 
-    if [ -n "${device_path}" ]; then
+    if [ -n "${device_path}" ]
+    then
         log "Deleting loopback device ${device_path} ahead of unclean exit."
-        losetup -d ${device_path}
+        losetup -d "${device_path}"
     fi
 
-    if [ -d "${workspace}" ]; then
+    if [ -d "${workspace}" ]
+    then
         log "${workspace} still exists. Leaving alone for potential debugging."
     fi
 
@@ -28,4 +32,4 @@ function cleanup_loopback_mount () {
 trap cleanup_loopback_mount ERR EXIT
 
 workspace="$(mktemp -d -t ${prog_name}.XXXXXXXXXX)"
-tarballdir=${workspace}
+tarballdir="${workspace}"

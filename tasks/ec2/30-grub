@@ -1,4 +1,4 @@
-#!/bin/bash
+## grub
 #
 # Configure GRUB as appropriate.
 
@@ -17,7 +17,8 @@ sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/" \
     "${imagedir}/etc/default/grub"
 
 # Set output console.
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet console=ttyS0 xen_emul_unplug=unnecessary\"/" \
+sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="\
+"\"quiet console=ttyS0 xen_emul_unplug=unnecessary\"/" \
     "${imagedir}/etc/default/grub"
 
 if [ "${virt}" = "paravirtual" ]
@@ -30,8 +31,8 @@ then
     cp -f "${scriptdir}/grub.d/${script}" "${imagedir}/etc/grub.d/${script}"
     if [ "${virt}" = 'paravirtual' -a "${volume_type}" = "instance" ]
     then
-	sed -i 's/^\(GRUB_DEVICE\)=.*/\1=\/dev\/xvda1/' \
-	    "${imagedir}/etc/grub.d/${script}"
+        sed -i 's/^\(GRUB_DEVICE\)=.*/\1=\/dev\/xvda1/' \
+            "${imagedir}/etc/grub.d/${script}"
     fi
     chmod 755 "${imagedir}/etc/grub.d/${script}"
 
