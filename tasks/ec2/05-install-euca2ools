@@ -5,8 +5,8 @@
 # The package in Squeeze is v1.2, which does not support EBS-backed
 # AMIs. The package in Wheezy is v2.0.2, which does not support HVM
 # AMIs.
-euca2ools_sha1sum='a29646fe312ae90c625304a9b969f5ab8bec44d8'
-euca2ools_version='3.1.1'
+euca2ools_sha1sum='1a5b659ac2a5a83c5adf1468dd8e6fe94d782a1f'
+euca2ools_version='3.1.2'
 
 
 function install_euca2ools {
