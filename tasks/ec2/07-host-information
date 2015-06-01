@@ -26,3 +26,25 @@ export EC2_URL="https://ec2.$region.amazonaws.com"
 if ! $(contains $region known_regions[@]); then
     die "The region $region is unkown."
 fi
+
+if [ "${volume_type}" = 'instance' ]
+then
+    if [ -z "${target_region}" -a -n "${EC2_REGION}" ]
+    then
+        target_region="${EC2_REGION}"
+    fi
+
+    if ! $(contains ${target_region} known_regions[@])
+    then
+        die "The region ${target_region} is unkown."
+    fi
+
+    case "${target_region}" in
+        us-east-1)
+        export S3_URL='https://s3.amazonaws.com/'
+        ;;
+        *)
+        export S3_URL="https://s3-${target_region}.amazonaws.com/"
+        ;;
+    esac
+fi

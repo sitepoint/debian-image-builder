@@ -1,0 +1,18 @@
+#!/bin/bash
+# Create a file for our instance image
+
+if [ "${volume_type}" = 'instance' ]
+then
+    declare -r image_file="$(mktemp ${debootstrap_dir}/instance-XXXXXXXX.img)"
+
+    # Create a sparse file of ${volume_site} GB
+    cat "${device_path}" | pv | cp --sparse=always /dev/stdin "${image_file}"
+
+    if [ ${?} -ne 0 ]
+    then
+        die "Unable to create image file '${image_file}'."
+    fi
+
+    log "Successfully created image file."
+
+fi

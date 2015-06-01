@@ -1,12 +1,13 @@
 #!/bin/bash
 #
-# Make sure euca2ools is installed.
+# Make sure the minimum required version of euca2ools is installed.
 
 # The package in Squeeze is v1.2, which does not support EBS-backed
 # AMIs. The package in Wheezy is v2.0.2, which does not support HVM
+# AMIs. The package in Jessie is v3.1.0, which does not support VPC
 # AMIs.
-euca2ools_sha1sum='1a5b659ac2a5a83c5adf1468dd8e6fe94d782a1f'
-euca2ools_version='3.1.2'
+euca2ools_sha1sum='f091b97d23dfb4c382899e32d4be71d531b36d21'
+euca2ools_version='3.2.0'
 
 
 function install_euca2ools {
@@ -43,8 +44,11 @@ temp_dir="$(mktemp -d /tmp/${prog_name}.XXXXXXXX)"
 if ! command -v euca-version > /dev/null 2>&1
 then
     install_euca2ools
-elif [ $(euca-version 2>&1 | cut -d ' ' -f 2 | cut -b 1) -lt 3 ]
+elif [ "$(echo -e "$(euca-version 2>&1 \
+    | cut -d ' ' -f 2)\n${euca2ools_version}" | sort -V | head -n 1)" \
+    != "${euca2ools_version}" ]
 then
+    # The version installed is older than ${suca2ools_version}.
     install_euca2ools
 fi
 

@@ -8,6 +8,28 @@ then
     return
 fi
 
+function check_arg()
+{
+    local var_name="${1}"
+
+    if [ -z "${!var_name}" ]
+    then
+        die "Variable \$${var_name} must be set!"
+    fi
+}
+
+function test_file()
+{
+    local file_name="${1}"
+
+    check_arg "${file_name}"
+
+    if [ ! -f "${!file_name}" ]
+    then
+        die "Could not find \$${file_name} file ${!file_name}!"
+    fi
+}
+
 # AMI details
 ami_id=
 name_suffix=$(date +%Y%m%d)
@@ -34,6 +56,7 @@ known_regions+=('us-gov-west-1')
 virt=paravirtual
 instance_id=
 region=
+target_region=
 availability_zone=
 
 # Build-time info
@@ -70,6 +93,14 @@ ${txtund}AWS${txtdef}
     --access-key ID                   AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})
     --secret-key KEY                  AWS Secret Key (${txtbld}\$EC2_SECRET_KEY${txtdef})
 
+{txtund}instance-store requirements{txtdef}  (where '--volume-type instance' is requested)
+    --user ID                         Your 12-digit AWS user ID
+    --ec2cert CERT                    Path to the cloud certificate
+    --cert CERT                       Path to your PEM-encoded certificate
+    --private-key KEY                 Path to your PEM-encoded private key
+    --s3-bucket BUCKET                S3 path to upload the image to
+    --target-region REGION            AWS region to create image for
+
 ${txtund}Other options${txtdef}
     --debug                           Print debugging information
     --help                            Prints this help message
@@ -91,6 +122,12 @@ do
         --apt-mirrors)      apt_mirrors=${2};              shift 2 ;;
         --access-key)       EC2_ACCESS_KEY=${2};           shift 2 ;;
         --secret-key)       EC2_SECRET_KEY=${2};           shift 2 ;;
+        --user)             EC2_USER_ID=${2};              shift 2 ;;
+        --ec2cert)          EUCALYPTUS_CERT=${2};          shift 2 ;;
+        --cert)             EC2_CERT=${2};                 shift 2 ;;
+        --private-key)      EC2_PRIVATE_KEY=${2};          shift 2 ;;
+        --s3-bucket)        S3_BUCKET=${2};                shift 2 ;;
+        --target-region)    target_region=${2};            shift 2 ;;
         --timezone)         timezone=${2};                 shift 2 ;;
         --locale)           locale=${2};                   shift 2 ;;
         --charmap)          charmap=${2};                  shift 2 ;;
@@ -103,13 +140,26 @@ do
     esac
 done
 
-
 # Required and default parameters
-true ${EC2_ACCESS_KEY:?} ${EC2_SECRET_KEY:?}
+check_arg EC2_ACCESS_KEY
+check_arg EC2_SECRET_KEY
 
 # Export the AWS access keys, so that we can launch euca2ools commands
 # without specifying the keys as arguments each time.
 export EC2_ACCESS_KEY EC2_SECRET_KEY
+
+if [ "${volume_type}" = 'instance' ]
+then
+    check_arg EC2_USER_ID
+    check_arg S3_BUCKET
+
+    test_file EC2_PRIVATE_KEY
+    test_file EC2_CERT
+    test_file EUCALYPTUS_CERT
+
+    export EC2_USER_ID S3_BUCKET EC2_PRIVATE_KEY EC2_CERT EUCALYPTUS_CERT
+fi
+
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.

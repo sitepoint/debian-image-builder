@@ -11,10 +11,11 @@ The machine configuration this script creates has been thoroughly
 tested on EC2. I no longer test GCE, but accept patches if required.
 
 * Both HVM and PVM EC2 instance types can be created, with either an
-  instance store or EBS backed root volume.
+  instance store or EBS backed root volume - plugins no longer
+  required!
 
 * This script has been tested on Squeeze and Wheezy, although I only
-  test Wheezy regularly.
+  test Wheezy regularly. Jessie will be supported soon.
 
 * To create an AMI, this bootstrapper needs to be run on an Amazon EC2
   instance - we'll be attaching an EBS volume temporarily during
@@ -34,11 +35,12 @@ The script is started with ``./debian-image-builder``.  You can choose
 to either bootstrap a Debian AMI (``./debian-image-builder ec2``) or a
 Google Compute Engine image (``./debian-image-builder gce``).  Both
 modes have sensible defaults and can be configured with options and
-plugins.  To see a list of options use ``--help``.  When creating an
-AMI the script at least needs to know your AWS credentials.
+plugins. To see a list of options use ``--help``.  When creating an
+AMI, the script at least needs to know your AWS credentials.
 
-There are no interactive prompts, the bootstrapping can run entirely
-unattended from start till finish.
+As there are no interactive prompts, the bootstrapping can run
+entirely unattended from start till finish. A plugin could optionally
+change this behaviour.
 
 Some plugins are included in the plugins directory. A list of external
 plugins is also provided there. If none of those scratch your itch,
@@ -49,27 +51,26 @@ directory).
 ## Examples ##
 
 This basic example creates a 15G EBS-backed HVM instance. Many
-defautls are used.
+defaults are used.
 
 ```
-./debian-image-builder ec2 --arch amd64 --volume-size 15 \
+./debian-image-builder ec2 --arch amd64 --codename wheezy \
+    --volume-size 15 \
     --plugin plugins/standard-packages --virt hvm \
     --name "$(date +%Y%m%d%H%M)" \
     --description "Debian 7 (Wheezy) 15Gb"
 ```
 
-This next example creates a Wheezy x86_64 image with a 10G
+This next example creates a Wheezy x86_64 paravirtual image with a 10G
 instance-backed root volume, formatted to have 5000000 inodes. The
 image timezone and locales have been set, and the image name suffix is
-the date and time of execution. Instance-backed images can be created
-using the plugin debian-cloud-instance-store-ami (downloaded
-separately).
+the date and time of execution.
 
 ```
 ./debian-image-builder ec2 --arch amd64 --codename wheezy \
+    --volume-type instance \
     --filesystem ext4 --volume-size 10 --volume-inodes 5000000 \
     --plugin plugins/standard-packages \
-    --plugin ../debian-cloud-instance-store-ami/instance-store-ami \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name "$(date +%Y%m%d%H%M)" \
     --description "Debian 7 (Wheezy) 10Gb"
@@ -104,5 +105,5 @@ separately).
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts
 * Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract)
-  (eg. we use [euca2ools](http://www.eucalyptus.com/download/euca2ools)
+  (eg. Unlike other solutions, we use [euca2ools](http://www.eucalyptus.com/download/euca2ools)
   instead of Amazon's proprietary [EC2 API Tools](http://aws.amazon.com/developertools/351)).
