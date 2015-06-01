@@ -26,12 +26,6 @@ can run them via the `--plugin` option when bootstrapping. eg:
 ## Other plugins ##
 The following is a list of external plugins you can use with debian-image-builder.
 
-* [debian-cloud-instance-storage-ami](https://github.com/sitepoint/debian-cloud-instance-store-ami)
-  Create instance-store S3-backed AMIs.
-
-* [debian-cloud-rightscale](https://github.com/sitepoint/debian-cloud-rightscale)
-  Pre-install RightScale's RightLink.
-
 * [debian-cloud-salt-master](https://github.com/sitepoint/debian-cloud-salt-master)
   Pre-install Salt Master configuration management software.
 
