@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# The AMI has to start with "debian", otherwise we won't get a nice
+# icon.
+ami_name="${distribution}-${codename}-${arch}-${name_suffix}"

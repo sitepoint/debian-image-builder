@@ -41,9 +41,6 @@ volume_inodes=
 volume_type='ebs'
 apt_mirrors='http://http.debian.net/debian'
 
-# instance-backed AMI details
-image_location=
-
 # EC2 known regions
 known_regions=('us-east-1')
 known_regions+=('us-west-1')
@@ -98,11 +95,11 @@ ${txtund}AWS${txtdef}
 
 {txtund}instance-store requirements{txtdef}  (where '--volume-type instance' is requested)
     --user ID                         Your 12-digit AWS user ID
-    --ec2cert                         Path to the cloud certificate
+    --ec2cert CERT                    Path to the cloud certificate
     --cert CERT                       Path to your PEM-encoded certificate
-    --private-key                     Path to your PEM-encoded private key
-    --target-region                   AWS region to create image for
-    --image-location                  S3 path to upload the image to
+    --private-key KEY                 Path to your PEM-encoded private key
+    --s3-bucket BUCKET                S3 path to upload the image to
+    --target-region REGION            AWS region to create image for
 
 ${txtund}Other options${txtdef}
     --debug                           Print debugging information
@@ -125,12 +122,12 @@ do
         --apt-mirrors)      apt_mirrors=${2};              shift 2 ;;
         --access-key)       EC2_ACCESS_KEY=${2};           shift 2 ;;
         --secret-key)       EC2_SECRET_KEY=${2};           shift 2 ;;
-        --user ID           EC2_USER_ID=${2};              shift 2 ;;
-        --ec2cert           EUCALYPTUS_CERT=${2};          shift 2 ;;
-        --cert CERT         EC2_CERT=${2};                 shift 2 ;;
-        --private-key       EC2_PRIVATE_KEY=${2};          shift 2 ;;
-        --target-region     target_region=${2};            shift 2 ;;
-        --image-location    image_location=${2};           shift 2 ;;
+        --user)             EC2_USER_ID=${2};              shift 2 ;;
+        --ec2cert)          EUCALYPTUS_CERT=${2};          shift 2 ;;
+        --cert)             EC2_CERT=${2};                 shift 2 ;;
+        --private-key)      EC2_PRIVATE_KEY=${2};          shift 2 ;;
+        --s3-bucket)        S3_BUCKET=${2};                shift 2 ;;
+        --target-region)    target_region=${2};            shift 2 ;;
         --timezone)         timezone=${2};                 shift 2 ;;
         --locale)           locale=${2};                   shift 2 ;;
         --charmap)          charmap=${2};                  shift 2 ;;

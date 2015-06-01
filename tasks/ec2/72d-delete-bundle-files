@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# Delete instance bundled files
+
+if [ "${volume_type}" = 'instance' ]
+then
+    rm -rf "${bundledir}"
+fi
