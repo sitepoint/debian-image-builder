@@ -44,7 +44,7 @@ temp_dir="$(mktemp -d /tmp/${prog_name}.XXXXXXXX)"
 if ! command -v euca-version > /dev/null 2>&1
 then
     install_euca2ools
-elif [ "$(echo -e "$(./euca-version 2>&1 \
+elif [ "$(echo -e "$(euca-version 2>&1 \
     | cut -d ' ' -f 2)\n${euca2ools_version}" | sort -V | head -n 1)" \
     != "${euca2ools_version}" ]
 then
