@@ -5,7 +5,7 @@
 declare -r device_map="${imagedir}/boot/grub/device.map"
 
 # Disable the count-down.
-sed -i "s/^GRUB_TIMEOUT=.*$/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" \
+sed -i "s/^GRUB_TIMEOUT=.*$/GRUB_TIMEOUT=0/" \
     "${imagedir}/etc/default/grub"
 
 # Disable recovery options - we won't be able to select them anyway.
