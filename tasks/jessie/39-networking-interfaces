@@ -1,0 +1,16 @@
+## networking-interfaces
+#
+# In Jessie, interfaces contains the line:
+# source-directory /etc/network/interfaces.d.
+# and (aside from comments) nothing else.
+
+cat > "${imagedir}/etc/network/interfaces.d/eth0" <<EOF
+auto eth0
+iface eth0 inet dhcp
+EOF
+
+cat > "${imagedir}/etc/network/interfaces.d/lo" <<EOF
+# The loopback network interface
+auto lo
+iface lo inet loopback
+EOF

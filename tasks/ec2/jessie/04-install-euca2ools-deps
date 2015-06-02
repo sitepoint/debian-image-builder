@@ -1,0 +1,4 @@
+## install-euca2ools-deps
+#
+
+host_packages+=('python-requests')
