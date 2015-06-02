@@ -1,5 +1,3 @@
-#!/bin/bash
-
 declare -i get_desc=${get_desc:0}
 
 if [ "${get_desc}" -eq 1 ]
