@@ -1,5 +1,4 @@
-#!/bin/bash
-cat << EOF > $imagedir/etc/apt/apt.conf.d/02periodic
+cat << EOF > "${imagedir}/etc/apt/apt.conf.d/02periodic"
 // Enable the update/upgrade script (0=disable)
 APT::Periodic::Enable "1";
 

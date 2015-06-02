@@ -1,4 +1,3 @@
-#!/bin/bash
 packages+=('ca-certificates')
 packages+=('debconf-utils')
 packages+=('debian-goodies')
