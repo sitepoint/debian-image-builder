@@ -2,12 +2,8 @@
 #
 # In Jessie, interfaces contains the line:
 # source-directory /etc/network/interfaces.d.
-# and (aside from comments) nothing else.
-
-cat > "${imagedir}/etc/network/interfaces.d/eth0" <<EOF
-auto eth0
-iface eth0 inet dhcp
-EOF
+# and (aside from comments) nothing else. However, the dhcpcd daemon
+# will fail to start if eth0 is already defined, so leave it.
 
 cat > "${imagedir}/etc/network/interfaces.d/lo" <<EOF
 # The loopback network interface
