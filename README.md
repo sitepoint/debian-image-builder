@@ -57,7 +57,7 @@ defaults are used.
     --volume-size 15 \
     --plugin plugins/standard-packages --virt hvm \
     --name "$(date +%Y%m%d%H%M)" \
-    --description "Debian 7 (Jessie) 15Gb"
+    --description "Debian 7 (Jessie) 15Gb, HVM, EBS"
 ```
 
 This next example creates a Wheezy x86_64 paravirtual image with a 10G
@@ -72,7 +72,7 @@ the date and time of execution.
     --plugin plugins/standard-packages \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name "$(date +%Y%m%d%H%M)" \
-    --description "Debian 7 (Wheezy) 10Gb"
+    --description "Debian 7 (Wheezy) 10Gb, paravirtual, instance-store"
 ```
 
 
