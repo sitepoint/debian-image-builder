@@ -56,7 +56,7 @@ timezone='UTC'
 # Hardcoded params.
 # This script would explode if we had to take care of other distributions
 distribution='debian'
-codename='wheezy'
+codename='jessie'
 
 # Filesystem and image info
 filesystem='ext4'

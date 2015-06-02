@@ -12,10 +12,10 @@ Before publishing any AMI, this list should be consulted first.
 * There should be no `.*_history` files in any home directories
 * The default locale should be generated
 * A timezone should be set
-* The aptitude sources list should at least contain a security update mirror and a main repository mirror
+* The apt sources list should at least contain a security update mirror and a main repository mirror
 * There should be no broken dependencies or un-upgraded packages
 * eth0 should be configured
-* The aptitude package cache should be deleted
+* The apt package cache should be deleted
 * The motd contains a reference to the host (debootstrap put it there), that should be removed
 
 

@@ -2,8 +2,7 @@
 #
 # Make sure the minimum required version of euca2ools is installed.
 
-# The package in Squeeze is v1.2, which does not support EBS-backed
-# AMIs. The package in Wheezy is v2.0.2, which does not support HVM
+# The package in Wheezy is v2.0.2, which does not support HVM
 # AMIs. The package in Jessie is v3.1.0, which does not support VPC
 # AMIs.
 euca2ools_sha1sum='f091b97d23dfb4c382899e32d4be71d531b36d21'

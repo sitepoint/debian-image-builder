@@ -1,6 +1,6 @@
 ## apt-cleanup
 #
-# Cleanup after aptitude
+# Cleanup after apt-get
 
 # Purge all packages that are unused
 chroot "${imagedir}" apt-get autoremove --purge

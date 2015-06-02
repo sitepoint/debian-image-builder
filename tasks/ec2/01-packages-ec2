@@ -24,3 +24,13 @@ then
     # Used when creating a sparse image file.
     host_packages+=('pv')
 fi
+
+# From Wheezy onwards, there are no special Xen-specific kernels any
+# longer.
+if [ ${arch} = 'amd64' ]
+then
+    packages+=('linux-image-amd64')
+elif [ ${arch} = 'i386' ]
+then
+    packages+=('linux-image-686')
+fi

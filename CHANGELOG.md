@@ -1,8 +1,15 @@
+### 2015-07-02 Adam Bolte <adam.bolte@sitepoint.com> ###
+* Added support for Jessie.
+* Remove support for Squeeze. It's no longer supported by Debian. File a bug if you still need this.
+
+### 2015-07-01 Adam Bolte <adam.bolte@sitepoint.com> ###
+* Incorporated the debian-cloud-instance-store-ami plugin functionality as part of the main application.
+
 ### 2014-11-14 Adam Bolte <adam.bolte@sitepoint.com> ###
-* New plugin to pause the build process prior to unmounting the image
-* Renamed the project debian-image-builder
-* Separated providers out to a separate directory
-* Separated libraries to lib
+* New plugin to pause the build process prior to unmounting the image.
+* Renamed the project debian-image-builder.
+* Separated providers out to a separate directory.
+* Separated libraries to lib.
 
 ### 2013-01-23 Anders Ingemann <anders@ingemann.de> ###
 
