@@ -81,11 +81,11 @@ ${txtund}Bootstrapping${txtdef}
 
     --debootstrap-dir DIR             Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
                                       The created volume will be mounted
-                                      at \$debootstrap_dir/\$volume_id.
+                                      at \${debootstrap_dir}/\${volume_id}.
 
     --name SUFFIX                     AMI name suffix (${txtbld}${name_suffix}${txtdef})
     --description DESC                Description of the AMI
-    --apt-mirrors \"URL[ URL...]\"    APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
+    --apt-mirrors \"URL[ URL...]\"      APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
 
 ${txtund}AWS${txtdef}
     --access-key ID                   AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})
