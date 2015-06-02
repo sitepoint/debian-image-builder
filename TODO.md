@@ -14,3 +14,4 @@
     * `grub.d/generate-ssh-hostkeys` to be replaced by `cloud-init`.
     * Evaluate the possibility of adding cloud-initramfs-rescuevol to the generated initramfs.
 5. New plugin to automatically share images with other specific accounts.
+6. See if we can avoid using the custom grub.d file.
