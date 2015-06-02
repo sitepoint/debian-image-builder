@@ -10,12 +10,11 @@ then
     tty1='1:2345:respawn:/sbin/getty 38400 tty1'
     ttyx=':23:respawn:/sbin/getty 38400 tty'
 
-    sed -i "s_^${tty1}_#${tty1}_" "${inittab}"
-    sed -i "s_^2${ttyx}2_#2${ttyx}2_" "${inittab}"
-    sed -i "s_^3${ttyx}3_#3${ttyx}3_" "${inittab}"
-    sed -i "s_^4${ttyx}4_#4${ttyx}4_" "${inittab}"
-    sed -i "s_^5${ttyx}5_#5${ttyx}5_" "${inittab}"
-    sed -i "s_^6${ttyx}6_#6${ttyx}6_" "${inittab}"
+    sed -i "s_^\(${tty1}\)_#\1_" "${inittab}"
+    for tty in {2..6}
+    do
+        sed -i "s_^\(${tty}${ttyx}${tty}\)_#\1_" "${inittab}"
+    done
 fi
 
 # Systemd
@@ -30,10 +29,8 @@ then
     # This works.
     chroot "${imagedir}" systemctl mask serial-getty@ttyS0.service
     chroot "${imagedir}" systemctl mask serial-getty@hvc0.service
-    chroot "${imagedir}" systemctl mask getty@tty1.service
-    chroot "${imagedir}" systemctl mask getty@tty2.service
-    chroot "${imagedir}" systemctl mask getty@tty3.service
-    chroot "${imagedir}" systemctl mask getty@tty4.service
-    chroot "${imagedir}" systemctl mask getty@tty5.service
-    chroot "${imagedir}" systemctl mask getty@tty6.service
+    for tty in {1..6}
+    do
+        chroot "${imagedir}" systemctl mask getty@tty${tty}.service
+    done
 fi
