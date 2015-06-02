@@ -21,8 +21,19 @@ fi
 # Systemd
 if [ -f "${imagedir}/etc/systemd/logind.conf" ]
 then
+    # This doesn't actually work. Systemd bug, presumably.
     sed -i 's/^#NAutoVTs=.*/NAutoVTs=0/g' \
         "${imagedir}/etc/systemd/logind.conf"
     sed -i 's/^#ReserveVT=.*/ReserveVT=0/g' \
         "${imagedir}/etc/systemd/logind.conf"
+
+    # This works.
+    chroot "${imagedir}" systemctl mask serial-getty@ttyS0.service
+    chroot "${imagedir}" systemctl mask serial-getty@hvc0.service
+    chroot "${imagedir}" systemctl mask getty@tty1.service
+    chroot "${imagedir}" systemctl mask getty@tty2.service
+    chroot "${imagedir}" systemctl mask getty@tty3.service
+    chroot "${imagedir}" systemctl mask getty@tty4.service
+    chroot "${imagedir}" systemctl mask getty@tty5.service
+    chroot "${imagedir}" systemctl mask getty@tty6.service
 fi
