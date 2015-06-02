@@ -11,7 +11,7 @@ gcs_dest=
 gce_project=
 
 # Image details
-image_name_suffix="v$(date +%Y%m%d)"
+image_name_suffix="v$(date +%Y%m%d%H%M)"
 build_date="$(date +%Y-%m-%d)"
 volume_size='10'
 volume_inodes=

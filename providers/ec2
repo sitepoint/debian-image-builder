@@ -30,7 +30,7 @@ function test_file()
 
 # AMI details
 ami_id=
-name_suffix="$(date +%Y%m%d)"
+name_suffix="$(date +%Y%m%d%H%M)"
 description=
 snapshot_id=
 volume_id=
