@@ -15,3 +15,4 @@
     * Evaluate the possibility of adding cloud-initramfs-rescuevol to the generated initramfs.
 5. New plugin to automatically share images with other specific accounts.
 6. See if we can avoid using the custom grub.d file.
+7. Figure out what the problem is with isc-dhcp-client and see if it's fixable. We should use the default Debian packages wherever possible to improve consistency.
