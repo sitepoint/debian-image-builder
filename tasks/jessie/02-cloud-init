@@ -1,0 +1,7 @@
+## cloud-init
+#
+
+# Cloud-init is in Jessie's "main" component, so we should use that
+# instead of custom init scripts (which don't seem to work with
+# systemd anyway).
+packages+=('cloud-init')

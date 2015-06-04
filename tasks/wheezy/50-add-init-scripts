@@ -1,0 +1,5 @@
+## add-init-scripts
+#
+# Add standard startup scripts to the init_scripts list. This is normally
+# taken care of by cloud-init in newer Debian releases.
+init_scripts+=("${scriptdir}/init.d/generate-ssh-hostkeys")

@@ -3,7 +3,7 @@
 # Disable getty processes. Login happens via SSH, and VMs don't
 # require TTYs.
 
-# System V
+## System V
 if [ -f "${imagedir}/etc/inittab" ]
 then
     inittab="${imagedir}/etc/inittab"
@@ -17,18 +17,33 @@ then
     done
 fi
 
-# Systemd
+## Systemd
+#
+# Systemd claims to only open gettys as required. This is broken in
+# AWS (and probably any Xen guest), since it erroneously believes all
+# ttys are in use, when none of them are! Hence, we need to take
+# matters into our own hands and force systemd to do the right thing.
+
 if [ -f "${imagedir}/etc/systemd/logind.conf" ]
 then
-    # This doesn't actually work. Systemd bug, presumably.
+    # This doesn't completely work, as systemd always leaves at least
+    # tty1 around - even if console=ttyS0 is passed as a kernel
+    # parameter and tty1 is never used!
     sed -i 's/^#NAutoVTs=.*/NAutoVTs=0/g' \
         "${imagedir}/etc/systemd/logind.conf"
     sed -i 's/^#ReserveVT=.*/ReserveVT=0/g' \
         "${imagedir}/etc/systemd/logind.conf"
 
-    # This works.
+    # Systemd also detects available serial ports and runs gettys on
+    # those too! We need to disable that.
     chroot "${imagedir}" systemctl mask serial-getty@ttyS0.service
     chroot "${imagedir}" systemctl mask serial-getty@hvc0.service
+
+    # If dbus and logind are not present, Systemd's getty-static
+    # service kicks in and executes getty@tty{2..6} services. Here we
+    # disable getty-static, getty@tty1 (see above), and also
+    # getty@tty{2..5} to be extra sure.
+    chroot "${imagedir}" systemctl mask getty-static.service
     for tty in {1..6}
     do
         chroot "${imagedir}" systemctl mask getty@tty${tty}.service
