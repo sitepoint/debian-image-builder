@@ -80,7 +80,7 @@ then
             "You can do it manually with:" \
             "$(which euca-register) \\\\" \
             "--name '${ami_name}' --description '${description}' \\\\" \
-            "--architecture '${ami_arch}' --kernel '${aki}' \\\\" \
+            "--architecture '${ami_arch}' ${kernel} \\\\" \
             "--virtualization-type '${virt}' \\\\" \
             "'${S3_BUCKET}/${ami_name}.manifest.xml'"
     fi
