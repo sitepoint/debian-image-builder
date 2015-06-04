@@ -76,3 +76,12 @@ cat > "${imagedir}/etc/cloud/cloud.cfg.d/90_dpkg.cfg" <<EOF
 # to update this file, run dpkg-reconfigure cloud-init
 datasource_list: [ Ec2, None ]
 EOF
+
+# Avoid errors auto-mounting available EBS volumes due to unsupported
+# 'nobootwait' mount option. See
+# https://bugs.launchpad.net/cloud-init/+bug/785542
+
+cat > "${imagedir}/etc/cloud/cloud.cfg.d/80_mounts.cfg" <<EOF
+mount_default_fields: [~, ~, 'auto', 'defaults,nofail', '0', '2']
+EOF
+
