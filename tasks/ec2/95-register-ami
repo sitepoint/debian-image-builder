@@ -41,47 +41,6 @@ then
             ;;
         *) die "Unrecognized region:" "${region}"
     esac
-else
-    # Figure out which pvGrub kernel ID we need
-    case $region in
-        us-east-1)
-            [ ${arch} = 'amd64' ] && aki="aki-88aa75e1"
-            [ ${arch} = 'i386' ] && aki="aki-b6aa75df"
-            ;;
-        us-west-1)
-            [ ${arch} = 'amd64' ] && aki="aki-f77e26b2"
-            [ ${arch} = 'i386' ] && aki="aki-f57e26b0"
-            ;;
-        us-west-2)
-            [ ${arch} = 'amd64' ] && aki="aki-fc37bacc"
-            [ ${arch} = 'i386' ] && aki="aki-fa37baca"
-            ;;
-        eu-west-1)
-            [ ${arch} = 'amd64' ] && aki="aki-71665e05"
-            [ ${arch} = 'i386' ] && aki="aki-75665e01"
-            ;;
-        ap-southeast-1)
-            [ ${arch} = 'amd64' ] && aki="aki-fe1354ac"
-            [ ${arch} = 'i386' ] && aki="aki-f81354aa"
-            ;;
-        ap-southeast-2)
-            [ ${arch} = 'amd64' ] && aki="aki-31990e0b"
-            [ ${arch} = 'i386' ] && aki="aki-33990e09"
-            ;;
-        ap-northeast-1)
-            [ ${arch} = 'amd64' ] && aki="aki-44992845"
-            [ ${arch} = 'i386' ] && aki="aki-42992843"
-            ;;
-        sa-east-1)
-            [ ${arch} = 'amd64' ] && aki="aki-c48f51d9"
-            [ ${arch} = 'i386' ] && aki="aki-ca8f51d7"
-            ;;
-        us-gov-west-1)
-            [ ${arch} = 'amd64' ] && aki="aki-79a4c05a"
-            [ ${arch} = 'i386' ] && aki="aki-7ba4c058"
-            ;;
-        *) die "Unrecognized region:" "$region"
-    esac
 fi
 
 if [ ${arch} = 'amd64' ]
@@ -92,6 +51,10 @@ then
     ami_arch='i386'
 fi
 
+# HVM instances don't use AKIs, but our paravirtual instances require the
+# PvGRUB AKI. Note that the virt type is completely independent of the volume
+# type. Ignore the PvGRUB AKI "rootDeviceType" debug description (which is
+# always set to "instance-store").
 if [ "${virt}" = 'paravirtual' ]
 then
     kernel="--kernel ${aki}"
@@ -108,8 +71,8 @@ then
         "${S3_BUCKET}/${ami_name}.manifest.xml" \
         | awk '{print $2}')
 
-    # If the user has already created an unnamed AMI today,
-    # this will fail, so give the AMI registration command to the user
+    # In case of registraion failure, give the AMI registration command to the
+    # user.
     if [[ ! "${ami_id}" =~ ^ami-[0-9a-z]{8}$ ]]
     then
         die \
@@ -132,8 +95,8 @@ else
         --root-device-name /dev/xvda \
         | awk '{print $2}')
 
-    # If the user has already created an unnamed AMI today,
-    # this will fail, so give the AMI registration command to the user
+    # In case of registraion failure, give the AMI registration command to the
+    # user.
     if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]
     then
         die \
