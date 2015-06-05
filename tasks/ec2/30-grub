@@ -5,11 +5,15 @@
 declare -r device_map="${imagedir}/boot/grub/device.map"
 
 # Disable the count-down.
-sed -i "s/^GRUB_TIMEOUT=.*$/GRUB_TIMEOUT=0/" \
-    "${imagedir}/etc/default/grub"
+sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
 
 # Disable recovery options - we won't be able to select them anyway.
-sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/" \
+sed -i "s/^#\(GRUB_DISABLE_RECOVERY\)=.*$/\1=\"true\"/" \
+    "${imagedir}/etc/default/grub"
+
+# Disable UUID lookup - use device name instead since there is no chance of it
+# changing.
+sed -i "s/^#\(GRUB_DISABLE_LINUX_UUID=true\)/\1/" \
     "${imagedir}/etc/default/grub"
 
 # Simplify grub.cfg to improve compatibility.
@@ -17,12 +21,13 @@ echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
     >> "${imagedir}/etc/default/grub"
 
 # Set output console.
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="\
-"\"quiet console=ttyS0 xen_emul_unplug=unnecessary\"/" \
+sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
     "${imagedir}/etc/default/grub"
 
 if [ "${virt}" = "paravirtual" ]
 then
+    ## Configure for PyGRUB support.
+
     # Disable normal Grub 2 configuration files.
     chmod -x "${imagedir}"/etc/grub.d/*
 
@@ -39,11 +44,14 @@ then
     # Regenerate grub.cfg.
     chroot "${imagedir}" update-grub
 
-    # pv-grub-hd0_1.04-x86_64.gz is configred for the old
+    # pv-grub-hd0_1.04-*.gz is configred for the old
     # (hd0)/boot/grub/menu.lst naming convention, but update-grub
     # names it /boot/grub/grub.cfg.
     chroot "${imagedir}" ln -s grub.cfg /boot/grub/menu.lst
 else
+    ## HVM support, so no special configuration should be necessary
+    ## (beyond what is required to install in a chroot).
+
     # Make device.map point to the EBS device for now.
     echo -e "(hd0)\t${device_path}" > "${device_map}"
 
