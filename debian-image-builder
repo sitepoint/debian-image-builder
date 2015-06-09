@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Stop execution if any command fails
+## Stop execution if any command fails.
 set -e
 
 declare -r prog_path="${BASH_SOURCE[0]}"
 declare -r prog_name="$(basename ${prog_path})"
 
-# Import various functions
+## Import various functions.
 if [ -f "$(dirname ${prog_path})/lib/utils" ]
 then
     source "$(dirname ${prog_path})/lib/utils"
@@ -18,7 +18,7 @@ else
     exit 1
 fi
 
-# Rember various paths
+## Rember various paths.
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ ! -d "${scriptdir}/tasks" ]
@@ -35,7 +35,7 @@ fi
 
 originaldir="$(pwd)"
 
-# Directory where the tarball created while bootstrapping should be put
+## Directory to store the tarball created while bootstrapping.
 tarballdir="${scriptdir}"
 
 # Providers, Tasks, packages, plugins, boot scripts
@@ -53,10 +53,10 @@ locale='en_US'
 charmap='UTF-8'
 timezone='UTC'
 
-# Hardcoded params.
-# This script would explode if we had to take care of other distributions
+## Hardcoded params.
+# Currently only Debian is supported. May change in the future.
 distribution='debian'
-codename='wheezy'
+codename='jessie'
 
 # Filesystem and image info
 filesystem='ext4'

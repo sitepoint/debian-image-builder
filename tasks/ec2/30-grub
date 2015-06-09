@@ -2,28 +2,33 @@
 #
 # Configure GRUB as appropriate.
 
-declare device_map
-declare grub_device
-
-device_map="${imagedir}/boot/grub/device.map"
-grub_device="$(grep "${device_path}$" "${device_map}" | cut -f 1)"
+declare -r device_map="${imagedir}/boot/grub/device.map"
 
 # Disable the count-down.
-sed -i "s/^GRUB_TIMEOUT=.*$/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" \
-    "${imagedir}/etc/default/grub"
+sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
 
 # Disable recovery options - we won't be able to select them anyway.
-sed -i "s/^#GRUB_DISABLE_RECOVERY=.*$/GRUB_DISABLE_RECOVERY=\"true\"/" \
+sed -i "s/^#\(GRUB_DISABLE_RECOVERY\)=.*$/\1=\"true\"/" \
     "${imagedir}/etc/default/grub"
 
+# Disable UUID lookup - use device name instead since there is no chance of it
+# changing.
+sed -i "s/^#\(GRUB_DISABLE_LINUX_UUID=true\)/\1/" \
+    "${imagedir}/etc/default/grub"
+
+# Simplify grub.cfg to improve compatibility.
+echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
+    >> "${imagedir}/etc/default/grub"
+
 # Set output console.
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="\
-"\"quiet console=ttyS0 xen_emul_unplug=unnecessary\"/" \
+sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
     "${imagedir}/etc/default/grub"
 
 if [ "${virt}" = "paravirtual" ]
 then
-    # Disable normal grub 2 cfg files
+    ## Configure for PyGRUB support.
+
+    # Disable normal Grub 2 configuration files.
     chmod -x "${imagedir}"/etc/grub.d/*
 
     # Install the 40_custom file, which generates a nice menu.lst
@@ -36,22 +41,32 @@ then
     fi
     chmod 755 "${imagedir}/etc/grub.d/${script}"
 
-    # Update grub.cfg using the script
+    # Regenerate grub.cfg.
     chroot "${imagedir}" update-grub
 
-    # pv-grub-hd0_1.04-x86_64.gz is configred for the old
+    # pv-grub-hd0_1.04-*.gz is configred for the old
     # (hd0)/boot/grub/menu.lst naming convention, but update-grub
     # names it /boot/grub/grub.cfg.
     chroot "${imagedir}" ln -s grub.cfg /boot/grub/menu.lst
 else
-    # Update grub.cfg using the script
+    ## HVM support, so no special configuration should be necessary
+    ## (beyond what is required to install in a chroot).
+
+    # Make device.map point to the EBS device for now.
+    echo -e "(hd0)\t${device_path}" > "${device_map}"
+
+    # Update grub.cfg using the script. This will now work correctly.
     chroot "${imagedir}" update-grub
 
-    # Update grub.cfg to use (hd0) instead of ${grub_device}.
-    sed -i "s/${grub_device}/(hd0)/g" "${imagedir}/boot/grub/grub.cfg"
+    # Install Grub to the start of the block device.
+    chroot "${imagedir}" grub-install --no-floppy --force "${device_path}"
 
-    chroot "${imagedir}" grub-install --no-floppy --recheck --force "${device_path}"
+    # Set the correct values for device.map.
+    echo -e "(hd0)\t/dev/xvda" > "${device_map}"
 fi
 
 # Remove everything from device.map after the first line (hd0).
-sed -i '2,$d' "${device_map}"
+if [ -f "${device_map}" ]
+then
+    sed -i '2,$d' "${device_map}"
+fi

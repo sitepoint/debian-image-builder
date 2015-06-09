@@ -14,8 +14,7 @@ tested on EC2. I no longer test GCE, but accept patches if required.
   instance store or EBS backed root volume - plugins no longer
   required!
 
-* This script has been tested on Squeeze and Wheezy, although I only
-  test Wheezy regularly. Jessie will be supported soon.
+* This script has been tested with AWS on Wheezy and Jessie.
 
 * To create an AMI, this bootstrapper needs to be run on an Amazon EC2
   instance - we'll be attaching an EBS volume temporarily during
@@ -54,11 +53,11 @@ This basic example creates a 15G EBS-backed HVM instance. Many
 defaults are used.
 
 ```
-./debian-image-builder ec2 --arch amd64 --codename wheezy \
+./debian-image-builder ec2 --arch amd64 --codename jessie \
     --volume-size 15 \
     --plugin plugins/standard-packages --virt hvm \
     --name "$(date +%Y%m%d%H%M)" \
-    --description "Debian 7 (Wheezy) 15Gb"
+    --description "Debian 7 (Jessie) 15Gb, HVM, EBS"
 ```
 
 This next example creates a Wheezy x86_64 paravirtual image with a 10G
@@ -73,7 +72,7 @@ the date and time of execution.
     --plugin plugins/standard-packages \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name "$(date +%Y%m%d%H%M)" \
-    --description "Debian 7 (Wheezy) 10Gb"
+    --description "Debian 7 (Wheezy) 10Gb, paravirtual, instance-store"
 ```
 
 
@@ -100,7 +99,7 @@ the date and time of execution.
 
 * EBS volume is automatically created, mounted, formatted, unmounted, "snapshotted" and deleted
 * AMI is automatically registered with the right kernels for the current region of the host machine
-* Supports Debian squeeze and wheezy
+* Supports Wheezy and Jessie
 * Can create both 32-bit and 64-bit AMIs
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts

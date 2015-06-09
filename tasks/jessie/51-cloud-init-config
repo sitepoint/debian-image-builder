@@ -1,0 +1,87 @@
+# By default, cloud.cfg disables the root user account. That's not necessarily
+# useful (or even desirable) when the image is to be used with a configuration
+# management system.
+cat > "${imagedir}/etc/cloud/cloud.cfg" <<EOF
+# The top level settings are used as module
+# and system configuration.
+
+# If this is set, 'root' will not be able to ssh in and they 
+# will get a message to login instead as the above $user (ubuntu)
+disable_root: false
+
+# This will cause the set+update hostname module to not operate (if true)
+preserve_hostname: false
+
+# The modules that run in the 'init' stage
+cloud_init_modules:
+ - migrator
+ - bootcmd
+ - write-files
+ - resizefs
+ - set_hostname
+ - update_hostname
+ - update_etc_hosts
+ - ca-certs
+ - rsyslog
+ - users-groups
+ - ssh
+
+# The modules that run in the 'config' stage
+cloud_config_modules:
+# Emit the cloud config ready event
+# this can be used by upstart jobs for 'start on cloud-config'.
+ - emit_upstart
+ - mounts
+ - ssh-import-id
+ - locale
+ - set-passwords
+ - grub-dpkg
+ - apt-pipelining
+ - apt-configure
+ - package-update-upgrade-install
+ - timezone
+ - salt-minion
+ - disable-ec2-metadata
+ - runcmd
+
+# The modules that run in the 'final' stage
+cloud_final_modules:
+ - scripts-per-once
+ - scripts-per-boot
+ - scripts-per-instance
+ - scripts-user
+ - ssh-authkey-fingerprints
+ - keys-to-console
+ - final-message
+ - power-state-change
+
+# System and/or distro specific settings
+# (not accessible to handlers/transforms)
+system_info:
+   # This will affect which distro class gets used
+   distro: debian
+   # Other config here will be given to the distro class and/or path classes
+   paths:
+      cloud_dir: /var/lib/cloud/
+      templates_dir: /etc/cloud/templates/
+   package_mirrors:
+     - arches: [default]
+       failsafe:
+         primary: http://ftp.debian.org/debian
+EOF
+
+# Enable EC2 and Failsafe datasources. Enabling anything else will introduce
+# unnecessary delays.
+cat > "${imagedir}/etc/cloud/cloud.cfg.d/90_dpkg.cfg" <<EOF
+# to update this file, run dpkg-reconfigure cloud-init
+datasource_list: [ Ec2, None ]
+EOF
+
+# Avoid errors auto-mounting available EBS volumes due to unsupported
+# 'nobootwait' mount option. See
+# https://bugs.launchpad.net/cloud-init/+bug/785542
+
+cat > "${imagedir}/etc/cloud/cloud.cfg.d/80_mounts.cfg" <<EOF
+mount_default_fields: [~, ~, 'auto', 'defaults,nofail', '0', '2']
+EOF
+

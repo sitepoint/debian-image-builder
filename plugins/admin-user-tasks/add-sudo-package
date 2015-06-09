@@ -1,2 +1,1 @@
-#!/bin/bash
 packages+=('sudo')

@@ -3,13 +3,49 @@
 # Disable getty processes. Login happens via SSH, and VMs don't
 # require TTYs.
 
-inittab="${imagedir}/etc/inittab"
-tty1='1:2345:respawn:/sbin/getty 38400 tty1'
-ttyx=':23:respawn:/sbin/getty 38400 tty'
+## System V
+if [ -f "${imagedir}/etc/inittab" ]
+then
+    inittab="${imagedir}/etc/inittab"
+    tty1='1:2345:respawn:/sbin/getty 38400 tty1'
+    ttyx=':23:respawn:/sbin/getty 38400 tty'
 
-sed -i "s_^${tty1}_#${tty1}_" "${inittab}"
-sed -i "s_^2${ttyx}2_#2${ttyx}2_" "${inittab}"
-sed -i "s_^3${ttyx}3_#3${ttyx}3_" "${inittab}"
-sed -i "s_^4${ttyx}4_#4${ttyx}4_" "${inittab}"
-sed -i "s_^5${ttyx}5_#5${ttyx}5_" "${inittab}"
-sed -i "s_^6${ttyx}6_#6${ttyx}6_" "${inittab}"
+    sed -i "s_^\(${tty1}\)_#\1_" "${inittab}"
+    for tty in {2..6}
+    do
+        sed -i "s_^\(${tty}${ttyx}${tty}\)_#\1_" "${inittab}"
+    done
+fi
+
+## Systemd
+#
+# Systemd claims to only open gettys as required. This is broken in
+# AWS (and probably any Xen guest), since it erroneously believes all
+# ttys are in use, when none of them are! Hence, we need to take
+# matters into our own hands and force systemd to do the right thing.
+
+if [ -f "${imagedir}/etc/systemd/logind.conf" ]
+then
+    # This doesn't completely work, as systemd always leaves at least
+    # tty1 around - even if console=ttyS0 is passed as a kernel
+    # parameter and tty1 is never used!
+    sed -i 's/^#NAutoVTs=.*/NAutoVTs=0/g' \
+        "${imagedir}/etc/systemd/logind.conf"
+    sed -i 's/^#ReserveVT=.*/ReserveVT=0/g' \
+        "${imagedir}/etc/systemd/logind.conf"
+
+    # Systemd also detects available serial ports and runs gettys on
+    # those too! We need to disable that.
+    chroot "${imagedir}" systemctl mask serial-getty@ttyS0.service
+    chroot "${imagedir}" systemctl mask serial-getty@hvc0.service
+
+    # If dbus and logind are not present, Systemd's getty-static
+    # service kicks in and executes getty@tty{2..6} services. Here we
+    # disable getty-static, getty@tty1 (see above), and also
+    # getty@tty{2..5} to be extra sure.
+    chroot "${imagedir}" systemctl mask getty-static.service
+    for tty in {1..6}
+    do
+        chroot "${imagedir}" systemctl mask getty@tty${tty}.service
+    done
+fi

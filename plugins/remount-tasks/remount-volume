@@ -1,5 +1,3 @@
-#!/bin/bash
-#
 # Mostly copied from the create-volume task
 
 # Get a random device letter, we will hang forever if we try
@@ -7,10 +5,16 @@
 for device_letter in {f..z}
 do
     device_path="/dev/xvd${device_letter}"
-    [ ! -b ${device_path} ] && break
+    if [ ! -b "${device_path}" ]
+    then
+        break
+    fi
 done
-[ -b ${device_path} ] && \
+
+if [ -b "${device_path}" ]
+then
     die "No free device letters found (tried xvdf to xvdz)!"
+fi
 
 logn "Reattaching the bootstrapped volume"
 euca-attach-volume --instance "${instance_id}" \
@@ -20,9 +24,9 @@ dotdot "test -b ${device_path} && echo attached"
 
 # Recreate the imagedir, it was delete in the unmount task
 log "Creating mount location ${imagedir}"
-mkdir -p $imagedir
+mkdir -p "${imagedir}"
 
-mount ${device_path} ${imagedir}
+mount "${device_path}" "${imagedir}"
 log "The volume has been mounted at ${imagedir}"
 
 log "Run the following commands to unmount and remove the volume:"

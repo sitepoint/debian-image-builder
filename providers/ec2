@@ -1,5 +1,3 @@
-#!/bin/bash
-
 declare -i get_desc=${get_desc:0}
 
 if [ "${get_desc}" -eq 1 ]
@@ -32,7 +30,7 @@ function test_file()
 
 # AMI details
 ami_id=
-name_suffix="$(date +%Y%m%d)"
+name_suffix="$(date +%Y%m%d%H%M)"
 description=
 snapshot_id=
 volume_id=
@@ -69,7 +67,7 @@ This subcommand creates an Amazon EC2 AMI.
 ${txtund}Bootstrapping${txtdef}
     --virt VIRT [paravirtual|hvm]     Select virtualization type (${txtbld}${virt}${txtbld})
     --arch ARCH [i386|amd64]          Processor architecture of the image (${txtbld}${arch}${txtdef})
-    --codename C [squeeze|wheezy]     Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
+    --codename C [jessie|wheezy]      Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
     --filesystem FS [ext2..4|xfs]     Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
     --volume-size SIZE                Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
     --volume-inodes SIZE              Optionally set a custom inode count for ext2/3/4 volumes.
@@ -83,11 +81,11 @@ ${txtund}Bootstrapping${txtdef}
 
     --debootstrap-dir DIR             Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
                                       The created volume will be mounted
-                                      at \$debootstrap_dir/\$volume_id.
+                                      at \${debootstrap_dir}/\${volume_id}.
 
     --name SUFFIX                     AMI name suffix (${txtbld}${name_suffix}${txtdef})
     --description DESC                Description of the AMI
-    --apt-mirrors \"URL[ URL...]\"    APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
+    --apt-mirrors \"URL[ URL...]\"      APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
 
 ${txtund}AWS${txtdef}
     --access-key ID                   AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})

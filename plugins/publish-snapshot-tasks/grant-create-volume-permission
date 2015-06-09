@@ -1,3 +1,2 @@
-#!/bin/bash
-
-euca-modify-snapshot-attribute --create-volume-permission --add all "${snapshot_id}"
+euca-modify-snapshot-attribute --create-volume-permission --add all \
+    "${snapshot_id}"

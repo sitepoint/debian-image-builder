@@ -1,5 +1,3 @@
-#!/bin/bash
-
 declare -i counter=0
 
 echo "PAUSED"

@@ -4,11 +4,12 @@
 
 log \
     "Building image for ${distribution} ${codename}" \
-    "architecture:      ${arch}" \
-    "filesystem:        ${filesystem}" \
-    "volume size:       ${volume_size} GB" \
-    "locale:            ${locale}" \
-    "charmap:           ${charmap}" \
-    "timezone:          ${timezone}" \
-    "packages:          ${packages[*]}" \
-    "excluded packages: ${exclude_packages[*]}"
+    "architecture:        ${arch}" \
+    "virtualization-type: ${virt}" \
+    "filesystem:          ${filesystem}" \
+    "volume size:         ${volume_size} GB" \
+    "locale:              ${locale}" \
+    "charmap:             ${charmap}" \
+    "timezone:            ${timezone}" \
+    "packages:            ${packages[*]}" \
+    "excluded packages:   ${exclude_packages[*]}"
