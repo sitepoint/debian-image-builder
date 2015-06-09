@@ -9,6 +9,8 @@ can run them via the `--plugin` option when bootstrapping. eg:
   Creates a user named 'admin', gives it sudo rights and disables the root login.
 * `build-metadata`
   Adds a build metadata output file to record the AMI and snapshot IDs for further scripting.
+* `move_s3_path`
+  Save multiple instance-backed AMIs to a single bucket by using sub-directories. Automatically appends sub-directories for architecture and timestamp.
 * `pause-before-umount`
   Pause the build process near the end to allow manual modifications to the image filesystem.
 * `publish-ami`

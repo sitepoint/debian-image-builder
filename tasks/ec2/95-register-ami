@@ -3,6 +3,8 @@
 # Register the new AMI
 
 declare kernel=""
+declare s3_path="${custom_s3_path-${S3_BUCKET}}"
+declare ami_arch
 
 if [ ${arch} = 'amd64' ]
 then
@@ -29,7 +31,7 @@ then
         --name "${ami_name}" --description "${description}" \
         --architecture "${ami_arch}" ${kernel} \
         --virtualization-type "${virt}" \
-        "${S3_BUCKET}/${ami_name}.manifest.xml" \
+        "${s3_path}/${ami_name}.manifest.xml" \
         | awk '{print $2}')
 
     # In case of registraion failure, give the AMI registration command to the
@@ -43,7 +45,7 @@ then
             "--name '${ami_name}' --description '${description}' \\\\" \
             "--architecture '${ami_arch}' ${kernel} \\\\" \
             "--virtualization-type '${virt}' \\\\" \
-            "'${S3_BUCKET}/${ami_name}.manifest.xml'"
+            "'${s3_path}/${ami_name}.manifest.xml'"
     fi
 else
     log "Registering an AMI with the snapshot '${snapshot_id}'"
