@@ -1,0 +1,5 @@
+insert_task_after ${TASK_PACKAGES} \
+    "${plugindir}/no-systemd-tasks/exclude-systemd-packages"
+
+insert_task_before ${TASK_APT_SOURCES} \
+    "${plugindir}/no-systemd-tasks/pin-systemd"

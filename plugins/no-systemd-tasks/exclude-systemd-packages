@@ -1,0 +1,5 @@
+packages+=('sysvinit')
+packages+=('sysvinit-core')
+packages+=('sysvinit-utils')
+exclude_packages+=('systemd')
+exclude_packages+=('systemd-sysv')
