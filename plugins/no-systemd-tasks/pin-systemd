@@ -3,6 +3,9 @@ then
     mkdir "${imagedir}/etc/apt/preferences.d"
 fi
 
+# I don't pin "systemd" here, since libpam-systemd requires it. It's possible a
+# package deployed to the VM may require it.
+
 cat > "${imagedir}/etc/apt/preferences.d/no-systemd" << EOF
 Package: systemd-sysv
 Pin: version *

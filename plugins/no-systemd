@@ -3,3 +3,6 @@ insert_task_after ${TASK_PACKAGES} \
 
 insert_task_before ${TASK_APT_SOURCES} \
     "${plugindir}/no-systemd-tasks/pin-systemd"
+
+insert_task_before ${TASK_APT_SOURCES} \
+    "${plugindir}/no-systemd-tasks/purge-systemd"
