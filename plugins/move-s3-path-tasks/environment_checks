@@ -1,6 +1,13 @@
 declare -i test_fail
 declare test_file
 
+if [ "${volume_type}" != "instance" ]
+then
+    echo -n "The move-s3-path plug-in is only compatible with instance "
+    echo "volume types."
+    exit 1
+fi
+
 if [ -z "${CUSTOM_S3_PATH}" ]
 then
     echo "Please set \$CUSTOM_S3_PATH before running this plug-in."
