@@ -29,7 +29,8 @@ function cleanup_loopback_mount ()
     # Enable exit-on-error
     set -e
 }
-trap cleanup_loopback_mount ERR EXIT
+
+add_to_trap cleanup_loopback_mount ERR EXIT
 
 workspace="$(mktemp -d -t ${prog_name}.XXXXXXXXXX)"
 tarballdir="${workspace}"

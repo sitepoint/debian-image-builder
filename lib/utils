@@ -13,6 +13,48 @@ errfile=''
 errcolor=${bldred}
 
 
+## Trap management
+
+# Get the commands associated with a specific signal.
+function get_current_trap()
+{
+    local -r trap="${1-EXIT}"
+
+    # It does not seem possible to print commands set for ERR
+    if [ "${trap}" != "ERR" ]
+    then
+        trap -p ${trap} | sed "s/trap -- '\(.*\)' ${trap}.*/\1/"
+    fi
+}
+
+# Add a command to one or more signals.
+function add_to_trap()
+{
+    local -r add_command="${1}"
+    shift
+    local -r traps="${@-EXIT}"
+    for trap in ${traps}
+    do
+        trap "$(get_current_trap ${trap})${add_command};" ${trap}
+    done
+}
+
+# Remove commands from one or more signals.
+function rm_from_trap()
+{
+    local -r remove_command="${1}"
+    shift
+    local -r traps="${@-EXIT}"
+    for trap in ${traps}
+    do
+        trap "$(trap -p ${trap} | sed \
+            "s/trap -- '\(.*\)' ${trap}/\1/;s/${remove_command};//")" ${trap}
+    done
+}
+
+
+## Output, errors and logging
+
 # Custom die function, output to stderr instead of stdout, each arg is a line
 function die
 {
@@ -73,6 +115,9 @@ function dotdot
     done
     logn "\n"
 }
+
+
+## Task management
 
 function insert_task_before
 {
