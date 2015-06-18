@@ -3,6 +3,10 @@
 # Configure GRUB as appropriate.
 
 declare -r device_map="${imagedir}/boot/grub/device.map"
+declare grub_device
+
+
+## Configure ${imagedir}/etc/default/grub
 
 # Disable the count-down.
 sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
@@ -24,7 +28,20 @@ echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
 sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
     "${imagedir}/etc/default/grub"
 
-if [ "${virt}" = "paravirtual" ]
+# Have root=/dev/xvda or root=/dev/xvda1 as the kernel argument, instead
+# of root=/dev/xvdf or whatever the attached EBS volume device name is.
+if [ "${volume_type}" = 'instance' ]
+then
+    # Instance
+    grub_device=/dev/xvda1
+else
+    # EBS
+    grub_device=/dev/xvda
+fi
+echo "GRUB_DEVICE=${grub_device}" >> "${imagedir}/etc/default/grub"
+
+
+if [ "${virt}" = 'paravirtual' ]
 then
     ## Configure for PyGRUB support.
 
@@ -34,11 +51,7 @@ then
     # Install the 40_custom file, which generates a nice menu.lst
     script='40_custom'
     cp -f "${scriptdir}/grub.d/${script}" "${imagedir}/etc/grub.d/${script}"
-    if [ "${virt}" = 'paravirtual' -a "${volume_type}" = "instance" ]
-    then
-        sed -i 's/^\(GRUB_DEVICE\)=.*/\1=\/dev\/xvda1/' \
-            "${imagedir}/etc/grub.d/${script}"
-    fi
+
     chmod 755 "${imagedir}/etc/grub.d/${script}"
 
     # Regenerate grub.cfg.
@@ -49,8 +62,7 @@ then
     # names it /boot/grub/grub.cfg.
     chroot "${imagedir}" ln -s grub.cfg /boot/grub/menu.lst
 else
-    ## HVM support, so no special configuration should be necessary
-    ## (beyond what is required to install in a chroot).
+    ## HVM (standard GRUB) support.
 
     # Make device.map point to the EBS device for now.
     echo -e "(hd0)\t${device_path}" > "${device_map}"
@@ -62,7 +74,7 @@ else
     chroot "${imagedir}" grub-install --no-floppy --force "${device_path}"
 
     # Set the correct values for device.map.
-    echo -e "(hd0)\t/dev/xvda" > "${device_map}"
+    echo -e "(hd0)\t${grub_device}" > "${device_map}"
 fi
 
 # Remove everything from device.map after the first line (hd0).

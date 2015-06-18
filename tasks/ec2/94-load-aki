@@ -1,8 +1,9 @@
 ## load-aki
 #
-# Fetch the correct AKI for our AMI type and region.
+# Fetch the correct PV-GRUB AKI for our AMI type and region.
 
-if [ "${volume_type}" = 'instance' ]
+# PV-GRUB is not compatible with HVM instances.
+if [ "${virt}" = 'paravirtual' ]
 then
     # The current list of AKIs can be discovered here:
     # http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html
