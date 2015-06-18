@@ -30,7 +30,7 @@ sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
 
 # Have root=/dev/xvda or root=/dev/xvda1 as the kernel argument, instead
 # of root=/dev/xvdf or whatever the attached EBS volume device name is.
-if [ "${volume_type}" = 'instance' ]
+if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
 then
     # Instance
     grub_device=/dev/xvda1
