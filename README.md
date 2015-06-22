@@ -102,7 +102,7 @@ export EC2_USER_ID="5555-5555-5555"
 export EC2_REGION="us-west-2"
 ```
 
-Consult the AWS documentation if any of these are unfamilar to you.
+Consult the AWS documentation if any of these are unfamiliar to you.
 Next, you will need to set the path to your cloud certificate. Amazon
 includes this in the proprietary ec2-ami-tools package, and it is 
 possible we need a license to redistribute it. Hence, you'll have to
@@ -166,8 +166,8 @@ defaults are used.
 
 This final example creates a Wheezy x86_64 paravirtual image with a 5G
 instance-backed root volume, formatted to have 5000000 inodes. The
-image timezone and locales have been set, and the image name suffix is
-the date and time of execution.
+image time-zone and locales have been set, and the image name suffix
+is the date and time of execution.
 
 ```
 ./debian-image-builder ec2 --arch amd64 --codename wheezy \
