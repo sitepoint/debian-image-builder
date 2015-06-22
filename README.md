@@ -157,9 +157,21 @@ export S3_BUCKET="my-temporary-build-bucket"
 export CUSTOM_S3_PATH="sitepoint-${EC2_REGION}-ami/debian-gnu_linux/jessie"
 ```
 
-Using one of the included templates is the easiest way to get
-started. This example creates a Jessie HVM AMI with an instance-store
-root volume of 10Gb and systemd replaced with sysvinit.
+The last part of the setup process is (if generating instance-store
+AMIs using the move-s3-path plugin) to install and configure
+``s3cmd``. The s3cmd configure step will run you though a quick
+setup wizard, since the tool does not recognise the EC2_* environment
+variables.
+
+```
+apt-get install s3cmd
+s3cmd --configure
+```
+
+Now we are ready to start creating AMIs. Using one of the included
+templates is the easiest way to get started. This example creates a
+Jessie HVM AMI with an instance-store root volume of 10Gb and systemd
+replaced with sysvinit.
 
 ```
 ./debian-image-builder ec2 --template \
