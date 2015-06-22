@@ -42,8 +42,8 @@ traction.
 In my opinion, debian-image-builder is also easier to read and
 understand, while retaining the power and flexibility of alternatives.
 
-Advantages of debian-image-builder over bootstrap-vz include:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Advantages of debian-image-builder over bootstrap-vz include: ###
+
 * No dependendencies on anything outside of what is packaged within
   Debian (aside from euca2ools which is automatically fetched and
   installed if required).
@@ -100,8 +100,7 @@ none of those scratch your itch, you can of course very easily write
 your own plugin (see HOWTO.md in the plugins directory).
 
 
-Usage examples
-~~~~~~~~~~~~~~
+### Usage examples ###
 
 Start by switching to the root user, and exporting the environment
 variables required by ecua2ools:
