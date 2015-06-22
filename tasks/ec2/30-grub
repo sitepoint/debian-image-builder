@@ -32,10 +32,8 @@ sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
 # of root=/dev/xvdf or whatever the attached EBS volume device name is.
 if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
 then
-    # Instance
     grub_device=/dev/xvda1
 else
-    # EBS
     grub_device=/dev/xvda
 fi
 echo "GRUB_DEVICE=${grub_device}" >> "${imagedir}/etc/default/grub"
