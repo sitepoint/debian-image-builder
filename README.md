@@ -11,8 +11,7 @@ The machine configuration this script creates has been thoroughly
 tested on EC2. I no longer test GCE, but accept patches if required.
 
 * Both HVM and PVM EC2 instance types can be created, with either an
-  instance store or EBS backed root volume - plugins no longer
-  required!
+  instance store or EBS backed root volume.
 
 * This script has been tested with AWS on Wheezy and Jessie.
 
