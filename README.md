@@ -125,12 +125,12 @@ export EUCALYPTUS_CERT="${HOME}/cert-ec2.pem"
 ```
 
 Lastly, if creating AMIs with instance-store volumes, you will need
-to set S3_BUCKET, and optionally the CUSTOM_S3_PATH. S3_BUCKET
-specifies the S3 bucket (minus the s3:// prefix and any suffix path)
-you wish to bundle and upload your AMI to. If you do not specify
-CUSTOM_S3_PATH (and don't use the ``move-s3-path`` plugin), your AMI
-will be registered here. However if you would rather have a more
-organised path like
+to set S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
+variables. S3_BUCKET is used to specify the S3 bucket (minus the
+s3:// prefix and any suffix path) you wish to bundle and upload your
+AMI to. If you do not specify CUSTOM_S3_PATH (and don't use the
+``move-s3-path`` plugin), your AMI will be registered here. However
+if you would rather have a more organised path like
 s3://my-company-region/debian-gnu_linux/jessie/x86_64/201506191210/
 where you can consolidate multiple AMIs into a single bucket, specify
 the bucket and path name for the CUSTOM_S3_PATH environment variable
