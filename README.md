@@ -1,4 +1,7 @@
-# Debian GNU/Linux image builder for multiple IaaS providers #
+debian-image-builder
+====================
+
+Debian GNU/Linux image builder for multiple IaaS providers.
 
 This script bootstraps a basic Debian GNU/Linux installation to create
 (currently) either an Amazon Machine Image or a Google Compute Engine
@@ -9,6 +12,10 @@ very clean setup without surprises.
 
 The machine configuration this script creates has been thoroughly
 tested on EC2. I no longer test GCE, but accept patches if required.
+
+
+Features
+--------
 
 * Both HVM and PVM EC2 instance types can be created, with either an
   instance store or EBS backed root volume.
@@ -21,6 +28,10 @@ Note: To create an AMI, debian-image-builder needs to be run on an
 Amazon EC2 instance - we'll be attaching an EBS volume temporarily
 during execution, regardless of the type of AMI being created.
 
+
+Why debian-image-builder?
+-------------------------
+
 This project originated as a fork of the Bash version of
 build-debian-cloud, prior to the project switching to bootstrap-vz
 (Python). This was initially due to bootstrap-vz proving to be too
@@ -32,7 +43,7 @@ In my opinion, debian-image-builder is also easier to read and
 understand, while retaining the power and flexibility of alternatives.
 
 Advantages of debian-image-builder over bootstrap-vz include:
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * No dependendencies on anything outside of what is packaged within
   Debian (aside from euca2ools which is automatically fetched and
   installed if required).
@@ -48,17 +59,17 @@ Advantages of debian-image-builder over bootstrap-vz include:
   debian-image-builder depends on. eg.
   https://eucalyptus.atlassian.net/browse/TOOLS-294
 
-* The no-systemd plugin. Keep your Jessie AMIs as free from Systemd
-  as is reasonably possible (still using only official Debian
+* The ``no-systemd`` plugin. Keep your Jessie AMIs as free from
+  Systemd as is reasonably possible (still using only official Debian
   packages).
 
-* The pause-before-umount plugin. Allows you to inspect the root
+* The ``pause-before-umount`` plugin. Allows you to inspect the root
   filesystem for problems (and optionally make manual changes) just
   prior to the AMI registration step. Great if you don't want to make
   a dedicated plugin for a once-off custom AMI, or if you are just
   trying to debug something.
 
-* The move-s3-path plugin. Have all of your instance-backed AMIs
+* The ``move-s3-path`` plugin. Have all of your instance-backed AMIs
   stored safely in the same bucket, using your preferred directory
   structure!
 
@@ -66,10 +77,11 @@ Advantages of debian-image-builder over bootstrap-vz include:
   instance-store volume for the root device? I sure do, and
   debian-image-builder properly supports it.
 
-* Jessie on EC2 uses the cloud-init package by default.
+* Jessie on EC2 uses the ``cloud-init`` package by default.
 
 
-## Usage ##
+Usage
+-----
 
 The script is started with ``./debian-image-builder``.  You can choose
 to either bootstrap a Debian AMI (``./debian-image-builder ec2``) or a
@@ -80,7 +92,7 @@ AMI, the script at least needs to know your AWS credentials.
 
 As there are no interactive prompts, the bootstrapping can run
 entirely unattended from start till finish. Plugins can optionally
-change this behaviour (eg. pause-before-umount).
+change this behaviour (eg. ``pause-before-umount``).
 
 A number of plugins are included in the plugins directory. A list of
 external plugins is also provided there in the README.md file. If
@@ -88,7 +100,8 @@ none of those scratch your itch, you can of course very easily write
 your own plugin (see HOWTO.md in the plugins directory).
 
 
-## Examples ##
+Usage examples
+~~~~~~~~~~~~~~
 
 Start by switching to the root user, and exporting the environment
 variables required by ecua2ools:
@@ -116,9 +129,9 @@ Lastly, if creating AMIs with instance-store volumes, you will need
 to set S3_BUCKET, and optionally the CUSTOM_S3_PATH. S3_BUCKET
 specifies the S3 bucket (minus the s3:// prefix and any suffix path)
 you wish to bundle and upload your AMI to. If you do not specify
-CUSTOM_S3_PATH (and don't use the move-s3-path plugin), your AMI will
-be registered here. However if you would rather have a more organised
-path like
+CUSTOM_S3_PATH (and don't use the ``move-s3-path`` plugin), your AMI
+will be registered here. However if you would rather have a more
+organised path like
 s3://my-company-region/debian-gnu_linux/jessie/x86_64/201506191210/
 where you can consolidate multiple AMIs into a single bucket, specify
 the bucket and path name for the CUSTOM_S3_PATH environment variable
@@ -127,14 +140,14 @@ instead.
 
 Note that due to limitations of AWS and/or euca2ools, the AMI will be
 uploaded to S3_BUCKET first, and then moved automatically (using
-s3cmd) to CUSTOM_S3_PATH during a later step before finally being
+``s3cmd``) to CUSTOM_S3_PATH during a later step before finally being
 registered. While it's generally safe to execute debian-image-builder
 multiple times simultaneously for quickly building a large number of
 AMIs, you will need to make sure no two builds are using S3_BUCKET at
 the same time (and debian-image-builder will fail to start if it
 detects this condition).
 
-Also note that all included templates make use of the move-s3-path
+Also note that all included templates make use of the ``move-s3-path``
 plugin, so you will need to set CUSTOM_S3_PATH if using those, or
 delete the plugin reference from the templates otherwise. Modifying
 template files is a trivial process.
