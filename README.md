@@ -103,7 +103,7 @@ your own plugin (see HOWTO.md in the plugins directory).
 ### Usage examples ###
 
 Start by switching to the root user, and exporting the environment
-variables required by ecua2ools:
+variables required by euca2ools:
 
 ```
 export EC2_ACCESS_KEY='access_key'
