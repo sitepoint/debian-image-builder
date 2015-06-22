@@ -140,7 +140,7 @@ plugin, so you will need to set CUSTOM_S3_PATH if using those, or
 delete the plugin reference from the templates otherwise. Modifying
 template files is a trivial process.
 
-``
+```
 export S3_BUCKET="my-temporary-build-bucket"
 export CUSTOM_S3_PATH="sitepoint-${EC2_REGION}-ami/debian-gnu_linux/jessie"
 ```
