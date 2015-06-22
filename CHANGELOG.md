@@ -1,8 +1,15 @@
-### 2015-07-02 Adam Bolte <adam.bolte@sitepoint.com> ###
+### 2015-06-22 Adam Bolte <adam.bolte@sitepoint.com> ###
+* Added support for templates.
+* Add a lock file to ensure multiple debian-image-builder processes will not use the same bucket at the same time.
+
+### 2015-06-11 Adam Bolte <adam.bolte@sitepoint.com> ###
+* Add the move-s3-path plugin.
+
+### 2015-06-02 Adam Bolte <adam.bolte@sitepoint.com> ###
 * Added support for Jessie.
 * Remove support for Squeeze. It's no longer supported by Debian. File a bug if you still need this.
 
-### 2015-07-01 Adam Bolte <adam.bolte@sitepoint.com> ###
+### 2015-06-01 Adam Bolte <adam.bolte@sitepoint.com> ###
 * Incorporated the debian-cloud-instance-store-ami plugin functionality as part of the main application.
 
 ### 2014-11-14 Adam Bolte <adam.bolte@sitepoint.com> ###
