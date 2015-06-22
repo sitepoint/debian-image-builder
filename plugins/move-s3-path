@@ -1,5 +1,5 @@
 insert_task_before ${TASK_PACKAGES} \
-    "${plugindir}/move-s3-path-tasks/environment_checks"
+    "${plugindir}/move-s3-path-tasks/check-inputs"
 
 insert_task_before ${TASK_CREATE_AMI} \
     "${plugindir}/move-s3-path-tasks/move-s3-ami-location"
