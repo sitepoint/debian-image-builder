@@ -2,7 +2,12 @@ packages+=('ca-certificates')
 packages+=('debconf-utils')
 packages+=('debian-goodies')
 packages+=('dnsutils')
-packages+=('zile')
+if [ "${codename}" = "wheezy" ]
+then
+    packages+=('emacs23-nox')
+else
+    packages+=('emacs-nox')
+fi
 packages+=('git')
 packages+=('hdparm')
 packages+=('less')
@@ -15,4 +20,4 @@ packages+=('ntp')
 packages+=('psmisc')
 packages+=('rsync')
 packages+=('sudo')
-packages+=('vim')
+packages+=('vim-nox')
