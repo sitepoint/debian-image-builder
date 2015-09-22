@@ -5,28 +5,28 @@ declare -i exit_status=0
 declare -i move_s3_path=0
 
 for var in EC2_ACCESS_KEY EC2_SECRET_KEY EC2_CERT EC2_PRIVATE_KEY \
-    EC2_USER_ID EUCALYPTUS_CERT EC2_REGION S3_BUCKET CUSTOM_S3_PATH
+                          EC2_USER_ID EUCALYPTUS_CERT EC2_REGION S3_BUCKET CUSTOM_S3_PATH
 do
     if [ -z "${!var}" ]
     then
         echo "  unset ${var}"
-	if [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH ]]
-	then
-	    move_s3_path=1
-	else
-	    exit_status=1
-	fi
+        if [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH ]]
+        then
+            move_s3_path=1
+        else
+            exit_status=1
+        fi
     elif [[ "${var}" =~ EC2_CERT|EC2_PRIVATE_KEY|EUCALYPTUS_CERT ]]
     then
         if [ ! -f "${!var}" ]
         then
             echo "missing ${var}=${!var}"
-	    exit_status=1
+            exit_status=1
         else
-	    echo "   good ${var}=${!var}"
-	fi
+            echo "   good ${var}=${!var}"
+        fi
     else
-	echo "   good ${var}=${!var}"
+        echo "   good ${var}=${!var}"
     fi
 done
 
@@ -36,14 +36,14 @@ then
     then
         if ! grep -iq "^access_key\s*=\s*${EC2_ACCESS_KEY}\s*$" ~/.s3cfg
         then
-    	    echo "EC2_ACCESS_KEY not found in ~/.s3cmd"
+            echo "EC2_ACCESS_KEY not found in ~/.s3cmd"
         fi
     fi
     if [ -n "${EC2_SECRET_KEY}" ]
     then
         if ! grep -iq "^secret_key\s*=\s*${EC2_SECRET_KEY}\s*$" ~/.s3cfg
         then
-    	    echo "EC2_SECRET_KEY not found in ~/.s3cmd"
+            echo "EC2_SECRET_KEY not found in ~/.s3cmd"
         fi
     fi
 else
