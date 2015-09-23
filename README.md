@@ -167,6 +167,12 @@ apt-get install s3cmd
 s3cmd --configure
 ```
 
+Getting the environment into a good state to generate images can take
+some time and it's easy to overlook something, so you may want to run
+``./envcheck`` to verify that everything appears to be in
+place. However debian-image-builder generally does a good job of
+failing gracefully when something is amiss.
+
 Now we are ready to start creating AMIs. Using one of the included
 templates is the easiest way to get started. This example creates a
 Jessie HVM AMI with an instance-store root volume of 10Gb and systemd
