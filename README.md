@@ -20,9 +20,10 @@ Features
 * Both HVM and PVM EC2 instance types can be created, with either an
   instance store or EBS backed root volume.
 
-* This script has been tested with AWS on Wheezy and Jessie.
+* Template support makes recreating newer versions of AMIs quick and
+  easy.
 
-* Optional template support is provided to significantly simplify use.
+* This script has been tested with AWS on Wheezy and Jessie.
 
 Note: To create an AMI, debian-image-builder needs to be run on an
 Amazon EC2 instance - we'll be attaching an EBS volume temporarily
@@ -32,15 +33,15 @@ during execution, regardless of the type of AMI being created.
 Why debian-image-builder?
 -------------------------
 
-This project originated as a fork of the Bash version of
-build-debian-cloud, prior to the project switching to bootstrap-vz
-(Python). This was initially due to bootstrap-vz proving to be too
-inflexible for my needs, and my pull requests for build-debian-cloud
-were no longer accepted due to the desire to see bootstrap-vz gain
-traction.
+This project started out as a fork of the Bash version of
+[build-debian-cloud](https://github.com/camptocamp/build-debian-cloud),
+prior to the project switching to bootstrap-vz (Python). This was
+initially due to bootstrap-vz proving to be too inflexible for my
+needs, and my pull requests for build-debian-cloud were no longer
+accepted due to the desire to see bootstrap-vz gain traction.
 
-In my opinion, debian-image-builder is also easier to read and
-understand, while retaining the power and flexibility of alternatives.
+In my opinion, debian-image-builder is easier to read and understand,
+while retaining the power and flexibility of alternatives.
 
 ### Advantages of debian-image-builder over bootstrap-vz include: ###
 
@@ -116,7 +117,7 @@ export EC2_REGION="us-west-2"
 
 Consult the AWS documentation if any of these are unfamiliar to you.
 Next, you will need to set the path to your cloud certificate. Amazon
-includes this in the proprietary ec2-ami-tools package, and it is 
+includes this in the proprietary ec2-ami-tools package, and it is
 possible we need a license to redistribute it. Hence, you'll have to
 obtain that yourself.
 
@@ -176,7 +177,7 @@ failing gracefully when something is amiss.
 Now we are ready to start creating AMIs. Using one of the included
 templates is the easiest way to get started. This example creates a
 Jessie HVM AMI with an instance-store root volume of 10Gb and systemd
-replaced with sysvinit.
+replaced with sysvinit:
 
 ```
 ./debian-image-builder ec2 --template \
@@ -184,7 +185,7 @@ replaced with sysvinit.
 ```
 
 This next example creates a 50G EBS-backed HVM Jessie instance. Many
-defaults are used.
+defaults are used:
 
 ```
 ./debian-image-builder ec2 --arch amd64 --codename jessie \
@@ -197,7 +198,7 @@ defaults are used.
 This final example creates a Wheezy x86_64 paravirtual image with a 5G
 instance-backed root volume, formatted to have 5000000 inodes. The
 image time-zone and locales have been set, and the image name suffix
-is the date and time of execution.
+is the date and time of execution:
 
 ```
 ./debian-image-builder ec2 --arch amd64 --codename wheezy \
