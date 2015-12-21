@@ -2,7 +2,7 @@
 #
 # euca2ools conflicts with python-requests < 2, but may be installed
 # by default on Wheezy as a cloud-init dependency. Fortunately 2.0.0
-# is in wheezy-backports.
+# is in wheezy-backports. Jessie and later have > 2 in main.
 
 function install_wheezy_euca2ools_deps
 {
@@ -22,4 +22,6 @@ then
     then
         install_wheezy_euca2ools_deps
     fi
+else
+    host_packages+=('python-requests')
 fi
