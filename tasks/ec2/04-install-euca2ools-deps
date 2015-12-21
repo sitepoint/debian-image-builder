@@ -18,7 +18,8 @@ then
     if ! command -v euca-version > /dev/null 2>&1
     then
         install_wheezy_euca2ools_deps
-    elif [ $(euca-version 2>&1 | cut -d ' ' -f 2 | cut -b 1) -lt 3 ]
+    elif [ $(euca-version 2>&1 | cut -d ' ' -f 2 | cut -b 1) -lt 3 ] || \
+        ! euca-version 1>/dev/null 2>&1
     then
         install_wheezy_euca2ools_deps
     fi
