@@ -119,7 +119,8 @@ Consult the AWS documentation if any of these are unfamiliar to you.
 Next, you will need to set the path to your cloud certificate. Amazon
 includes this in the proprietary ec2-ami-tools package, and it is
 possible we need a license to redistribute it. Hence, you'll have to
-obtain that yourself.
+obtain that yourself either manually or using the included getcert
+script.
 
 ```
 export EUCALYPTUS_CERT="${HOME}/cert-ec2.pem"
