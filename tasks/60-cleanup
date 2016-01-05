@@ -11,6 +11,13 @@ shred --remove \
     ${imagedir}/etc/ssh/ssh_host_ecdsa_key \
     ${imagedir}/etc/ssh/ssh_host_ecdsa_key.pub
 
+# ed25519 keys may exist on Jessie and above.
+if [ -f "${imagedir}/etc/ssh/ssh_host_ed25519_key" ]
+then
+    shred --remove ${imagedir}/etc/ssh/ssh_host_ed25519_key \
+        ${imagedir}/etc/ssh/ssh_host_ed25519_key.pub
+fi
+
 # We do the same to the bash history, there shouldn't be anything sensitive in there,
 # it's just in case plugins need to execute commands that have credentials in their parameters.
 # In fact: The standard bootstrapping process does not even create it.
