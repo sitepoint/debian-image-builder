@@ -32,6 +32,19 @@ do
     fi
 done
 
+# AWS_CREDENTIAL_FILE should not be set unless it points to a valid file (which
+# only contains AWSAccessKeyId and AWSSecretKey values that would normally be
+# read from the above environment variables anyway, making the file redundant.
+if [ -z "${AWS_CREDENTIAL_FILE}" ]
+then
+    echo "   good AWS_CREDENTIAL_FILE is unset"
+elif [ ! -f "${AWS_CREDENTIAL_FILE}"  ]
+then
+    echo "  error AWS_CREDENTIAL_FILE=${AWS_CREDENTIAL_FILE} (unset this)"
+else
+    echo "     ok AWS_CREDENTIAL_FILE=${AWS_CREDENTIAL_FILE}"
+fi
+
 if ! command -v s3cmd 1>/dev/null
 then
     echo "s3cmd is not installed."
