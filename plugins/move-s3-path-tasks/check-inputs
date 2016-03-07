@@ -51,7 +51,7 @@ echo "Test" > "${test_file}"
     s3cmd -p mv "s3://${S3_BUCKET}/$(basename ${test_file})" \
         s3://${CUSTOM_S3_PATH}/
     s3cmd setacl --acl-grant=read:za-team@amazon.com \
-        "s3://${CUSTOM_s3_PATH}/$(basename ${test_file})"
+        "s3://${CUSTOM_S3_PATH}/$(basename ${test_file})"
     s3cmd del "s3://${CUSTOM_S3_PATH}/$(basename ${test_file})"
 } 2>&1 | grep -q ERROR && \
 {
