@@ -81,7 +81,7 @@ while retaining the power and flexibility of alternatives.
 * Jessie on EC2 uses the ``cloud-init`` package by default.
 
 
-Usage
+Setup
 -----
 
 The script is started with ``./debian-image-builder``.  You can choose
@@ -119,7 +119,7 @@ Consult the AWS documentation if any of these are unfamiliar to you.
 Next, you will need to set the path to your cloud certificate. Amazon
 includes this in the proprietary ec2-ami-tools package, and it is
 possible we need a license to redistribute it. Hence, you'll have to
-obtain that yourself either manually or using the included getcert
+obtain that yourself either manually or using the included ``getcert``
 script.
 
 ```
@@ -171,9 +171,13 @@ s3cmd --configure
 
 Getting the environment into a good state to generate images can take
 some time and it's easy to overlook something, so you may want to run
-``./envcheck`` to verify that everything appears to be in
-place. However debian-image-builder generally does a good job of
+the included ``envcheck`` script to verify that everything appears to
+be in place. However debian-image-builder generally does a good job of
 failing gracefully when something is amiss.
+
+
+Usage
+-----
 
 Now we are ready to start creating AMIs. Using one of the included
 templates is the easiest way to get started. This example creates a
@@ -211,3 +215,5 @@ is the date and time of execution:
     --virt paravirtual --name-suffix "$(date +%Y%m%d%H%M)" \
     --description "Debian 7 (Wheezy) 5Gb, paravirtual, instance-store"
 ```
+
+Bugs, suggestions, patches and plugins are all welcome. Have fun!
