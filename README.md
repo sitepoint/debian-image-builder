@@ -75,8 +75,8 @@ while retaining the power and flexibility of alternatives.
   structure!
 
 * Support for more EC2 AMI types. Want Jessie HVM AMIs with a
-  instance-store volume for the root device? I sure do, and
-  debian-image-builder properly supports it.
+  instance-store volume for the root device (for example)? We've got
+  you covered.
 
 * Jessie on EC2 uses the ``cloud-init`` package by default.
 
@@ -155,7 +155,7 @@ template files is a trivial process.
 
 ```
 export S3_BUCKET="my-temporary-build-bucket"
-export CUSTOM_S3_PATH="sitepoint-${EC2_REGION}-ami/debian-gnu_linux/jessie"
+export CUSTOM_S3_PATH="my-${EC2_REGION}-images/debian-gnu_linux/jessie"
 ```
 
 The last part of the setup process is (if generating instance-store
