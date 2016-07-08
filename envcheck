@@ -6,7 +6,7 @@ declare -i move_s3_path=0
 
 declare -r s3cfg="${HOME}/.s3cfg"
 
-for var in EC2_ACCESS_KEY EC2_SECRET_KEY EC2_CERT EC2_PRIVATE_KEY \
+for var in AWS_ACCESS_KEY AWS_SECRET_KEY EC2_CERT EC2_PRIVATE_KEY \
     EC2_USER_ID EUCALYPTUS_CERT EC2_REGION S3_BUCKET CUSTOM_S3_PATH
 do
     if [ -z "${!var}" ]
@@ -51,19 +51,19 @@ then
     move_s3_path=1
 elif [ -f "${s3cfg}" ]
 then
-    if [ -n "${EC2_ACCESS_KEY}" ]
+    if [ -n "${AWS_ACCESS_KEY}" ]
     then
-        if ! grep -iq "^access_key\s*=\s*${EC2_ACCESS_KEY}\s*$" "${s3cfg}"
+        if ! grep -iq "^access_key\s*=\s*${AWS_ACCESS_KEY}\s*$" "${s3cfg}"
         then
-            echo "EC2_ACCESS_KEY not found in ${s3cfg}"
+            echo "AWS_ACCESS_KEY not found in ${s3cfg}"
             move_s3_path=1
         fi
     fi
-    if [ -n "${EC2_SECRET_KEY}" ]
+    if [ -n "${AWS_SECRET_KEY}" ]
     then
-        if ! grep -iq "^secret_key\s*=\s*${EC2_SECRET_KEY}\s*$" "${s3cfg}"
+        if ! grep -iq "^secret_key\s*=\s*${AWS_SECRET_KEY}\s*$" "${s3cfg}"
         then
-            echo "EC2_SECRET_KEY not found in ${s3cfg}"
+            echo "AWS_SECRET_KEY not found in ${s3cfg}"
             move_s3_path=1
         fi
     fi
