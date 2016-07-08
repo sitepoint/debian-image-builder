@@ -130,8 +130,8 @@ ${txtund}Bootstrapping${txtdef}
     --apt-mirrors \"URL[ URL...]\"      APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
 
 ${txtund}AWS${txtdef}
-    --access-key ID                   AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})
-    --secret-key KEY                  AWS Secret Key (${txtbld}\$EC2_SECRET_KEY${txtdef})
+    --access-key ID                   AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
+    --secret-key KEY                  AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
 
 {txtund}instance-store requirements{txtdef}  (where '--volume-type instance' is requested)
     --user ID                         Your 12-digit AWS user ID
@@ -161,8 +161,8 @@ do
         --name-suffix)      name_suffix=${2};              shift 2 ;;
         --description)      description=${2};              shift 2 ;;
         --apt-mirrors)      apt_mirrors=${2};              shift 2 ;;
-        --access-key)       EC2_ACCESS_KEY=${2};           shift 2 ;;
-        --secret-key)       EC2_SECRET_KEY=${2};           shift 2 ;;
+        --access-key)       AWS_ACCESS_KEY=${2};           shift 2 ;;
+        --secret-key)       AWS_SECRET_KEY=${2};           shift 2 ;;
         --user)             EC2_USER_ID=${2};              shift 2 ;;
         --ec2cert)          EUCALYPTUS_CERT=${2};          shift 2 ;;
         --cert)             EC2_CERT=${2};                 shift 2 ;;
@@ -183,12 +183,12 @@ do
 done
 
 # Required and default parameters
-check_arg EC2_ACCESS_KEY
-check_arg EC2_SECRET_KEY
+check_arg AWS_ACCESS_KEY
+check_arg AWS_SECRET_KEY
 
 # Export the AWS access keys, so that we can launch euca2ools commands
 # without specifying the keys as arguments each time.
-export EC2_ACCESS_KEY EC2_SECRET_KEY
+export AWS_ACCESS_KEY AWS_SECRET_KEY
 
 if [ "${volume_type}" = 'instance' ]
 then

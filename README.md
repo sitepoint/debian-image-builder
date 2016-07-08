@@ -107,8 +107,8 @@ Start by switching to the root user, and exporting the environment
 variables required by euca2ools:
 
 ```
-export EC2_ACCESS_KEY='access_key'
-export EC2_SECRET_KEY='secret_key'
+export AWS_ACCESS_KEY='access_key'
+export AWS_SECRET_KEY='secret_key'
 export EC2_CERT="${HOME}/x.509/cert.pem"
 export EC2_PRIVATE_KEY="${HOME}/x.509/pk.pem"
 export EC2_USER_ID="5555-5555-5555"

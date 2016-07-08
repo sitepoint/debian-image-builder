@@ -1,23 +1,24 @@
 #!/bin/bash
 
-# For the following, 0 = good
 declare -i exit_status=0
-declare -i move_s3_path=0
+declare -i move_s3_path=3
 
 declare -r s3cfg="${HOME}/.s3cfg"
 
-for var in EC2_ACCESS_KEY EC2_SECRET_KEY EC2_CERT EC2_PRIVATE_KEY \
-    EC2_USER_ID EUCALYPTUS_CERT EC2_REGION S3_BUCKET CUSTOM_S3_PATH
+for var in EC2_URL EUCALYPTUS_CERT EC2_CERT EC2_PRIVATE_KEY \
+    AWS_ACCESS_KEY AWS_SECRET_KEY EC2_REGION EC2_USER_ID S3_BUCKET \
+    CUSTOM_S3_PATH
 do
+    # Check variable is not empty.
     if [ -z "${!var}" ]
     then
         echo "  unset ${var}"
-        if [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH ]]
+        # Some missing variables are acceptable.
+        if ! [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH|EC2_URL ]]
         then
-            move_s3_path=1
-        else
             exit_status=1
         fi
+    # Check certificate path points to a file, if applicable.
     elif [[ "${var}" =~ EC2_CERT|EC2_PRIVATE_KEY|EUCALYPTUS_CERT ]]
     then
         if [ ! -f "${!var}" ]
@@ -27,8 +28,15 @@ do
         else
             echo "   good ${var}=${!var}"
         fi
+    # Checks against the variable passed.
     else
         echo "   good ${var}=${!var}"
+        # Cross off a required variable for the optional move_s3_path
+        # plugin.
+        if [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH|EC2_URL ]]
+        then
+            move_s3_path=$(( --move_s3_path ))
+        fi
     fi
 done
 
@@ -51,25 +59,25 @@ then
     move_s3_path=1
 elif [ -f "${s3cfg}" ]
 then
-    if [ -n "${EC2_ACCESS_KEY}" ]
+    if [ -n "${AWS_ACCESS_KEY}" ]
     then
-        if ! grep -iq "^access_key\s*=\s*${EC2_ACCESS_KEY}\s*$" "${s3cfg}"
+        if ! grep -iq "^access_key\s*=\s*${AWS_ACCESS_KEY}\s*$" "${s3cfg}"
         then
-            echo "EC2_ACCESS_KEY not found in ${s3cfg}"
-            move_s3_path=1
+            echo "AWS_ACCESS_KEY not found in ${s3cfg}"
+            move_s3_path=0
         fi
     fi
-    if [ -n "${EC2_SECRET_KEY}" ]
+    if [ -n "${AWS_SECRET_KEY}" ]
     then
-        if ! grep -iq "^secret_key\s*=\s*${EC2_SECRET_KEY}\s*$" "${s3cfg}"
+        if ! grep -iq "^secret_key\s*=\s*${AWS_SECRET_KEY}\s*$" "${s3cfg}"
         then
-            echo "EC2_SECRET_KEY not found in ${s3cfg}"
-            move_s3_path=1
+            echo "AWS_SECRET_KEY not found in ${s3cfg}"
+            move_s3_path=0
         fi
     fi
 else
     echo "s3cmd is not configured."
-    move_s3_path=1
+    move_s3_path=0
 fi
 
 echo
