@@ -1,20 +1,23 @@
 #!/bin/bash
 
 declare -i exit_status=0
+declare -i essentials=0  # Print essentials in place message
+
 declare -i move_s3_path=3
+declare -i grant_launch_permission=1
 
 declare -r s3cfg="${HOME}/.s3cfg"
 
 for var in EC2_URL EUCALYPTUS_CERT EC2_CERT EC2_PRIVATE_KEY \
     AWS_ACCESS_KEY AWS_SECRET_KEY EC2_REGION EC2_USER_ID S3_BUCKET \
-    CUSTOM_S3_PATH
+    CUSTOM_S3_PATH LAUNCH_ACCOUNTS
 do
     # Check variable is not empty.
     if [ -z "${!var}" ]
     then
         echo "  unset ${var}"
         # Some missing variables are acceptable.
-        if ! [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH|EC2_URL ]]
+        if ! [[ "${var}" =~ EC2_URL|S3_BUCKET|CUSTOM_S3_PATH|LAUNCH_ACCOUNTS ]]
         then
             exit_status=1
         fi
@@ -36,6 +39,11 @@ do
         if [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH|EC2_URL ]]
         then
             move_s3_path=$(( --move_s3_path ))
+        # Cross of the required variable for the optional
+        # grant-launch-permission-tasks plugin.
+        elif [[ "${var}" =~ LAUNCH_ACCOUNTS ]]
+        then
+            grant_launch_permission=$(( --grant_launch_permission ))
         fi
     fi
 done
@@ -84,10 +92,22 @@ echo
 if [ "${exit_status}" -ne 0 ]
 then
     echo "Environment not ready."
-elif [ "${move_s3_path}" -ne 0 ]
-then
-    echo "Essentials are in place. move-s3-path is unavailable."
 else
-    echo "All systems green."
+    if [ ${move_s3_path} -ne 0 ]
+    then
+        echo "move-s3-path is unavailable."
+        essentials=1
+    fi
+    if [ ${grant_launch_permission} -ne 0 ]
+    then
+        echo "grant-launch-permission is unavailable."
+        essentials=1
+    fi
+    if [ ${essentials} -eq 1 ]
+    then
+        echo -e "\nEssentials are in place."
+    else
+        echo "All systems green."
+    fi
 fi
 exit ${exit_status}

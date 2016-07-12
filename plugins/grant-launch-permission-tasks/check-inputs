@@ -1,0 +1,11 @@
+if [ -z "${LAUNCH_ACCOUNTS}" ]
+then
+    echo "Please set \$LAUNCH_ACCOUNTS before running this plug-in."
+    exit 1
+fi
+
+if ! command -v euca-modify-image-attribute >/dev/null 2>&1
+then
+    echo "The euca-modify-image-attribute command appears to be missing."
+    exit 1
+fi

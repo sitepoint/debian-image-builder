@@ -74,6 +74,9 @@ while retaining the power and flexibility of alternatives.
   stored safely in the same bucket, using your preferred directory
   structure!
 
+* The ``grant-launch-permission`` plugin. Automatically add launch
+  permissions to other AWS accounts for generated AMIs.
+
 * Support for more EC2 AMI types. Want Jessie HVM AMIs with a
   instance-store volume for the root device (for example)? We've got
   you covered.
@@ -126,13 +129,13 @@ script.
 export EUCALYPTUS_CERT="${HOME}/cert-ec2.pem"
 ```
 
-Lastly, if creating AMIs with instance-store volumes, you will need
-to set S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
-variables. S3_BUCKET is used to specify the S3 bucket (minus the
-s3:// prefix and any suffix path) you wish to bundle and upload your
-AMI to. If you do not specify CUSTOM_S3_PATH (and don't use the
-``move-s3-path`` plugin), your AMI will be registered here. However
-if you would rather have a more organised path like
+If creating AMIs with instance-store volumes, you will need to set
+S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
+variables. S3_BUCKET is used to specify the S3 bucket (minus the s3://
+prefix and any suffix path) you wish to bundle and upload your AMI
+to. If you do not specify CUSTOM_S3_PATH (and don't use the
+``move-s3-path`` plugin), your AMI will be registered here. However if
+you would rather have a more organised path like
 s3://my-company-region/debian-gnu_linux/jessie/x86_64/201506191210/
 where you can consolidate multiple AMIs into a single bucket, specify
 the bucket and path name for the CUSTOM_S3_PATH environment variable
@@ -158,16 +161,29 @@ export S3_BUCKET="my-temporary-build-bucket"
 export CUSTOM_S3_PATH="my-${EC2_REGION}-images/debian-gnu_linux/jessie"
 ```
 
-The last part of the setup process is (if generating instance-store
-AMIs using the move-s3-path plugin) to install and configure
-``s3cmd``. The s3cmd configure step will run you though a quick
-setup wizard, since the tool does not recognise the EC2_* environment
+The next part of the setup process (if generating instance-store AMIs
+using the move-s3-path plugin) is to install and configure
+``s3cmd``. The s3cmd configure step will run you though a quick setup
+wizard, since the tool does not recognise the EC2_* environment
 variables.
 
 ```
 apt-get install s3cmd
 s3cmd --configure
 ```
+
+If using the grant-launch-permission-tasks plugin, you will also need
+to set the following environment variable:
+
+```
+export LAUNCH_ACCOUNTS="1234-5678-9012 4321-8765-2190 9876-5432-1098"
+```
+
+This will allow the grant-launch-permission-tasks plugin to grant
+launch authorizatinon to accounts specified in the space-separated
+string (with optional dashes). This can come in hand when, for
+example, you want to share access to your AMIs with a separate account
+for staging or development.
 
 Getting the environment into a good state to generate images can take
 some time and it's easy to overlook something, so you may want to run
