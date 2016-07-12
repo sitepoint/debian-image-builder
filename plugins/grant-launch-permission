@@ -1,0 +1,5 @@
+insert_task_before ${TASK_PACKAGES} \
+    "${plugindir}/grant-launch-permission-tasks/check-inputs"
+
+insert_task_after ${TASK_CREATE_AMI} \
+    "${plugindir}/grant-launch-permission-tasks/run-euca-modify-image-attribute"
