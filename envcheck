@@ -3,7 +3,10 @@
 declare -i exit_status=0
 declare -i essentials=0  # Print essentials in place message
 
+# These variables work differently to normal expectations. If they
+# equal 0, they are good to use.
 declare -i move_s3_path=3
+declare -i partitioning=1
 declare -i grant_launch_permission=1
 
 declare -r s3cfg="${HOME}/.s3cfg"
@@ -85,7 +88,14 @@ then
     fi
 else
     echo "s3cmd is not configured."
-    move_s3_path=0
+    move_s3_path=1
+fi
+
+if ! command -v parted 1>/dev/null
+then
+    echo "parted is not installed."
+else
+    partitioning=0
 fi
 
 echo
@@ -101,6 +111,11 @@ else
     if [ ${grant_launch_permission} -ne 0 ]
     then
         echo "grant-launch-permission is unavailable."
+        essentials=1
+    fi
+    if [ ${partitioning} -ne 0 ]
+    then
+        echo "partitioning options are unavailable."
         essentials=1
     fi
     if [ ${essentials} -eq 1 ]
