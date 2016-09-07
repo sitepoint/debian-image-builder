@@ -9,6 +9,3 @@ do
     chmod 755 "${imagedir}/etc/init.d/${scriptname}"
     chroot "${imagedir}" insserv -d "${scriptname}"
 done
-
-# Inside Xen, CMOS clock is irrelevant, so save seconds at boot
-chroot "${imagedir}" insserv -r hwclock.sh
