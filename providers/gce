@@ -13,6 +13,7 @@ gce_project=
 # Image details
 image_name_suffix="v$(date +%Y%m%d%H%M)"
 build_date="$(date +%Y-%m-%d)"
+partitioning=none
 volume_size='10'
 volume_inodes=
 apt_mirrors='http://gce_debian_mirror.storage.googleapis.com/ http://http.debian.net/debian'

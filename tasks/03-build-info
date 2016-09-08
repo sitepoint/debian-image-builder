@@ -6,6 +6,7 @@ log \
     "Building image for ${distribution} ${codename}" \
     "architecture:        ${arch}" \
     "virtualization-type: ${virt}" \
+    "partitioning:        ${partitioning}" \
     "filesystem:          ${filesystem}" \
     "volume size:         ${volume_size} GB" \
     "locale:              ${locale}" \
