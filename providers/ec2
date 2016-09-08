@@ -18,8 +18,8 @@ function check_arg()
 
 function check_partitioning()
 {
-    local virt
-    local partitioning
+    local virt="${1}"
+    local partitioning="${2}"
 
     if [ "${virt}" = "paravirtual" -a "${partitioning}" != "none" ]
     then
