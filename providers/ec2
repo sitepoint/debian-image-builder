@@ -16,6 +16,17 @@ function check_arg()
     fi
 }
 
+function check_partitioning()
+{
+    local virt
+    local partitioning
+
+    if [ "${virt}" = "paravirtual" -a "${partitioning}" != "none" ]
+    then
+        die "Paravirtual instances cannot be partitioned."
+    fi
+}
+
 function rm_bucket_lock()
 {
     if [ -f "${bucket_lock_file}" ]
@@ -92,6 +103,7 @@ known_regions+=('us-gov-west-1')
 
 # EC2 host info
 virt=paravirtual
+partitioning=none
 instance_id=
 region=
 target_region=
@@ -108,7 +120,8 @@ This subcommand creates an Amazon EC2 AMI.
 ${txtund}Bootstrapping${txtdef}
     --template FILE                   Template file including predefined options.
     --codename C [jessie|wheezy]      Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
-    --virt VIRT [paravirtual|hvm]     Select virtualization type (${txtbld}${virt}${txtbld})
+    --virt VIRT [paravirtual|hvm]     Select virtualization type (${txtbld}${virt}${txtdef})
+    --partition TYPE [none|msdos|gpt] Select partitioning type (${txtbld}${partitioning}${txtdef})
     --arch ARCH [i386|amd64]          Processor architecture of the image (${txtbld}${arch}${txtdef})
     --volume-type TYPE [instance|ebs] Set the root volume type (${txtbld}${volume_type}${txtdef})
     --volume-size SIZE                Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
@@ -204,6 +217,7 @@ then
     check_bucket_lock "${S3_BUCKET}"
 fi
 
+check_partitioning "${virt}" "${partitioning}"
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.

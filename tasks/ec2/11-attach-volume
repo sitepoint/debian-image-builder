@@ -1,6 +1,6 @@
 ## attach-volume
 #
-# Attach the EBS volume
+# Attach the EBS volume, and partition if necessary.
 
 declare -i attempt=12
 
@@ -8,11 +8,11 @@ declare -i attempt=12
 # a volume to an already mapped device.
 for device_letter in {f..z}
 do
-    device_path="/dev/xvd${device_letter}"
-    [ ! -b "${device_path}" ] && break
+    block_device_path="/dev/xvd${device_letter}"
+    [ ! -b "${block_device_path}" ] && break
 done
 
-if [ -b "${device_path}" ]
+if [ -b "${block_device_path}" ]
 then
     die "No free device letters found (tried xvdf to xvdz)!"
 fi
@@ -38,4 +38,16 @@ euca-attach-volume --instance "${instance_id}" \
     --device "/dev/xvd${device_letter}" "${volume_id}"
 
 # Wait until the volume is attached
-dotdot "test -b ${device_path} && echo attached"
+dotdot "test -b ${block_device_path} && echo attached"
+
+# Partition the block device.
+if [ "${partitioning}" != "none" ]
+then
+    parted -s "${block_device_path}" mktable "${partition}"
+    parted -s -a optimal "${block_device_path}" mkpart primary ext4 1Mi 100%
+    parted -s "${block_device_path}" set 1 boot on
+    hdparm -z "${block_device_path}"
+    fs_device_path="${block_device_path}1"
+else
+    fs_device_path="${block_device_path}"
+fi

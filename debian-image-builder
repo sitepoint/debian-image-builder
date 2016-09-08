@@ -61,7 +61,8 @@ codename='jessie'
 # Filesystem and image info
 filesystem='ext4'
 mountoptions=
-device_path=
+block_device_path=
+fs_device_path=
 imagedir=
 
 

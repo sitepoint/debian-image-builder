@@ -15,10 +15,10 @@ function cleanup_loopback_mount ()
         umount "${imagedir}"
     fi
 
-    if [ -n "${device_path}" ]
+    if [ -n "${block_device_path}" ]
     then
-        log "Deleting loopback device ${device_path} ahead of unclean exit."
-        losetup -d "${device_path}"
+        log "Deleting loopback device ${block_device_path} ahead of unclean exit."
+        losetup -d "${block_device_path}"
     fi
 
     if [ -d "${workspace}" ]

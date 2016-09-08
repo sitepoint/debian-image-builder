@@ -13,22 +13,22 @@
 prog=$(basename ${0})
 logger="logger -t ${prog}"
 
-device_path="/dev/xvda"
+fs_device_path="/dev/xvda"
 
-filesystem=$(blkid | grep ${device_path} | sed 's#\(.*\):.*TYPE="\(.*\)".*#\2#')
+filesystem=$(blkid | grep ${fs_device_path} | sed 's#\(.*\):.*TYPE="\(.*\)".*#\2#')
 
 case ${filesystem} in
     xfs)
         xfs_growfs /
         ;;
     ext2)
-        resize2fs ${device_path}
+        resize2fs ${fs_device_path}
         ;;
     ext3)
-        resize2fs ${device_path}
+        resize2fs ${fs_device_path}
         ;;
     ext4)
-        resize2fs ${device_path}
+        resize2fs ${fs_device_path}
         ;;
     *)
         ${logger} \
