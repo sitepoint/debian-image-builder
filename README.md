@@ -129,6 +129,13 @@ script.
 export EUCALYPTUS_CERT="${HOME}/cert-ec2.pem"
 ```
 
+If you wish to use partitioned block devices on EC2 for use with
+HVM-compatible AMIs, please ensure hdparm is installed.
+
+```
+apt-get install hdparm
+```
+
 If creating AMIs with instance-store volumes, you will need to set
 S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
 variables. S3_BUCKET is used to specify the S3 bucket (minus the s3://
