@@ -118,45 +118,47 @@ help="$(get_command_name)
 This subcommand creates an Amazon EC2 AMI.
 
 ${txtund}Bootstrapping${txtdef}
-    --template FILE                   Template file including predefined options.
-    --codename C [jessie|wheezy]      Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
-    --virt VIRT [paravirtual|hvm]     Select virtualization type (${txtbld}${virt}${txtdef})
-    --partition TYPE [none|msdos|gpt] Select partitioning type (${txtbld}${partitioning}${txtdef})
-    --arch ARCH [i386|amd64]          Processor architecture of the image (${txtbld}${arch}${txtdef})
-    --volume-type TYPE [instance|ebs] Set the root volume type (${txtbld}${volume_type}${txtdef})
-    --volume-size SIZE                Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
-    --volume-inodes SIZE              Optionally set a custom inode count for ext2/3/4 volumes.
-    --filesystem FS [ext2..4|xfs]     Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
-    --plugin FILE                     Path to plugin script.
-                                      Can be specified more than once.
+    --template FILE                      Template file including predefined options.
+    --codename C [jessie|wheezy]         Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
+    --virt VIRT [paravirtual|hvm]        Select virtualization type (${txtbld}${virt}${txtdef})
+    --partitioning TYPE [none|msdos|gpt] Select partitioning type (${txtbld}${partitioning}${txtdef})
+    --arch ARCH [i386|amd64]             Processor architecture of the image (${txtbld}${arch}${txtdef})
+    --volume-type TYPE [instance|ebs]    Set the root volume type (${txtbld}${volume_type}${txtdef})
+    --volume-size SIZE                   Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
+    --volume-inodes SIZE                 Optionally set a custom inode count for
+                                         ext2/3/4 volumes.
+    --filesystem FS [ext2..4|xfs]        Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
+    --plugin FILE                        Path to plugin script.
+                                         Can be specified more than once.
 
-    --timezone ZONE                   Standard timezone (${txtbld}${timezone}${txtdef})
-    --locale LOCALE                   Standard locale (${txtbld}${locale}${txtdef})
-    --charmap CHARMAP                 Standard charmap (${txtbld}${charmap}${txtdef})
+    --timezone ZONE                      Standard timezone (${txtbld}${timezone}${txtdef})
+    --locale LOCALE                      Standard locale (${txtbld}${locale}${txtdef})
+    --charmap CHARMAP                    Standard charmap (${txtbld}${charmap}${txtdef})
 
-    --debootstrap-dir DIR             Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
-                                      The created volume will be mounted
-                                      at \${debootstrap_dir}/\${volume_id}.
+    --debootstrap-dir DIR                Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
+                                         The created volume will be mounted
+                                         at <debootstrap_dir>/<volume_id>.
 
-    --name-suffix SUFFIX              AMI name suffix (${txtbld}${name_suffix}${txtdef})
-    --description DESC                Description of the AMI
-    --apt-mirrors \"URL[ URL...]\"      APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
+    --name-suffix SUFFIX                 AMI name suffix (${txtbld}${name_suffix}${txtdef})
+    --description DESC                   Description of the AMI
+    --apt-mirrors \"URL[ URL...]\"         APT mirror URLs, space-separated
+                                         (${txtbld}${apt_mirrors}${txtdef})
 
-${txtund}AWS${txtdef}
-    --access-key ID                   AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
-    --secret-key KEY                  AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
+${txtund}AWS credentials${txtdef}  (mandatory)
+    --access-key ID                      AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
+    --secret-key KEY                     AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
 
-{txtund}instance-store requirements{txtdef}  (where '--volume-type instance' is requested)
-    --user ID                         Your 12-digit AWS user ID
-    --ec2cert CERT                    Path to the cloud certificate
-    --cert CERT                       Path to your PEM-encoded certificate
-    --private-key KEY                 Path to your PEM-encoded private key
-    --s3-bucket BUCKET                S3 path to upload the image to
-    --target-region REGION            AWS region to create image for
+${txtund}instance-store requirements${txtdef}  (for when '--volume-type instance' is requested)
+    --user ID                            Your 12-digit AWS user ID
+    --ec2cert CERT                       Path to the cloud certificate
+    --cert CERT                          Path to your PEM-encoded certificate
+    --private-key KEY                    Path to your PEM-encoded private key
+    --s3-bucket BUCKET                   S3 path to upload the image to
+    --target-region REGION               AWS region to create image for
 
 ${txtund}Other options${txtdef}
-    --debug                           Print debugging information
-    --help                            Prints this help message
+    --debug                              Print debugging information
+    --help                               Prints this help message
 "
 
 # Run through the parameters and save them to variables.
