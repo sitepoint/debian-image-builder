@@ -130,10 +130,10 @@ export EUCALYPTUS_CERT="${HOME}/cert-ec2.pem"
 ```
 
 If you wish to use partitioned block devices on EC2 for use with
-HVM-compatible AMIs, please ensure hdparm is installed.
+HVM-compatible AMIs, please ensure hdparm and parted is installed.
 
 ```
-apt-get install hdparm
+apt-get install hdparm parted
 ```
 
 If creating AMIs with instance-store volumes, you will need to set
