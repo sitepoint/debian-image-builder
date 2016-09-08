@@ -6,7 +6,7 @@ declare -i essentials=0  # Print essentials in place message
 # These variables work differently to normal expectations. If they
 # equal 0, they are good to use.
 declare -i move_s3_path=3
-declare -i partitioning=1
+declare -i partitioning=2
 declare -i grant_launch_permission=1
 
 declare -r s3cfg="${HOME}/.s3cfg"
@@ -64,6 +64,7 @@ else
     echo "     ok AWS_CREDENTIAL_FILE=${AWS_CREDENTIAL_FILE}"
 fi
 
+# Check s3cmd support.
 if ! command -v s3cmd 1>/dev/null
 then
     echo "s3cmd is not installed."
@@ -91,11 +92,18 @@ else
     move_s3_path=1
 fi
 
+# Check partitioning support.
 if ! command -v parted 1>/dev/null
 then
     echo "parted is not installed."
 else
-    partitioning=0
+    partitioning=$(( --partitioning ))
+fi
+if ! command -v hdparm 1>/dev/null
+then
+    echo "hdparm is not installed."
+else
+    partitioning=$(( --partitioning ))
 fi
 
 echo
