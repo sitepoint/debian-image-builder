@@ -106,7 +106,6 @@ virt=paravirtual
 partitioning=none
 instance_id=
 region=
-target_region=
 availability_zone=
 
 # Build-time info
@@ -154,7 +153,6 @@ ${txtund}instance-store requirements${txtdef}  (for when '--volume-type instance
     --cert CERT                          Path to your PEM-encoded certificate
     --private-key KEY                    Path to your PEM-encoded private key
     --s3-bucket BUCKET                   S3 path to upload the image to
-    --target-region REGION               AWS region to create image for
 
 ${txtund}Other options${txtdef}
     --debug                              Print debugging information
@@ -183,7 +181,6 @@ do
         --cert)             EC2_CERT=${2};                 shift 2 ;;
         --private-key)      EC2_PRIVATE_KEY=${2};          shift 2 ;;
         --s3-bucket)        S3_BUCKET=${2};                shift 2 ;;
-        --target-region)    target_region=${2};            shift 2 ;;
         --timezone)         timezone=${2};                 shift 2 ;;
         --locale)           locale=${2};                   shift 2 ;;
         --charmap)          charmap=${2};                  shift 2 ;;
