@@ -194,12 +194,18 @@ do
 done
 
 # Required and default parameters
-check_arg AWS_ACCESS_KEY
-check_arg AWS_SECRET_KEY
-
-# Export the AWS access keys, so that we can launch euca2ools commands
-# without specifying the keys as arguments each time.
-export AWS_ACCESS_KEY AWS_SECRET_KEY
+if test -f /etc/euca2ools/euca2ools.ini &&
+    ! grep -q key-id /etc/euca2ools/euca2ools.ini
+then
+    check_arg AWS_ACCESS_KEY
+    export AWS_ACCESS_KEY
+fi
+if test -f /etc/euca2ools/euca2ools.ini &&
+    ! grep -q secret-key /etc/euca2ools/euca2ools.ini
+then
+    check_arg AWS_SECRET_KEY
+    export AWS_SECRET_KEY
+fi
 
 if [ "${volume_type}" = 'instance' ]
 then
