@@ -2,7 +2,7 @@ declare account
 
 for account in $(echo ${LAUNCH_ACCOUNTS} | tr -d '-')
 do
-    echo euca-modify-image-attribute ${ami_id} -l -a ${account}
+    euca-modify-image-attribute ${ami_id} -l -a ${account}
 done
 
 unset account
