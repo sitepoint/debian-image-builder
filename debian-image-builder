@@ -59,6 +59,7 @@ distribution='debian'
 codename='jessie'
 
 # Filesystem and image info
+partitioning='none'
 filesystem='ext4'
 mountoptions=
 block_device_path=
