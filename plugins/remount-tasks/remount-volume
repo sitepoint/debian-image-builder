@@ -43,7 +43,6 @@ log "The volume has been mounted at ${imagedir}"
 
 log "Run the following commands to unmount and remove the volume:"
 logplain \
-    "export EC2_URL=https://ec2.${region}.amazonaws.com" \
     "umount ${imagedir}" \
     "rm -rf ${imagedir}" \
     "euca-detach-volume ${volume_id}" \
