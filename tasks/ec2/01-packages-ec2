@@ -16,9 +16,7 @@ exclude_packages+=('isc-dhcp-common')
 host_packages+=('build-essential')
 host_packages+=('python-boto')
 host_packages+=('python-m2crypto')
-host_packages+=('python-setuptools')
 host_packages+=('libxslt1-dev')
-host_packages+=('python-dev')
 
 if [ "${volume_type}" = 'instance' ]
 then
