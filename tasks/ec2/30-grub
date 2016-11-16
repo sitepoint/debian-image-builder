@@ -15,8 +15,8 @@ sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
 sed -i "s/^#\(GRUB_DISABLE_RECOVERY\)=.*$/\1=\"true\"/" \
     "${imagedir}/etc/default/grub"
 
-# Disable UUID lookup - use device name instead since there is no chance of it
-# changing.
+# Disable UUID lookup - use device name instead since there is no
+# chance of it changing.
 sed -i "s/^#\(GRUB_DISABLE_LINUX_UUID=true\)/\1/" \
     "${imagedir}/etc/default/grub"
 
@@ -28,16 +28,19 @@ echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
 sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
     "${imagedir}/etc/default/grub"
 
-# Have root=/dev/xvda or root=/dev/xvda1 as the kernel argument, instead
-# of root=/dev/xvdf or whatever the attached EBS volume device name is.
+# Paravirtual instances using instance-storage need the root block
+# device to appear as a partition, to be compatible with the official
+# AWS PV-GRUB AKI images.
 if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
 then
-    grub_device=/dev/xvda1
+    root_device='/dev/xvda1'
+elif [ "${partitioning}" = "none" ]
+then
+    root_device='/dev/xvda'
 else
-    grub_device=/dev/xvda
+    root_device='/dev/xvda1'
 fi
-echo "GRUB_DEVICE=${grub_device}" >> "${imagedir}/etc/default/grub"
-
+echo "GRUB_DEVICE=${root_device}" >> "${imagedir}/etc/default/grub"
 
 if [ "${virt}" = 'paravirtual' ]
 then
