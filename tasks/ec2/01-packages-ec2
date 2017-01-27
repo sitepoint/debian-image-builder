@@ -2,7 +2,12 @@
 #
 # Add some basic packages we are going to need
 
-packages+=('grub-pc')
+if [ "${virt}" = 'paravirtual' ]
+then
+    packages+=('grub-xen')
+else
+    packages+=('grub-pc')
+fi
 
 # Apparently isc-dhcp-client didn't work properly with ec2. It is
 # unclear if this is still the case. For now, we use dhcpcd instead.

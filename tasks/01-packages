@@ -1,7 +1,7 @@
 ## packages
 #
 
-# Add some basic packages we are going to need
+# Add some basic packages we are going to need.
 packages+=('udev')
 packages+=('openssh-server')
 
@@ -12,7 +12,7 @@ packages+=('locales')
 # Needed for the init scripts
 packages+=('file')
 
-# We will need to format the volume, so we need xfsprogs
+# We will need to format the volume, so we need xfsprogs.
 if [ ${filesystem} = 'xfs' ]
 then
     host_packages+=('xfsprogs')
