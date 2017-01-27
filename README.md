@@ -89,12 +89,13 @@ while retaining the power and flexibility of alternatives.
 Setup
 -----
 
-The script is started with ``./debian-image-builder``.  You can choose
-to either bootstrap a Debian AMI (``./debian-image-builder ec2``) or a
-Google Compute Engine image (``./debian-image-builder gce``).  Both
-modes have sensible defaults and can be configured with options and
-plugins. To see a list of options use ``--help``.  When creating an
-AMI, the script at least needs to know your AWS credentials.
+The script is started with ``./debian-image-builder``.  The first
+argument should be the provider. Currently only ec2 is supported
+(``./debian-image-builder ec2``).  Supported environments should have
+sensible defaults and can be configured with options and plugins. To
+see a list of options use ``--help``.  When creating an AMI, the
+script needs to be provided with appropriate AWS credentials (see
+below).
 
 As there are no interactive prompts, the bootstrapping can run
 entirely unattended from start till finish. Plugins can optionally
@@ -106,7 +107,7 @@ none of those scratch your itch, you can of course very easily write
 your own plugin (see HOWTO.md in the plugins directory).
 
 
-### Usage examples ###
+### EC2 usage examples ###
 
 Start by switching to the root user, and exporting the environment
 variables required by euca2ools:
@@ -157,9 +158,14 @@ AMIs, you will need to make sure no two builds are using S3_BUCKET at
 the same time (and debian-image-builder will fail to start if it
 detects this condition).
 
+Be careful to ensure that S3 buckets specified by S3_BUCKET and
+CUSTOM_S3_PATH are located in the same region as the instance running
+debian-image-builder. Failure to do so will result in a "Bucket is not
+available from endpoint" error near the end of the build process.
+
 Also note that all included templates make use of the ``move-s3-path``
-plugin, so you will need to set CUSTOM_S3_PATH if using those, or
-delete the plugin reference from the templates otherwise. Modifying
+plugin so you will need to set CUSTOM_S3_PATH if using those, or
+otherwise delete the plugin reference from the templates. Modifying
 template files is a trivial process.
 
 ```
