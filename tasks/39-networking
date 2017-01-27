@@ -3,4 +3,8 @@
 
 # Delete the hostname file and DNS info, we get it from the ec2 dhcp
 # server.
-rm -f "${imagedir}/etc/hostname" "${imagedir}/etc/resolv.conf"
+rm -f "${imagedir}/etc/resolv.conf"
+
+# Set /etc/hostname to localhost to avoid a "the specified hostname is
+# invalid" warning on boot.
+echo localhost > "${imagedir}/etc/hostname"
