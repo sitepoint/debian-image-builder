@@ -1,7 +1,0 @@
-## apt-sources-goog
-#
-# Basic sources.list
-
-cat > "${imagedir}/etc/apt/sources.list.d/goog.list" <<EOF
-deb     http://goog-repo.appspot.com/ /
-EOF

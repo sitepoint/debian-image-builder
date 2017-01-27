@@ -1,6 +1,0 @@
-## set-hostname
-#
-# Set the hostname from DHCP.
-
-chroot "${imagedir}" ln -s /usr/share/google/set-hostname \
-    /etc/dhcp/dhclient-exit-hooks.d/set-hostname

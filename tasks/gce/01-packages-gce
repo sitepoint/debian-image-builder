@@ -1,8 +1,0 @@
-## packages-gce
-#
-
-packages+=('python')
-packages+=('sudo')
-packages+=('ntp')
-packages+=('lsb-release')
-packages+=('acpi-support-base')

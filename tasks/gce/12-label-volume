@@ -1,8 +1,0 @@
-## label-volume
-#
-# Label the filesystem.
-
-case ${filesystem} in
-    # Add a fs label
-    ext*) e2label ${fs_device_path} / ;;
-esac

@@ -1,9 +1,0 @@
-## delete-workspace
-#
-# Remove temporary workspace
-
-log "Deleting temporary workspace"
-rm -r "${workspace}"
-
-# Nothing left to clean up on exit if we've gotten this far.
-rm_from_trap cleanup_loopback_mount ERR EXIT
