@@ -16,6 +16,17 @@ function check_arg()
     fi
 }
 
+function check_partitioning()
+{
+    local virt="${1}"
+    local partitioning="${2}"
+
+    if [ "${virt}" = "paravirtual" -a "${partitioning}" != "none" ]
+    then
+        die "Paravirtual instances cannot be partitioned."
+    fi
+}
+
 function rm_bucket_lock()
 {
     if [ -f "${bucket_lock_file}" ]
@@ -94,7 +105,6 @@ known_regions+=('us-gov-west-1')
 virt=paravirtual
 instance_id=
 region=
-target_region=
 availability_zone=
 
 # Build-time info
@@ -106,44 +116,46 @@ help="$(get_command_name)
 This subcommand creates an Amazon EC2 AMI.
 
 ${txtund}Bootstrapping${txtdef}
-    --template FILE                   Template file including predefined options.
-    --codename C [jessie|wheezy]      Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
-    --virt VIRT [paravirtual|hvm]     Select virtualization type (${txtbld}${virt}${txtbld})
-    --arch ARCH [i386|amd64]          Processor architecture of the image (${txtbld}${arch}${txtdef})
-    --volume-type TYPE [instance|ebs] Set the root volume type (${txtbld}${volume_type}${txtdef})
-    --volume-size SIZE                Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
-    --volume-inodes SIZE              Optionally set a custom inode count for ext2/3/4 volumes.
-    --filesystem FS [ext2..4|xfs]     Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
-    --plugin FILE                     Path to plugin script.
-                                      Can be specified more than once.
+    --template FILE                      Template file including predefined options.
+    --codename C [jessie|wheezy]         Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
+    --virt VIRT [paravirtual|hvm]        Select virtualization type (${txtbld}${virt}${txtdef})
+    --partitioning TYPE [none|msdos|gpt] Select partitioning type (${txtbld}${partitioning}${txtdef})
+    --arch ARCH [i386|amd64]             Processor architecture of the image (${txtbld}${arch}${txtdef})
+    --volume-type TYPE [instance|ebs]    Set the root volume type (${txtbld}${volume_type}${txtdef})
+    --volume-size SIZE                   Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
+    --volume-inodes SIZE                 Optionally set a custom inode count for
+                                         ext2/3/4 volumes.
+    --filesystem FS [ext2..4|xfs]        Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
+    --plugin FILE                        Path to plugin script.
+                                         Can be specified more than once.
 
-    --timezone ZONE                   Standard timezone (${txtbld}${timezone}${txtdef})
-    --locale LOCALE                   Standard locale (${txtbld}${locale}${txtdef})
-    --charmap CHARMAP                 Standard charmap (${txtbld}${charmap}${txtdef})
+    --timezone ZONE                      Standard timezone (${txtbld}${timezone}${txtdef})
+    --locale LOCALE                      Standard locale (${txtbld}${locale}${txtdef})
+    --charmap CHARMAP                    Standard charmap (${txtbld}${charmap}${txtdef})
 
-    --debootstrap-dir DIR             Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
-                                      The created volume will be mounted
-                                      at \${debootstrap_dir}/\${volume_id}.
+    --debootstrap-dir DIR                Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
+                                         The created volume will be mounted
+                                         at <debootstrap_dir>/<volume_id>.
 
-    --name-suffix SUFFIX              AMI name suffix (${txtbld}${name_suffix}${txtdef})
-    --description DESC                Description of the AMI
-    --apt-mirrors \"URL[ URL...]\"      APT mirror URLs, space-separated (${txtbld}${apt_mirrors}${txtdef})
+    --name-suffix SUFFIX                 AMI name suffix (${txtbld}${name_suffix}${txtdef})
+    --description DESC                   Description of the AMI
+    --apt-mirrors \"URL[ URL...]\"         APT mirror URLs, space-separated
+                                         (${txtbld}${apt_mirrors}${txtdef})
 
-${txtund}AWS${txtdef}
-    --access-key ID                   AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
-    --secret-key KEY                  AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
+${txtund}AWS credentials${txtdef}  (mandatory)
+    --access-key ID                      AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
+    --secret-key KEY                     AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
 
-{txtund}instance-store requirements{txtdef}  (where '--volume-type instance' is requested)
-    --user ID                         Your 12-digit AWS user ID
-    --ec2cert CERT                    Path to the cloud certificate
-    --cert CERT                       Path to your PEM-encoded certificate
-    --private-key KEY                 Path to your PEM-encoded private key
-    --s3-bucket BUCKET                S3 path to upload the image to
-    --target-region REGION            AWS region to create image for
+${txtund}instance-store requirements${txtdef}  (for when '--volume-type instance' is requested)
+    --user ID                            Your 12-digit AWS user ID
+    --ec2cert CERT                       Path to the cloud certificate
+    --cert CERT                          Path to your PEM-encoded certificate
+    --private-key KEY                    Path to your PEM-encoded private key
+    --s3-bucket BUCKET                   S3 path to upload the image to
 
 ${txtund}Other options${txtdef}
-    --debug                           Print debugging information
-    --help                            Prints this help message
+    --debug                              Print debugging information
+    --help                               Prints this help message
 "
 
 # Run through the parameters and save them to variables.
@@ -168,7 +180,6 @@ do
         --cert)             EC2_CERT=${2};                 shift 2 ;;
         --private-key)      EC2_PRIVATE_KEY=${2};          shift 2 ;;
         --s3-bucket)        S3_BUCKET=${2};                shift 2 ;;
-        --target-region)    target_region=${2};            shift 2 ;;
         --timezone)         timezone=${2};                 shift 2 ;;
         --locale)           locale=${2};                   shift 2 ;;
         --charmap)          charmap=${2};                  shift 2 ;;
@@ -183,12 +194,18 @@ do
 done
 
 # Required and default parameters
-check_arg AWS_ACCESS_KEY
-check_arg AWS_SECRET_KEY
-
-# Export the AWS access keys, so that we can launch euca2ools commands
-# without specifying the keys as arguments each time.
-export AWS_ACCESS_KEY AWS_SECRET_KEY
+if test -f /etc/euca2ools/euca2ools.ini &&
+    ! grep -q key-id /etc/euca2ools/euca2ools.ini
+then
+    check_arg AWS_ACCESS_KEY
+    export AWS_ACCESS_KEY
+fi
+if test -f /etc/euca2ools/euca2ools.ini &&
+    ! grep -q secret-key /etc/euca2ools/euca2ools.ini
+then
+    check_arg AWS_SECRET_KEY
+    export AWS_SECRET_KEY
+fi
 
 if [ "${volume_type}" = 'instance' ]
 then
@@ -204,6 +221,7 @@ then
     check_bucket_lock "${S3_BUCKET}"
 fi
 
+check_partitioning "${virt}" "${partitioning}"
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.

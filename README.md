@@ -112,22 +112,26 @@ variables required by euca2ools:
 ```
 export AWS_ACCESS_KEY='access_key'
 export AWS_SECRET_KEY='secret_key'
+```
+
+The above are imported into /etc/euca2ools/euca2ools.ini automatically
+upon first execution, and are ignored for subsequent executions.
+
+Also be sure to export the following:
+
+```
 export EC2_CERT="${HOME}/x.509/cert.pem"
 export EC2_PRIVATE_KEY="${HOME}/x.509/pk.pem"
 export EC2_USER_ID="5555-5555-5555"
 export EC2_REGION="us-west-2"
 ```
 
-Consult the AWS documentation if any of these are unfamiliar to you.
-Next, you will need to set the path to your cloud certificate. Amazon
-includes this in the proprietary ec2-ami-tools package, and it is
-possible we need a license to redistribute it. Hence, you'll have to
-obtain that yourself either manually or using the included ``getcert``
-script.
-
-```
-export EUCALYPTUS_CERT="${HOME}/cert-ec2.pem"
-```
+Note: Do *not* export EC2_URL or any other endpoint
+variable. euca2ools includes the various AWS endpoints in the included
+configuration files (which debian-image-builder will deploy
+automatically provided EC2_REGION is set correctly. In my testing
+exporting EC2_URL will result in failure of some euca2ools commands,
+even if correct!
 
 If creating AMIs with instance-store volumes, you will need to set
 S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment

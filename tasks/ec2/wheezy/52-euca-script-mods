@@ -4,6 +4,6 @@
 
 if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
 then
-    sed -i 's/^\(device_path\)=.*$/\1="\/dev\/xvda1"/' \
+    sed -i 's/^\(fs_device_path\)=.*$/\1="\/dev\/xvda1"/' \
         "${imagedir}/etc/init.d/expand-volume"
 fi

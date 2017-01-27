@@ -4,5 +4,5 @@
 
 case ${filesystem} in
     # Add a fs label
-    ext*) e2label ${device_path} / ;;
+    ext*) e2label ${fs_device_path} / ;;
 esac

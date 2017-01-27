@@ -3,7 +3,8 @@
 
 # Delete the loopback device
 log "Deleting the loopback device"
-losetup -d "${device_path}"
+losetup -d "${block_device_path}"
 
-# Lets cleanup code know the loopback device was deleted.
-unset device_path
+# Lets cleanup code know the loopback device was deleted. The
+# associated trap is configured in 09-create-workspace.
+unset block_device_path

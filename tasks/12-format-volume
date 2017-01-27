@@ -2,19 +2,19 @@
 #
 # Format the volume
 
-log "Formatting the device ${device_path} with ${filesystem}"
+log "Formatting the device ${fs_device_path} with ${filesystem}"
 
 if [ -n "${volume_inodes}" ] && [[ "${filesytem}" =~ "ext" ]]
 then
-    mkfs.${filesystem} -N ${volume_inodes} "${device_path}"
+    mkfs.${filesystem} -N ${volume_inodes} "${fs_device_path}"
 else
-    mkfs.${filesystem} "${device_path}"
+    mkfs.${filesystem} "${fs_device_path}"
 fi
 
 case ${filesystem} in
     ext*)
         # Disable time based filesystem checks
-        tune2fs -i 0 "${device_path}"
+        tune2fs -i 0 "${fs_device_path}"
         ;;
     xfs)
         # Add some tools for XFS. Note that ext[2-4] tools are

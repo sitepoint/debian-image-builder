@@ -19,5 +19,5 @@ then
     die "Something is already mounted on ${imagedir}"
 fi
 
-mount "${device_path}" "${imagedir}"
+mount "${fs_device_path}" "${imagedir}"
 log "The volume is mounted at ${imagedir}."

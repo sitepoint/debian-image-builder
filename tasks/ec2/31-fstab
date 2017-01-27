@@ -17,8 +17,11 @@ esac
 if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
 then
     root_device='/dev/xvda1'
-else
+elif [ "${partitioning}" = "none" ]
+then
     root_device='/dev/xvda'
+else
+    root_device='/dev/xvda1'
 fi
 
 cat > "${imagedir}/etc/fstab" <<EOF

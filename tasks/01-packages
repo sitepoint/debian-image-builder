@@ -22,3 +22,10 @@ fi
 # need lsof.
 host_packages+=('lsof')
 host_packages+=('debootstrap')
+
+# Partitioning requires parted.
+if [ "${partitioning}" != "none" ]
+then
+    host_packages+=('hdparm')
+    host_packages+=('parted')
+fi

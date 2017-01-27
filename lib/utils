@@ -35,7 +35,7 @@ function add_to_trap()
     local -r traps="${@-EXIT}"
     for trap in ${traps}
     do
-        trap "$(get_current_trap ${trap})${add_command};" ${trap}
+        trap "${add_command};$(get_current_trap ${trap})" ${trap}
     done
 }
 

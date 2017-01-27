@@ -2,11 +2,13 @@
 #
 # Set up loopback device
 
-device_path="$(losetup -f)"
+block_device_path="$(losetup -f)"
+# GCE images we build don't support partitioning.
+fs_device_path="${block_device_path}"
 
-if ! losetup -o "$((1024*1024))" "${device_path}" ${workspace}/disk.raw
+if ! losetup -o "$((1024*1024))" "${block_device_path}" ${workspace}/disk.raw
 then
     die "Unable to create volume."
 fi
 
-log "Loopback device for GCE volume is ${device_path}."
+log "Loopback device for GCE volume is ${block_device_path}."
