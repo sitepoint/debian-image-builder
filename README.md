@@ -4,14 +4,15 @@ debian-image-builder
 Debian GNU/Linux image builder for multiple IaaS providers.
 
 This script bootstraps a basic Debian GNU/Linux installation to create
-(currently) either an Amazon Machine Image or a Google Compute Engine
-image. The image contains no latent logfiles, no .bash\_history or
-even the apt package cache. In fact, the image is created via
-debootstrap and never booted during the creation process, providing a
-very clean setup without surprises.
+a Amazon Machine Image. The image contains no latent logfiles, no
+.bash\_history or even the apt package cache. In fact, the image is
+created via debootstrap and never booted during the creation process,
+providing a very clean setup without surprises.
 
 The machine configuration this script creates has been thoroughly
-tested on EC2. I no longer test GCE, but accept patches if required.
+tested on EC2. I am open to accepting patches to support other
+providers, if they will be maintained. Adding new providers should be
+quite straighforward.
 
 
 Features
@@ -23,7 +24,8 @@ Features
 * Template support makes recreating newer versions of AMIs quick and
   easy.
 
-* This script has been tested with AWS on Wheezy and Jessie.
+* This script is currently tested on AWS with Jessie images. Stretch
+  support will come when the release is stable.
 
 Note: To create an AMI, debian-image-builder needs to be run on an
 Amazon EC2 instance - we'll be attaching an EBS volume temporarily
@@ -220,20 +222,20 @@ defaults are used:
     --description "Debian 8 (Jessie) 50Gb, HVM, EBS"
 ```
 
-This final example creates a Wheezy x86_64 paravirtual image with a 5G
+This final example creates a Jessie x86_64 paravirtual image with a 5G
 instance-backed root volume, formatted to have 5000000 inodes. The
 image time-zone and locales have been set, and the image name suffix
 is the date and time of execution:
 
 ```
-./debian-image-builder ec2 --arch amd64 --codename wheezy \
+./debian-image-builder ec2 --arch amd64 --codename jessie \
     --volume-type instance \
     --filesystem ext4 --volume-size 5 --volume-inodes 5000000 \
     --plugin plugins/standard-packages \
     --plugin plugins/move-s3-path \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name-suffix "$(date +%Y%m%d%H%M)" \
-    --description "Debian 7 (Wheezy) 5Gb, paravirtual, instance-store"
+    --description "Debian 8 (Jessie) 5Gb, paravirtual, instance-store"
 ```
 
 Bugs, suggestions, patches and plugins are all welcome. Have fun!

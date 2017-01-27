@@ -117,7 +117,7 @@ This subcommand creates an Amazon EC2 AMI.
 
 ${txtund}Bootstrapping${txtdef}
     --template FILE                      Template file including predefined options.
-    --codename C [jessie|wheezy]         Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
+    --codename C [jessie]                Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
     --virt VIRT [paravirtual|hvm]        Select virtualization type (${txtbld}${virt}${txtdef})
     --partitioning TYPE [none|msdos|gpt] Select partitioning type (${txtbld}${partitioning}${txtdef})
     --arch ARCH [i386|amd64]             Processor architecture of the image (${txtbld}${arch}${txtdef})

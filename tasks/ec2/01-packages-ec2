@@ -29,8 +29,8 @@ then
     host_packages+=('pv')
 fi
 
-# From Wheezy onwards, there are no special Xen-specific kernels any
-# longer.
+# From Wheezy onwards, there are no longer any special Xen-specific
+# kernels.
 if [ ${arch} = 'amd64' ]
 then
     packages+=('linux-image-amd64')

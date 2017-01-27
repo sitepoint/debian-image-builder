@@ -1,9 +1,0 @@
-## euca-script-mods
-#
-# Adjust ec2-scripts as required by the instance type.
-
-if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
-then
-    sed -i 's/^\(fs_device_path\)=.*$/\1="\/dev\/xvda1"/' \
-        "${imagedir}/etc/init.d/expand-volume"
-fi
