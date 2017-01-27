@@ -13,9 +13,6 @@ then
     shred --remove "${imagedir}/root/.bash_history"
 fi
 
-# Clear the motd head, as it contains the hostname of the bootstrapper.
-> /var/run/motd
-
 # Remove log files, temporary files and bash history
 rm -rf \
     "${imagedir}/var/log/{bootstrap,dpkg}.log" \
