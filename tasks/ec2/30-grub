@@ -15,10 +15,13 @@ sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
 sed -i "s/^#\(GRUB_DISABLE_RECOVERY\)=.*$/\1=\"true\"/" \
     "${imagedir}/etc/default/grub"
 
-# Disable UUID lookup - use device name instead since there is no
-# chance of it changing.
-sed -i "s/^#\(GRUB_DISABLE_LINUX_UUID=true\)/\1/" \
-    "${imagedir}/etc/default/grub"
+if [ "${partitioning}" = "none" ]
+then
+    # Disable UUID lookup - use device name instead since there is no
+    # chance of it changing.
+    sed -i "s/^#\(GRUB_DISABLE_LINUX_UUID=true\)/\1/" \
+        "${imagedir}/etc/default/grub"
+fi
 
 # Simplify grub.cfg to improve compatibility.
 echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
