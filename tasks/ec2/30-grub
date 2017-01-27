@@ -28,23 +28,13 @@ sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
 
 if [ "${virt}" = 'paravirtual' ]
 then
-    ## Configure for PyGRUB support.
-
-    # Disable normal Grub 2 configuration files.
-    chmod -x "${imagedir}"/etc/grub.d/*
-
-    # Install the 40_custom file, which generates a nice menu.lst
-    script='40_custom'
-    cp -f "${scriptdir}/grub.d/${script}" "${imagedir}/etc/grub.d/${script}"
-
-    chmod 755 "${imagedir}/etc/grub.d/${script}"
-
     # Regenerate grub.cfg.
     chroot "${imagedir}" update-grub
 
-    # pv-grub-hd0_1.04-*.gz is configred for the old
+    # pv-grub-hd0_*.gz is configred for the old
     # (hd0)/boot/grub/menu.lst naming convention, but update-grub
     # names it /boot/grub/grub.cfg.
+    # http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html
     chroot "${imagedir}" ln -s grub.cfg /boot/grub/menu.lst
 else
     ## HVM (standard GRUB) support.
