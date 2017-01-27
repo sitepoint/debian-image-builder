@@ -2,7 +2,6 @@
 #
 # Configure GRUB as appropriate.
 
-declare -r device_map="${imagedir}/boot/grub/device.map"
 declare grub_device
 
 
@@ -68,21 +67,9 @@ then
 else
     ## HVM (standard GRUB) support.
 
-    # Make device.map point to the EBS device for now.
-    echo -e "(hd0)\t${block_device_path}" > "${device_map}"
-
     # Update grub.cfg using the script. This will now work correctly.
     chroot "${imagedir}" update-grub
 
     # Install Grub to the start of the block device.
     chroot "${imagedir}" grub-install --no-floppy --force "${block_device_path}"
-
-    # Set the correct values for device.map.
-    echo -e "(hd0)\t${grub_device}" > "${device_map}"
-fi
-
-# Remove everything from device.map after the first line (hd0).
-if [ -f "${device_map}" ]
-then
-    sed -i '2,$d' "${device_map}"
 fi
