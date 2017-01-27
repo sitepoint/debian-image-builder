@@ -26,20 +26,6 @@ echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
 sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
     "${imagedir}/etc/default/grub"
 
-# Paravirtual instances using instance-storage need the root block
-# device to appear as a partition, to be compatible with the official
-# AWS PV-GRUB AKI images.
-if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
-then
-    root_device='/dev/xvda1'
-elif [ "${partitioning}" = "none" ]
-then
-    root_device='/dev/xvda'
-else
-    root_device='/dev/xvda1'
-fi
-echo "GRUB_DEVICE=${root_device}" >> "${imagedir}/etc/default/grub"
-
 if [ "${virt}" = 'paravirtual' ]
 then
     ## Configure for PyGRUB support.
