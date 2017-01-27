@@ -73,3 +73,14 @@ else
     # Install Grub to the start of the block device.
     chroot "${imagedir}" grub-install --no-floppy --force "${block_device_path}"
 fi
+
+# Sanity check values in grub.cfg
+if [ "${block_device_path:0:7}" = "/dev/sd" ]
+then
+    sed -i "s#${block_device_path}#/dev/sda#g" \
+        "${imagedir}/boot/grub/grub.cfg"
+elif [ "${block_device_path:0:8}" = "/dev/xvd" ]
+then
+    sed -i "s#${block_device_path}#/dev/xvda#g" \
+        "${imagedir}/boot/grub/grub.cfg"
+fi
