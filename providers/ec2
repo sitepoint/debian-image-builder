@@ -226,6 +226,7 @@ check_partitioning "${virt}" "${partitioning}"
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.
 TASK_PACKAGES="01-packages"
+TASK_DBUS_PACKAGE="01-dbus"
 TASK_CREATE_VOLUME="10-create-volume"
 TASK_MOUNT_VOLUME="13-mount-volume"
 TASK_MOUNT_SPECIALS="15-mount-specials"

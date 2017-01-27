@@ -1,3 +1,5 @@
+remove_task ${TASK_DBUS_PACKAGE}
+
 insert_task_after ${TASK_PACKAGES} \
     "${plugindir}/no-systemd-tasks/exclude-systemd-packages"
 
