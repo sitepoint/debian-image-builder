@@ -11,92 +11,92 @@ then
     case ${region} in
         # ap-northeast-1, Asia Pacific (Tokyo) region
         ap-northeast-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-176bf516"
+            # pv-grub-hd0_1.05-x86_64.gz 
+            [ ${arch} = 'amd64' ] && aki="aki-7077ab11"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-136bf512"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-f975a998"
             ;;
 
         # ap-southeast-1, Asia Pacific (Singapore) region
         ap-southeast-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-503e7402"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-73a50110"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-ae3973fc"
+            #  pv-grub-hd0_1.05-i386.gz 
+            [ ${arch} = 'i386' ] && aki="aki-17a40074"
             ;;
 
         # ap-southeast-2, Asia Pacific (Sydney) region
         ap-southeast-2)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-c362fff9"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-6650630"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-cd62fff7"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-ba5665d9"
             ;;
 
         # eu-central-1, EU (Frankfurt) region
         eu-central-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-184c7a05"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-931fe3fc"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-3e4c7a23"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-1419e57b"
             ;;
 
         # eu-west-1, EU (Ireland) region
         eu-west-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-52a34525"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-dc9ed9af"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-68a3451f"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-1c9fd86"
             ;;
 
         # sa-east-1, South America (Sao Paulo) region
         sa-east-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-5553f448"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-912fbcfd"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-5b53f446"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-7cd34110"
             ;;
 
         # us-east-1, US East (N. Virginia) region
         us-east-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-919dcaf8"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-5c21674b"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-8f9dcae6"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-04206613"
             ;;
 
         # us-gov-west-1, AWS GovCloud (US)
         us-gov-west-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-1de98d3e"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-9ee55bff"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-1fe98d3c"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-5ee9573"
             ;;
 
         # us-west-1, US West (N. California) region
         us-west-1)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-880531cd"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-59cc8239"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-8e0531cb"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-43cf8123"
             ;;
 
         # us-west-2, US West (Oregon) region
         us-west-2)
-            # pv-grub-hd0_1.04-x86_64.gz
-            [ ${arch} = 'amd64' ] && aki="aki-fc8f11cc"
+            # pv-grub-hd0_1.05-x86_64.gz
+            [ ${arch} = 'amd64' ] && aki="aki-70cb0e10"
 
-            # pv-grub-hd0_1.04-i386.gz
-            [ ${arch} = 'i386' ] && aki="aki-f08f11c0"
+            # pv-grub-hd0_1.05-i386.gz
+            [ ${arch} = 'i386' ] && aki="aki-7a69931a"
             ;;
 
         *) die "Unrecognized region:" "${region}"
