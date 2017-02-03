@@ -1,0 +1,7 @@
+mkdir -p -m 0755 "${imagedir}/etc/apt/preferences.d"
+cat > "${imagedir}/etc/apt/preferences.d/cloud-init" << EOF
+Package: cloud-init cloud-utils
+Pin: release n=${codename}-backports
+Pin-priority: 500
+EOF
+chmod 0644 "${imagedir}/etc/apt/preferences.d/cloud-init"
