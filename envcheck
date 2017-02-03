@@ -7,6 +7,7 @@ declare -i essentials=0  # Print essentials in place message
 # equal 0, they are good to use.
 declare -i move_s3_path=2
 declare -i partitioning=2
+declare -i python=1
 declare -i grant_launch_permission=1
 
 declare -r s3cfg="${HOME}/.s3cfg"
@@ -104,6 +105,13 @@ then
     echo "hdparm is not installed."
 else
     partitioning=$(( --partitioning ))
+fi
+
+# Check for Python support.
+if ! command -v python 1>/dev/null
+then
+    echo "python is not installed."
+    python=$(( --python ))
 fi
 
 echo

@@ -1,74 +1,84 @@
-# By default, cloud.cfg disables the root user account. That's not necessarily
-# useful (or even desirable) when the image is to be used with a configuration
-# management system.
-cat > "${imagedir}/etc/cloud/cloud.cfg" <<EOF
-# The top level settings are used as module
-# and system configuration.
+# Make required cloud-init configuration changes.
 
-# If this is set, 'root' will not be able to ssh in and they 
-# will get a message to login instead as the above $user (ubuntu)
-disable_root: false
+new_cloud_init_cfg="$(mktemp /tmp/cloud-XXXXXXXX.cfg)"
 
-# This will cause the set+update hostname module to not operate (if true)
-preserve_hostname: false
+cat << EOF | python > "${new_cloud_init_cfg}"
+#!/usr/bin/env python
 
-# The modules that run in the 'init' stage
-cloud_init_modules:
- - migrator
- - bootcmd
- - write-files
- - resizefs
- - set_hostname
- - update_hostname
- - update_etc_hosts
- - ca-certs
- - rsyslog
- - users-groups
- - ssh
+from __future__ import print_function
 
-# The modules that run in the 'config' stage
-cloud_config_modules:
-# Emit the cloud config ready event
-# this can be used by upstart jobs for 'start on cloud-config'.
- - emit_upstart
- - mounts
- - ssh-import-id
- - locale
- - set-passwords
- - grub-dpkg
- - apt-pipelining
- - apt-configure
- - package-update-upgrade-install
- - timezone
- - salt-minion
- - disable-ec2-metadata
- - runcmd
+import copy
+import sys
 
-# The modules that run in the 'final' stage
-cloud_final_modules:
- - scripts-per-once
- - scripts-per-boot
- - scripts-per-instance
- - scripts-user
- - ssh-authkey-fingerprints
- - keys-to-console
- - final-message
- - power-state-change
+try:
+    import yaml
+except ImportError:
+    print("Error loading YAML library.", file=sys.stderr)
+    sys.exit(1)
 
-# System and/or distro specific settings
-# (not accessible to handlers/transforms)
-system_info:
-   # This will affect which distro class gets used
-   distro: debian
-   # Other config here will be given to the distro class and/or path classes
-   paths:
-      cloud_dir: /var/lib/cloud/
-      templates_dir: /etc/cloud/templates/
-   package_mirrors:
-     - arches: [default]
-       failsafe:
-         primary: http://ftp.debian.org/debian
+f = open('${imagedir}/etc/cloud/cloud.cfg')
+orig_contents = yaml.safe_load(f.read())
+f.close()
+new_contents = copy.deepcopy(orig_contents)
+
+# Don't create any new user accounts.
+if 'users' in new_contents:
+    new_contents['users'] = ['root']
+
+# By default, cloud.cfg disables the root user account. That's not
+# necessarily useful (or even desirable) when the image is to be used
+# with a configuration management system.
+if 'disable_root' in new_contents:
+    new_contents['disable_root'] = False
+
+if 'cloud_config_modules' in new_contents:
+    new_contents['cloud_config_modules'] = [
+        x for x in new_contents['cloud_config_modules'] if x not in [
+            'byobu', 'chef', 'disable-ec2-metadata', 'emit_upstart',
+            'fan', 'grub-dpkg', 'landscape', 'mcollective', 'puppet',
+            'salt-minion'
+        ]
+    ]
+
+# RightScale is a proprietary SaaS web platform.
+if 'cloud_final_modules' in new_contents:
+    new_contents['cloud_final_modules'] = [
+        x for x in orig_contents['cloud_final_modules'] if x not in [
+            'rightscale_userdata'
+        ]
+    ]
+
+# Again, don't create any new user accounts.
+if 'system_info' in new_contents:
+    new_contents['system_info'] = {
+        x: orig_contents['system_info'][x]
+            for x in orig_contents['system_info']
+                if x not in ['default_user']
+    }
+
+# Debian images don't have upstart by default.
+if 'paths' in new_contents['system_info']:
+    new_contents['system_info']['paths'] = {
+        x: orig_contents['system_info']['paths'][x]
+            for x in orig_contents['system_info']['paths']
+                if x not in ['upstart_dir']
+    }
+
+# Keep the indentation more or less the same as the default cloud.cfg
+# file.
+class CloudInitDumper(yaml.Dumper):
+    def increase_indent(self, flow=False, indentless=False):
+        return super(CloudInitDumper, self).increase_indent(flow, False)
+
+print(yaml.dump(new_contents, Dumper=CloudInitDumper,
+                default_flow_style=False))
 EOF
+
+# Clobber the existing file (which should keep the original
+# permissions intact).
+cp "${new_cloud_init_cfg}" "${imagedir}/etc/cloud/cloud.cfg"
+rm -f "${new_cloud_init_cfg}"
+unset update_cloud_init_script
 
 # Enable EC2 and Failsafe datasources. Enabling anything else will introduce
 # unnecessary delays.
@@ -84,4 +94,3 @@ EOF
 cat > "${imagedir}/etc/cloud/cloud.cfg.d/80_mounts.cfg" <<EOF
 mount_default_fields: [~, ~, 'auto', 'defaults,nofail', '0', '2']
 EOF
-
