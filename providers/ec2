@@ -115,6 +115,7 @@ known_regions+=('us-gov-west-1')
 
 # EC2 host info
 virt=paravirtual
+partitioning=msdos
 instance_id=
 region=
 availability_zone=
