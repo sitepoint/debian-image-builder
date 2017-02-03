@@ -18,12 +18,24 @@ function check_arg()
 
 function check_partitioning()
 {
-    local virt="${1}"
-    local partitioning="${2}"
+    local partitioning="${1}"
+    local virt="${2}"
+    local volume_type="${3}"
 
-    if [ "${virt}" = "paravirtual" -a "${partitioning}" != "none" ]
+    # AFAICT, paravirtual instances using instance-backed storage is
+    # not supported by the official AWS AKIs. All other
+    # instance/storage-type combinations appear to work fine.
+    if [ "${virt}" = "paravirtual" -a "${volume_type}" = "instance" ]
     then
-        die "Paravirtual instances cannot be partitioned."
+        if [ "${partitioning}" != "none" ]
+        then
+            die "Paravirtual instances cannot be partitioned."
+        fi
+    fi
+
+    if [[ ! "${partitioning}" =~ none|msdos|gpt ]]
+    then
+        die "Unknown partitioning type '${partitioning}'."
     fi
 }
 
@@ -218,7 +230,7 @@ then
     check_bucket_lock "${S3_BUCKET}"
 fi
 
-check_partitioning "${virt}" "${partitioning}"
+check_partitioning "${partitioning}" "${virt}" "${volume_type}"
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.
