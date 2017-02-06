@@ -1,21 +1,7 @@
 ## install-euca2ools-deps
 #
-# euca2ools conflicts with python-requests < 2, but may be installed
-# by default on Wheezy as a cloud-init dependency. 2.0.0 is in
-# wheezy-backports, but we need >= 2.4 so we'll deal with this using
-# pip. Jessie and later have > 2.4 in main.
 
-if [ "$(lsb_release -cs)" = "wheezy" ]
-then
-    # We're going to install euca2ools from source if they are not already
-    # present or are the wrong version. Make sure the dependencies are
-    # taken care of first.
-
-    apt-get -y install python-pip
-    pip install 'requests>=2.4'
-else
-    host_packages+=(
-        'gzip' 'openssl' 'python-dev' 'python-lxml' 'python-requests'
-        'python-setuptools' 'python-six' 'python-support'
-    )
-fi
+host_packages+=(
+    'gzip' 'openssl' 'python-dev' 'python-lxml' 'python-requests'
+    'python-setuptools' 'python-six' 'python-support'
+)

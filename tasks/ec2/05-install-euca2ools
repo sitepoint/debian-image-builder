@@ -2,9 +2,7 @@
 #
 # Make sure the minimum required version of euca2ools is installed.
 
-# The package in Wheezy is v2.0.2, which does not support HVM
-# AMIs. The package in Jessie is v3.1.0, which does not support VPC
-# AMIs.
+# The package in Jessie is v3.1.0, which does not support VPC AMIs.
 #
 # Anything less than 3.3.0 is now incompatible with AWS due to
 # Amazon's API change. See:

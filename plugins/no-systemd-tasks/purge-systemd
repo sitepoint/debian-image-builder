@@ -1,6 +1,6 @@
 # debootstrap currently installs this regardless, so we have to clean it up
 # afterwards.
-chroot "${imagedir}" dpkg -P systemd
+chroot "${imagedir}" apt-get -y purge systemd
 
 # The only systemd-related component left on the system will be libsystemd0,
 # since that is required by bsdutils - an essential package.

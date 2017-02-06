@@ -18,12 +18,24 @@ function check_arg()
 
 function check_partitioning()
 {
-    local virt="${1}"
-    local partitioning="${2}"
+    local partitioning="${1}"
+    local virt="${2}"
+    local volume_type="${3}"
 
-    if [ "${virt}" = "paravirtual" -a "${partitioning}" != "none" ]
+    # AFAICT, paravirtual instances using instance-backed storage is
+    # not supported by the official AWS AKIs. All other
+    # instance/storage-type combinations appear to work fine.
+    if [ "${virt}" = "paravirtual" -a "${volume_type}" = "instance" ]
     then
-        die "Paravirtual instances cannot be partitioned."
+        if [ "${partitioning}" != "none" ]
+        then
+            die "Paravirtual instances cannot be partitioned."
+        fi
+    fi
+
+    if [[ ! "${partitioning}" =~ none|msdos|gpt ]]
+    then
+        die "Unknown partitioning type '${partitioning}'."
     fi
 }
 
@@ -103,6 +115,7 @@ known_regions+=('us-gov-west-1')
 
 # EC2 host info
 virt=paravirtual
+partitioning=msdos
 instance_id=
 region=
 availability_zone=
@@ -117,7 +130,7 @@ This subcommand creates an Amazon EC2 AMI.
 
 ${txtund}Bootstrapping${txtdef}
     --template FILE                      Template file including predefined options.
-    --codename C [jessie|wheezy]         Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
+    --codename C [jessie]                Debian release codename to bootstrap (${txtbld}${codename}${txtdef})
     --virt VIRT [paravirtual|hvm]        Select virtualization type (${txtbld}${virt}${txtdef})
     --partitioning TYPE [none|msdos|gpt] Select partitioning type (${txtbld}${partitioning}${txtdef})
     --arch ARCH [i386|amd64]             Processor architecture of the image (${txtbld}${arch}${txtdef})
@@ -148,7 +161,6 @@ ${txtund}AWS credentials${txtdef}  (mandatory)
 
 ${txtund}instance-store requirements${txtdef}  (for when '--volume-type instance' is requested)
     --user ID                            Your 12-digit AWS user ID
-    --ec2cert CERT                       Path to the cloud certificate
     --cert CERT                          Path to your PEM-encoded certificate
     --private-key KEY                    Path to your PEM-encoded private key
     --s3-bucket BUCKET                   S3 path to upload the image to
@@ -176,7 +188,6 @@ do
         --access-key)       AWS_ACCESS_KEY=${2};           shift 2 ;;
         --secret-key)       AWS_SECRET_KEY=${2};           shift 2 ;;
         --user)             EC2_USER_ID=${2};              shift 2 ;;
-        --ec2cert)          EUCALYPTUS_CERT=${2};          shift 2 ;;
         --cert)             EC2_CERT=${2};                 shift 2 ;;
         --private-key)      EC2_PRIVATE_KEY=${2};          shift 2 ;;
         --s3-bucket)        S3_BUCKET=${2};                shift 2 ;;
@@ -214,18 +225,18 @@ then
 
     test_file EC2_PRIVATE_KEY
     test_file EC2_CERT
-    test_file EUCALYPTUS_CERT
 
-    export EC2_USER_ID S3_BUCKET EC2_PRIVATE_KEY EC2_CERT EUCALYPTUS_CERT
+    export EC2_USER_ID S3_BUCKET EC2_PRIVATE_KEY EC2_CERT
 
     check_bucket_lock "${S3_BUCKET}"
 fi
 
-check_partitioning "${virt}" "${partitioning}"
+check_partitioning "${partitioning}" "${virt}" "${volume_type}"
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.
 TASK_PACKAGES="01-packages"
+TASK_DBUS_PACKAGE="01-dbus"
 TASK_CREATE_VOLUME="10-create-volume"
 TASK_MOUNT_VOLUME="13-mount-volume"
 TASK_MOUNT_SPECIALS="15-mount-specials"

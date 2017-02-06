@@ -13,7 +13,7 @@ chmod 755 "${imagedir}/usr/sbin/policy-rc.d"
 chroot "${imagedir}" apt-get update || die "apt-get update failed!"
 
 # Fix broken dependencies, if any.
-chroot "${imagedir}" apt-get -f install -y
+chroot "${imagedir}" apt-get -fy install
 
 # Upgrade existing packages
 chroot "${imagedir}" apt-get -y upgrade || die "apt-get upgrade failed!"

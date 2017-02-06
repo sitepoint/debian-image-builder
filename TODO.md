@@ -10,6 +10,5 @@
     * `grub.d/expand-volume` to be replaced by `cloud-initramfs-growroot`
     * `grub.d/generate-ssh-hostkeys` to be replaced by `cloud-init`.
     * Evaluate the possibility of adding cloud-initramfs-rescuevol to the generated initramfs.
-3. See if we can avoid using the custom grub.d file for paravirtual instances.
-4. Figure out what the problem is with isc-dhcp-client and see if it's fixable. We should use the default Debian packages wherever possible to improve consistency. Reportedly, isc-dhcp-client is only incompatible with Wheezy.
-5. Template support need not be EC2-specific.
+3. Figure out what the problem is with isc-dhcp-client and see if it's fixable. We should use the default Debian packages wherever possible to improve consistency. Reportedly isc-dhcp-client is only incompatible with Wheezy, which we no longer support.
+4. Template support need not be EC2-specific.

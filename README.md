@@ -4,14 +4,15 @@ debian-image-builder
 Debian GNU/Linux image builder for multiple IaaS providers.
 
 This script bootstraps a basic Debian GNU/Linux installation to create
-(currently) either an Amazon Machine Image or a Google Compute Engine
-image. The image contains no latent logfiles, no .bash\_history or
-even the apt package cache. In fact, the image is created via
-debootstrap and never booted during the creation process, providing a
-very clean setup without surprises.
+a Amazon Machine Image. The image contains no latent logfiles, no
+.bash\_history or even the apt package cache. In fact, the image is
+created via debootstrap and never booted during the creation process,
+providing a very clean setup without surprises.
 
 The machine configuration this script creates has been thoroughly
-tested on EC2. I no longer test GCE, but accept patches if required.
+tested on EC2. I am open to accepting patches to support other
+providers, if they will be maintained. Adding new providers should be
+quite straighforward.
 
 
 Features
@@ -23,7 +24,8 @@ Features
 * Template support makes recreating newer versions of AMIs quick and
   easy.
 
-* This script has been tested with AWS on Wheezy and Jessie.
+* This script is currently tested on AWS with Jessie images. Stretch
+  support will come when the release is stable.
 
 Note: To create an AMI, debian-image-builder needs to be run on an
 Amazon EC2 instance - we'll be attaching an EBS volume temporarily
@@ -87,12 +89,13 @@ while retaining the power and flexibility of alternatives.
 Setup
 -----
 
-The script is started with ``./debian-image-builder``.  You can choose
-to either bootstrap a Debian AMI (``./debian-image-builder ec2``) or a
-Google Compute Engine image (``./debian-image-builder gce``).  Both
-modes have sensible defaults and can be configured with options and
-plugins. To see a list of options use ``--help``.  When creating an
-AMI, the script at least needs to know your AWS credentials.
+The script is started with ``./debian-image-builder``.  The first
+argument should be the provider. Currently only ec2 is supported
+(``./debian-image-builder ec2``).  Supported environments should have
+sensible defaults and can be configured with options and plugins. To
+see a list of options use ``--help``.  When creating an AMI, the
+script needs to be provided with appropriate AWS credentials (see
+below).
 
 As there are no interactive prompts, the bootstrapping can run
 entirely unattended from start till finish. Plugins can optionally
@@ -104,7 +107,7 @@ none of those scratch your itch, you can of course very easily write
 your own plugin (see HOWTO.md in the plugins directory).
 
 
-### Usage examples ###
+### EC2 usage examples ###
 
 Start by switching to the root user, and exporting the environment
 variables required by euca2ools:
@@ -155,9 +158,14 @@ AMIs, you will need to make sure no two builds are using S3_BUCKET at
 the same time (and debian-image-builder will fail to start if it
 detects this condition).
 
+Be careful to ensure that S3 buckets specified by S3_BUCKET and
+CUSTOM_S3_PATH are located in the same region as the instance running
+debian-image-builder. Failure to do so will result in a "Bucket is not
+available from endpoint" error near the end of the build process.
+
 Also note that all included templates make use of the ``move-s3-path``
-plugin, so you will need to set CUSTOM_S3_PATH if using those, or
-delete the plugin reference from the templates otherwise. Modifying
+plugin so you will need to set CUSTOM_S3_PATH if using those, or
+otherwise delete the plugin reference from the templates. Modifying
 template files is a trivial process.
 
 ```
@@ -220,20 +228,20 @@ defaults are used:
     --description "Debian 8 (Jessie) 50Gb, HVM, EBS"
 ```
 
-This final example creates a Wheezy x86_64 paravirtual image with a 5G
+This final example creates a Jessie x86_64 paravirtual image with a 5G
 instance-backed root volume, formatted to have 5000000 inodes. The
 image time-zone and locales have been set, and the image name suffix
 is the date and time of execution:
 
 ```
-./debian-image-builder ec2 --arch amd64 --codename wheezy \
+./debian-image-builder ec2 --arch amd64 --codename jessie \
     --volume-type instance \
     --filesystem ext4 --volume-size 5 --volume-inodes 5000000 \
     --plugin plugins/standard-packages \
     --plugin plugins/move-s3-path \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name-suffix "$(date +%Y%m%d%H%M)" \
-    --description "Debian 7 (Wheezy) 5Gb, paravirtual, instance-store"
+    --description "Debian 8 (Jessie) 5Gb, paravirtual, instance-store"
 ```
 
 Bugs, suggestions, patches and plugins are all welcome. Have fun!

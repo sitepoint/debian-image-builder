@@ -1,0 +1,5 @@
+## D-Bus package
+#
+
+# D-Bus is required by some systemd features such as timedatectl.
+packages+=('dbus')

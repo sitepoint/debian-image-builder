@@ -7,11 +7,12 @@ declare -i essentials=0  # Print essentials in place message
 # equal 0, they are good to use.
 declare -i move_s3_path=2
 declare -i partitioning=2
+declare -i python=1
 declare -i grant_launch_permission=1
 
 declare -r s3cfg="${HOME}/.s3cfg"
 
-for var in EUCALYPTUS_CERT EC2_CERT EC2_PRIVATE_KEY \
+for var in EC2_CERT EC2_PRIVATE_KEY \
     AWS_ACCESS_KEY AWS_SECRET_KEY EC2_REGION EC2_USER_ID S3_BUCKET \
     CUSTOM_S3_PATH LAUNCH_ACCOUNTS
 do
@@ -25,7 +26,7 @@ do
             exit_status=1
         fi
     # Check certificate path points to a file, if applicable.
-    elif [[ "${var}" =~ EC2_CERT|EC2_PRIVATE_KEY|EUCALYPTUS_CERT ]]
+    elif [[ "${var}" =~ EC2_CERT|EC2_PRIVATE_KEY ]]
     then
         if [ ! -f "${!var}" ]
         then
@@ -104,6 +105,13 @@ then
     echo "hdparm is not installed."
 else
     partitioning=$(( --partitioning ))
+fi
+
+# Check for Python support.
+if ! command -v python 1>/dev/null
+then
+    echo "python is not installed."
+    python=$(( --python ))
 fi
 
 echo

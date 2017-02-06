@@ -1,0 +1,7 @@
+# update-initramfs
+#
+# systemd causes an fsck "error while executing fsck.ext4 for
+# /dev/xvda1". Seems like a common problem. See
+# http://forums.debian.net/viewtopic.php?f=17&t=127039 for details.
+
+chroot "${imagedir}" update-initramfs -u

@@ -1,0 +1,3 @@
+chroot "${imagedir}" apt-get -q -y --force-yes \
+    -o DPkg::Options::=--force-confnew --install-recommends \
+    install cloud-init

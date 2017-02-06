@@ -2,12 +2,7 @@ packages+=('ca-certificates')
 packages+=('debconf-utils')
 packages+=('debian-goodies')
 packages+=('dnsutils')
-if [ "${codename}" = "wheezy" ]
-then
-    packages+=('emacs23-nox')
-else
-    packages+=('emacs-nox')
-fi
+packages+=('emacs-nox')
 packages+=('git')
 packages+=('hdparm')
 packages+=('less')

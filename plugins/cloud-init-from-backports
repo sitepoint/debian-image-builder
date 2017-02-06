@@ -1,0 +1,14 @@
+
+if $(contains_basename 02-cloud-init tasks[@])
+then
+    remove_task 02-cloud-init
+fi
+
+insert_task_before ${TASK_APT_UPGRADE} \
+    "${plugindir}/cloud-init-from-backports-tasks/01-add_backports"
+
+insert_task_before ${TASK_APT_UPGRADE} \
+    "${plugindir}/cloud-init-from-backports-tasks/02-pin_cloud-init"
+
+insert_task_after ${TASK_APT_UPGRADE} \
+    "${plugindir}/cloud-init-from-backports-tasks/03-install_cloud-init"

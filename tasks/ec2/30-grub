@@ -1,72 +1,79 @@
 ## grub
 #
-# Configure GRUB as appropriate.
-
-declare -r device_map="${imagedir}/boot/grub/device.map"
-declare grub_device
-
-
-## Configure ${imagedir}/etc/default/grub
-
-# Disable the count-down.
-sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
-
-# Disable recovery options - we won't be able to select them anyway.
-sed -i "s/^#\(GRUB_DISABLE_RECOVERY\)=.*$/\1=\"true\"/" \
-    "${imagedir}/etc/default/grub"
-
-# Disable UUID lookup - use device name instead since there is no
-# chance of it changing.
-sed -i "s/^#\(GRUB_DISABLE_LINUX_UUID=true\)/\1/" \
-    "${imagedir}/etc/default/grub"
-
-# Simplify grub.cfg to improve compatibility.
-echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
-    >> "${imagedir}/etc/default/grub"
-
-# Set output console.
-sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
-    "${imagedir}/etc/default/grub"
-
-# Paravirtual instances using instance-storage need the root block
-# device to appear as a partition, to be compatible with the official
-# AWS PV-GRUB AKI images.
-if [ "${virt}" = 'paravirtual' -a "${volume_type}" = 'instance' ]
-then
-    root_device='/dev/xvda1'
-elif [ "${partitioning}" = "none" ]
-then
-    root_device='/dev/xvda'
-else
-    root_device='/dev/xvda1'
-fi
-echo "GRUB_DEVICE=${root_device}" >> "${imagedir}/etc/default/grub"
+# Configure ${imagedir}/boot/grub/menu.lst or
+# ${imagedir}/etc/default/grub and (if applicable) also run
+# grub-install.
 
 if [ "${virt}" = 'paravirtual' ]
 then
-    ## Configure for PyGRUB support.
+    # pv-grub-menu (which provides update-menu-lst) needs /dev,
+    # /dev/pts and /proc to already be mounted to execute correctly
+    # (which is why it cannot be added to packages for normal
+    # installation as part of the debootstrap process. This was taken
+    # care of in 15-mount-specials.
+    chroot "${imagedir}" apt-get -q -y --force-yes \
+        -o DPkg::Options::=--force-confnew --install-recommends \
+        install pv-grub-menu
 
-    # Disable normal Grub 2 configuration files.
-    chmod -x "${imagedir}"/etc/grub.d/*
+    # Disable the count-down.
+    sed -i 's/^\(timeout\)\s\+.*$/\1\t\t0/' \
+        "${imagedir}/boot/grub/menu.lst"
 
-    # Install the 40_custom file, which generates a nice menu.lst
-    script='40_custom'
-    cp -f "${scriptdir}/grub.d/${script}" "${imagedir}/etc/grub.d/${script}"
+    # Hide the interactive prompt.
+    if ! grep -q hiddenmenu "${imagedir}/boot/grub/menu.lst"
+    then
+        sed -i 's/^\(timeout.*$\)/\1\n\n## Hide the interactive prompt\nhiddenmenu/' \
+            "${imagedir}/boot/grub/menu.lst"
+    fi
 
-    chmod 755 "${imagedir}/etc/grub.d/${script}"
+    # Set the groot value.
+    if [ "${partitioning}" = 'none' ]
+    then
+        sed -i 's/^\(#\s\+groot\)=.*$/\1=(hd0)/' \
+            "${imagedir}/boot/grub/menu.lst"
+    else
+        sed -i 's/^\(#\s\+groot\)=.*$/\1=(hd0,0)/' \
+            "${imagedir}/boot/grub/menu.lst"
+    fi
 
-    # Regenerate grub.cfg.
-    chroot "${imagedir}" update-grub
+    # Paravirtual instances using instance-backed storage don't appear
+    # to support partitions.
+    if [ "${volume_type}" = 'instance' ]
+    then
+        sed -i 's/^\(#\s\+kopt=.*\)root=[^[:space:]]*\(.*\)$/\1root=\/dev\/xvda1\2/' \
+            "${imagedir}/boot/grub/menu.lst"
+    fi
 
-    # pv-grub-hd0_1.04-*.gz is configred for the old
-    # (hd0)/boot/grub/menu.lst naming convention, but update-grub
-    # names it /boot/grub/grub.cfg.
-    chroot "${imagedir}" ln -s grub.cfg /boot/grub/menu.lst
+    # Disable recovery options - we won't be able to select them
+    # anyway.
+    sed -i 's/^\(#\s\+alternative\)=.*$/\1=false/' \
+        "${imagedir}/boot/grub/menu.lst"
+
+    # Disable the memtest86 boot option.
+    sed -i 's/^\(#\s\+memtest86\)=.*$/\1=false/' \
+        "${imagedir}/boot/grub/menu.lst"
+
+    # Regenerate menu.lst.
+    chroot "${imagedir}" update-menu-lst
+    rm -f "${imagedir}/boot/grub/menu.lst~"
 else
-    ## HVM (standard GRUB) support.
+    # Disable the count-down.
+    sed -i "s/^\(GRUB_TIMEOUT\)=.*$/\1=0/" "${imagedir}/etc/default/grub"
 
-    # Make device.map point to the EBS device for now.
-    echo -e "(hd0)\t${block_device_path}" > "${device_map}"
+    # Disable recovery options - we won't be able to select them anyway.
+    sed -i "s/^#\(GRUB_DISABLE_RECOVERY\)=.*$/\1=\"true\"/" \
+        "${imagedir}/etc/default/grub"
+
+    # Simplify grub.cfg to improve compatibility.
+    echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
+         >> "${imagedir}/etc/default/grub"
+
+    # Set output console.
+    sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
+        "${imagedir}/etc/default/grub"
+
+
+    ## HVM (standard GRUB) support.
 
     # Update grub.cfg using the script. This will now work correctly.
     chroot "${imagedir}" update-grub
@@ -74,12 +81,14 @@ else
     # Install Grub to the start of the block device.
     chroot "${imagedir}" grub-install --no-floppy --force "${block_device_path}"
 
-    # Set the correct values for device.map.
-    echo -e "(hd0)\t${grub_device}" > "${device_map}"
-fi
-
-# Remove everything from device.map after the first line (hd0).
-if [ -f "${device_map}" ]
-then
-    sed -i '2,$d' "${device_map}"
+    # Sanity check values in grub.cfg
+    if [ "${block_device_path:0:7}" = "/dev/sd" ]
+    then
+        sed -i "s#${block_device_path}#/dev/sda#g" \
+            "${imagedir}/boot/grub/grub.cfg"
+    elif [ "${block_device_path:0:8}" = "/dev/xvd" ]
+    then
+        sed -i "s#${block_device_path}#/dev/xvda#g" \
+            "${imagedir}/boot/grub/grub.cfg"
+    fi
 fi

@@ -2,32 +2,16 @@
 #
 # Clean up the image
 
-# Remove the ssh host keys, they need to be shredded
-shred --remove \
-    ${imagedir}/etc/ssh/ssh_host_dsa_key \
-    ${imagedir}/etc/ssh/ssh_host_dsa_key.pub \
-    ${imagedir}/etc/ssh/ssh_host_rsa_key \
-    ${imagedir}/etc/ssh/ssh_host_rsa_key.pub \
-    ${imagedir}/etc/ssh/ssh_host_ecdsa_key \
-    ${imagedir}/etc/ssh/ssh_host_ecdsa_key.pub
+# Shred any SSH host keys which would otherwise be baked into the AMI.
+shred --remove "${imagedir}/etc/ssh/ssh_host_"*
 
-# ed25519 keys may exist on Jessie and above.
-if [ -f "${imagedir}/etc/ssh/ssh_host_ed25519_key" ]
-then
-    shred --remove ${imagedir}/etc/ssh/ssh_host_ed25519_key \
-        ${imagedir}/etc/ssh/ssh_host_ed25519_key.pub
-fi
-
-# We do the same to the bash history, there shouldn't be anything sensitive in there,
-# it's just in case plugins need to execute commands that have credentials in their parameters.
-# In fact: The standard bootstrapping process does not even create it.
+# We do the same to the bash history, in case plugins need to execute
+# commands that have credentials in their parameters. It doesn't exist
+# by default, so this is just to be sure.
 if [ -f ${imagedir}/root/.bash_history ]
 then
     shred --remove "${imagedir}/root/.bash_history"
 fi
-
-# Clear the motd head, as it contains the hostname of the bootstrapper.
-> /var/run/motd
 
 # Remove log files, temporary files and bash history
 rm -rf \
