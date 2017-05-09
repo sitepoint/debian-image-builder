@@ -1,0 +1,83 @@
+#!/bin/bash
+
+declare -a vars=(
+    EC2_CERT EC2_PRIVATE_KEY AWS_ACCESS_KEY AWS_SECRET_KEY
+    EC2_REGION EC2_USER_ID S3_BUCKET
+)
+declare -a vars_missing=()
+declare -a files=("${EC2_CERT}" "${EC2_PRIVATE_KEY}")
+declare -a files_missing
+declare var
+declare file
+
+function echo_err()
+{
+    echo "${*}" 1>&2
+}
+
+function print_file_contents_cmd()
+{
+    local file_path="${1}"
+    echo "cat << EOF > \"${file_path}\""
+    cat "${file_path}"
+    echo EOF
+}
+
+# Variable validation.
+for var in ${vars[*]}
+do
+    if [ -z "${!var}" ]
+    then
+        vars_missing+=(${var})
+    fi
+done
+if [ ${#vars_missing[*]} -gt 0 ]
+then
+    echo "The following variables were unset:"
+    for var in ${vars_missing[*]}
+    do
+        echo_err "  ${var}"
+    done
+    exit 1
+fi
+
+# Certificate file validation.
+for file in ${files[*]}
+do
+    if [ ! -f "${!file}" ]
+    then
+        files_missing+=(${files_missing})
+    fi
+done
+if [ ${#file_missing[*]} -gt 0 ]
+then
+    echo "The following files were missing:"
+    for var in ${files_missing[*]}
+    do
+        echo_err "  ${var}"
+    done
+    exit 1
+fi
+
+# Print commands to import a valid setup for euca2ools.
+{
+    for var in ${vars[*]}
+    do
+        echo "export ${var}=\"${!var}\"" | sed "s#${HOME}#\${HOME}#g"
+    done
+
+    echo
+    if [ "$(dirname ${EC2_CERT})" = "$(dirname ${EC2_PRIVATE_KEY})" ]
+    then
+        echo "mkdir -p -m 0700 \"$(dirname ${EC2_CERT})\""
+    else
+        echo "mkdir -p -m 0700 \"$(dirname ${EC2_CERT})\" \"$(dirname ${EC2_PRIVATE_KEY})\""
+    fi
+    echo "touch \"${EC2_CERT}\" \"${EC2_PRIVATE_KEY}\""
+    echo "chmod 0600 \"${EC2_CERT}\" \"${EC2_PRIVATE_KEY}\""
+
+    print_file_contents_cmd "${EC2_CERT}"
+    print_file_contents_cmd "${EC2_PRIVATE_KEY}"
+
+    echo "history -c 0"
+} | sed "s#${HOME}#\${HOME}#g"
