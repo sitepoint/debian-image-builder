@@ -1,0 +1,20 @@
+# Work-around for #863385
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863385
+
+# Append net.ifnames=0 to kernel boot arguments.
+if [ "${virtt}" = 'paravirtual' ]
+then
+    sed -i 's/^\(#\s\+kopt=.*\)$/\1 net.ifnames=0/' \
+        "${imagedir}/boot/grub/menu.lst"
+
+    # Regenerate menu.lst.
+    chroot "${imagedir}" update-menu-lst
+    rm -f "${imagedir}/boot/grub/menu.lst~"
+else
+    sed -i \
+        's/^\(GRUB_CMDLINE_LINUX_DEFAULT\)="\?\([^"]*\)"\?$/\1="\2 net.ifnames=0"/' \
+        "${imagedir}/etc/default/grub"
+
+    # Regenerate grub.cfg.
+    chroot "${imagedir}" update-grub
+fi
