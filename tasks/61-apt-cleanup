@@ -8,5 +8,9 @@ chroot "${imagedir}" apt-get autoremove --purge
 # Erase downloaded archive files
 chroot "${imagedir}" apt-get clean
 
+# Avoid the possibility of including bad repository listings.
+# eg. https://serverfault.com/questions/722893/debian-mirror-hash-sum-mismatch
+rm -rf "${imagedir}/var/lib/apt/lists/"*
+
 # Enable the daemons again
 rm -rf "${imagedir}/usr/sbin/policy-rc.d"
