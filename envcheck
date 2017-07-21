@@ -77,7 +77,7 @@ then
         if ! grep -iq "^access_key\s*=\s*${AWS_ACCESS_KEY}\s*$" "${s3cfg}"
         then
             echo "AWS_ACCESS_KEY not found in ${s3cfg}"
-            move_s3_path=0
+            move_s3_path=1
         fi
     fi
     if [ -n "${AWS_SECRET_KEY}" ]
@@ -85,7 +85,7 @@ then
         if ! grep -iq "^secret_key\s*=\s*${AWS_SECRET_KEY}\s*$" "${s3cfg}"
         then
             echo "AWS_SECRET_KEY not found in ${s3cfg}"
-            move_s3_path=0
+            move_s3_path=1
         fi
     fi
 else
