@@ -1,4 +1,8 @@
-packages+=('sysvinit')
+# The 'sysvinit' package has been removed from stretch.
+if [ "${codename}" = 'jessie' ]
+then
+    packages+=('sysvinit')
+fi
 packages+=('sysvinit-core')
 packages+=('sysvinit-utils')
 exclude_packages+=('systemd')
