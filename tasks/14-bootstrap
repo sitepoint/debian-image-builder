@@ -12,9 +12,6 @@ IFS=${SAVE_IFS}
 # if multiple are specified.
 bootstrap_mirror=${apt_mirrors%% *}
 
-bootstrap_args="--arch ${arch} --include=${include} --exclude=${exclude}
-${codename} ${imagedir} ${bootstrap_mirror}"
-
 args_hash=$(printf -- "${arch} ${include} -- ${exclude} ${codename}" |
     sha1sum)
 
