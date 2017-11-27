@@ -2,6 +2,15 @@
 
 new_cloud_init_cfg="$(mktemp /tmp/cloud-XXXXXXXX.cfg)"
 
+# Install cloud-init package
+#
+# Note that installation fails on Stretch with --include=cloud-init
+# hence installing it here.
+chroot "${imagedir}" apt-get -y \
+    -o DPkg::Options::=--force-confnew \
+    -o DPkg::Options::=--force-confdef \
+    install cloud-init || die "apt-get install cloud-init failed!"
+
 cat << EOF | python > "${new_cloud_init_cfg}"
 #!/usr/bin/env python
 
