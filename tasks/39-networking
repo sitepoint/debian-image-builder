@@ -9,16 +9,21 @@ rm -f "${imagedir}/etc/resolv.conf"
 # invalid" warning on boot.
 echo localhost > "${imagedir}/etc/hostname"
 
-# In Jessie and newer, interfaces contains the line: source-directory
-# /etc/network/interfaces.d.  and (aside from comments) nothing else.
-#
-# Note the dhcpcd daemon will fail to start if eth0 is already
-# defined.
+# In Jessie and newer, interfaces contains the line:
+# source-directory /etc/network/interfaces.d/*
+# and (aside from comments) nothing else.
 if ! grep -q '^auto lo\ *$' "${imagedir}/etc/network/interfaces"
 then
 	cat > "${imagedir}/etc/network/interfaces.d/lo" <<EOF
 # The loopback network interface
 auto lo
 iface lo inet loopback
+EOF
+fi
+if ! grep -q '^auto eth0\ *$' "${imagedir}/etc/network/interfaces"
+then
+	cat > "${imagedir}/etc/network/interfaces.d/eth0" <<EOF
+auto eth0
+iface eth0 inet dhcp
 EOF
 fi
