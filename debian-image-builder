@@ -6,6 +6,12 @@ set -e
 declare -r prog_path="${BASH_SOURCE[0]}"
 declare -r prog_name="$(basename ${prog_path})"
 
+## Import host OS information
+if [ -f /etc/os-release ]
+then
+    source /etc/os-release
+fi
+
 ## Import various functions.
 if [ -f "$(dirname ${prog_path})/lib/utils" ]
 then
