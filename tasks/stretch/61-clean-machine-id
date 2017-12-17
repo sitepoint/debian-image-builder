@@ -1,0 +1,9 @@
+## machine-id cleanup
+#
+# Remove the machine-id from the image
+
+if [ -f "${imagedir}/var/lib/dbus/machine-id" ]
+then
+    shred --remove "${imagedir}/var/lib/dbus/machine-id"
+fi
+dd of="${imagedir}/etc/machine-id" count=0 2>/dev/null

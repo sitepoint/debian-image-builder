@@ -44,12 +44,12 @@ fi
 # Certificate file validation.
 for file in ${files[*]}
 do
-    if [ ! -f "${!file}" ]
+    if [ ! -f "${file}" ]
     then
-        files_missing+=(${files_missing})
+        files_missing+=(${file})
     fi
 done
-if [ ${#file_missing[*]} -gt 0 ]
+if [ ${#files_missing[*]} -gt 0 ]
 then
     echo "The following files were missing:"
     for var in ${files_missing[*]}

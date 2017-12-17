@@ -9,6 +9,8 @@ declare -i move_s3_path=2
 declare -i partitioning=2
 declare -i python=1
 declare -i grant_launch_permission=1
+declare urllib3_ver
+declare s3cmd_ver
 
 declare -r s3cfg="${HOME}/.s3cfg"
 
@@ -65,6 +67,13 @@ else
     echo "     ok AWS_CREDENTIAL_FILE=${AWS_CREDENTIAL_FILE}"
 fi
 
+# Check for bc support.
+if ! command -v bc 1>/dev/null
+then
+    echo "bc is not installed. Cannot complete checks."
+    exit 1
+fi
+
 # Check s3cmd support.
 if ! command -v s3cmd 1>/dev/null
 then
@@ -72,12 +81,19 @@ then
     move_s3_path=1
 elif [ -f "${s3cfg}" ]
 then
+    s3cmd_ver="$(s3cmd  --version | \
+        sed 's/^s3cmd\ version\ \([0-9]\+\.[0-9]\+\)\..*$/\1/')"
+    if [ "$(echo "${s3cmd_ver} < 1.6" | bc)" -eq 1 ]
+    then
+        echo "s3cmd version unsupported. Please upgrade to >= 1.6"
+        move_s3_path=1
+    fi
     if [ -n "${AWS_ACCESS_KEY}" ]
     then
         if ! grep -iq "^access_key\s*=\s*${AWS_ACCESS_KEY}\s*$" "${s3cfg}"
         then
             echo "AWS_ACCESS_KEY not found in ${s3cfg}"
-            move_s3_path=0
+            move_s3_path=1
         fi
     fi
     if [ -n "${AWS_SECRET_KEY}" ]
@@ -85,8 +101,16 @@ then
         if ! grep -iq "^secret_key\s*=\s*${AWS_SECRET_KEY}\s*$" "${s3cfg}"
         then
             echo "AWS_SECRET_KEY not found in ${s3cfg}"
-            move_s3_path=0
+            move_s3_path=1
         fi
+    fi
+    urllib3_ver="$(echo -e "import urllib3\nfrom distutils.version import StrictVersion\n\
+print StrictVersion(urllib3.__version__) >= StrictVersion('1.10')" | python)"
+    if [ "${urllib3_ver}" != "True" ]
+    then
+        echo "urllib3 version unsupported. Please upgrade to >= 1.10"
+        echo "See https://github.com/shazow/urllib3/issues/412 for details"
+        move_s3_path=1
     fi
 else
     echo "s3cmd is not configured."

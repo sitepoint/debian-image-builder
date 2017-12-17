@@ -29,3 +29,6 @@ then
     host_packages+=('hdparm')
     host_packages+=('parted')
 fi
+
+# Prevent urllib3 warnings about SOCKS support missing.
+host_packages+=('python-pysocks')

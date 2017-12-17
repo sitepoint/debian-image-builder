@@ -1,15 +1,22 @@
 admin_username='admin'
 
-# Create the user
-chroot "${imagedir}" useradd --create-home --shell /bin/bash \
-    ${admin_username}
+# Configure the user via cloud-init.
+cat > "${imagedir}/etc/cloud/cloud.cfg.d/99_user.cfg" <<EOF
+# https://cloudinit.readthedocs.io/en/latest/topics/modules.html#users-and-groups
+users:
+  - default
 
-# Allow ec2-user to use sudo without a password
-cat > "${imagedir}/etc/sudoers.d/99_admin" <<EOF
-${admin_username} ALL=(ALL) NOPASSWD:ALL
+system_info:
+  default_user:
+    name: ${admin_username}
+    gecos: Administrator
+    groups: [adm, sudo, staff]
+    home: /home/admin
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
 EOF
-chmod 440 "${imagedir}/etc/sudoers.d/99_admin"
+chmod 0644 "${imagedir}/etc/cloud/cloud.cfg.d/99_user.cfg"
 
-# Disallow root login
-sed -i "s/^PermitRootLogin yes/PermitRootLogin no/" \
+# Disallow root login via SSH
+sed -i 's/^#\?PermitRootLogin\ \+yes\ *$/PermitRootLogin no/' \
     "${imagedir}/etc/ssh/sshd_config"
