@@ -26,3 +26,14 @@ then
 else
     die "Failed to set the timezone to '${timezone}'!"
 fi
+
+# Create /etc/adjtime, normally used for hardware clock information.
+# https://www.debian.org/releases/stable/amd64/apds03.html.en
+# Some programs simply assume this file exists (eg. Salt), and it
+# normally does on a standard Debian installation.
+cat > "${imagedir}/etc/adjtime" << EOF
+0.0 0 0.0
+0
+UTC
+EOF
+chmod 0644 "${imagedir}/etc/adjtime"
