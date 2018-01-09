@@ -1,0 +1,24 @@
+## apt-dist-upgrade
+#
+# dist-upgrade packages installed by debootstrap
+
+# Don't launch daemons when upgrading.
+cat > "${imagedir}/usr/sbin/policy-rc.d" << EOF
+#!/bin/sh
+exit 101
+EOF
+chmod 755 "${imagedir}/usr/sbin/policy-rc.d"
+
+# Update the package cache to reflect changes to sources.list
+# contents.
+chroot "${imagedir}" apt-get update || die "apt-get update failed!"
+
+# Fix broken dependencies, if any.
+chroot "${imagedir}" \
+    apt-get -f -y -o DPkg::Options::=--force-confnew install
+
+# Perform a dist-upgrade to ensure we pull in (for example) new kernel
+# packages from security.debian.org, if applicable.
+chroot "${imagedir}" \
+    apt-get -y -o DPkg::Options::=--force-confnew dist-upgrade || \
+    die "apt-get dist-upgrade failed!"
