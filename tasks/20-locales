@@ -9,8 +9,31 @@ sed -i "s/# ${locale}.${charmap} ${charmap}/${locale}.${charmap} ${charmap}/" \
 chroot "${imagedir}" dpkg-reconfigure --priority=critical locales
 
 # Set timezone
-cat > "${imagedir}/etc/timezone" <<EOF
-${timezone}
-EOF
+# https://serverfault.com/questions/84521/automate-dpkg-reconfigure-tzdata/84528#84528
+# https://bugs.launchpad.net/ubuntu/+source/tzdata/+bug/1554806
+if [ -f "${imagedir}/usr/share/zoneinfo/${timezone}" ]
+then
+    # Create /etc/timezone with the correct permissions if necessary.
+    if [ ! -f "${imagedir}/etc/timezone" ]
+    then
+	install -m 0644 /dev/null "${imagedir}/etc/timezone"
+    fi
+    # Normally reconfiguring tzdata sets this, but manually populating
+    # /etc/timezone may still be required for jessie.
+    echo "${timezone}" > "${imagedir}/etc/timezone"
+    ln -sf "/usr/share/zoneinfo/${timezone}" "${imagedir}/etc/localtime"
+    chroot "${imagedir}" dpkg-reconfigure -f noninteractive tzdata
+else
+    die "Failed to set the timezone to '${timezone}'!"
+fi
 
-cp -f "${imagedir}/usr/share/zoneinfo/${timezone}" "${imagedir}/etc/localtime"
+# Create /etc/adjtime, normally used for hardware clock information.
+# https://www.debian.org/releases/stable/amd64/apds03.html.en
+# Some programs simply assume this file exists (eg. Salt), and it
+# normally does on a standard Debian installation.
+cat > "${imagedir}/etc/adjtime" << EOF
+0.0 0 0.0
+0
+UTC
+EOF
+chmod 0644 "${imagedir}/etc/adjtime"
