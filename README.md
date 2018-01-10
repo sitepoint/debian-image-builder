@@ -24,8 +24,8 @@ Features
 * Template support makes recreating newer versions of AMIs quick and
   easy.
 
-* This script is currently tested on AWS with Jessie images. Stretch
-  support will come when the release is stable.
+* This script is currently tested on AWS to build Stretch (stable) and
+  Jessie (oldstable) images.
 
 Note: To create an AMI, debian-image-builder needs to be run on an
 Amazon EC2 instance - we'll be attaching an EBS volume temporarily
@@ -62,9 +62,8 @@ while retaining the power and flexibility of alternatives.
   debian-image-builder depends on. eg.
   https://eucalyptus.atlassian.net/browse/TOOLS-294
 
-* The ``no-systemd`` plugin. Keep your Jessie AMIs as free from
-  Systemd as is reasonably possible (still using only official Debian
-  packages).
+* The ``no-systemd`` plugin. Keep your AMIs as free from Systemd as is
+  reasonably possible (still using only official Debian packages).
 
 * The ``pause-before-umount`` plugin. Allows you to inspect the root
   filesystem for problems (and optionally make manual changes) just
@@ -83,7 +82,7 @@ while retaining the power and flexibility of alternatives.
   instance-store volume for the root device (for example)? We've got
   you covered.
 
-* Jessie on EC2 uses the ``cloud-init`` package by default.
+* Uses the ``cloud-init`` package by default.
 
 
 Setup
@@ -91,14 +90,15 @@ Setup
 
 The script is started with ``./debian-image-builder``.  The first
 argument should be the provider. Currently only ec2 is supported
-(``./debian-image-builder ec2``).  Supported environments should have
-sensible defaults and can be configured with options and plugins. To
-see a list of options use ``--help``.  When creating an AMI, the
-script needs to be provided with appropriate AWS credentials (see
-below).
+(``./debian-image-builder ec2``) however additing additional providers
+should be straightforward (and patches are welcome). Supported
+environments should have sensible defaults and can be configured with
+options and plugins. To see a list of options use ``--help``. When
+creating an AMI, the script needs to be provided with appropriate AWS
+credentials (see below).
 
 As there are no interactive prompts, the bootstrapping can run
-entirely unattended from start till finish. Plugins can optionally
+entirely unattended from start to finish. Plugins can optionally
 change this behaviour (eg. ``pause-before-umount``).
 
 A number of plugins are included in the plugins directory. A list of
@@ -132,7 +132,7 @@ export EC2_REGION="us-west-2"
 Note: Do *not* export EC2_URL or any other endpoint
 variable. euca2ools includes the various AWS endpoints in the included
 configuration files (which debian-image-builder will deploy
-automatically provided EC2_REGION is set correctly. In my testing
+automatically provided EC2_REGION is set correctly. In my testing,
 exporting EC2_URL will result in failure of some euca2ools commands,
 even if correct!
 
@@ -193,7 +193,7 @@ export LAUNCH_ACCOUNTS="1234-5678-9012 4321-8765-2190 9876-5432-1098"
 
 This will allow the grant-launch-permission-tasks plugin to grant
 launch authorizatinon to accounts specified in the space-separated
-string (with optional dashes). This can come in hand when, for
+string (with optional dashes). This can come in handy when, for
 example, you want to share access to your AMIs with a separate account
 for staging or development.
 
@@ -217,15 +217,15 @@ replaced with sysvinit:
     templates/debian-jessie-hvm-amd64-instance-10-sysvinit.cfg
 ```
 
-This next example creates a 50G EBS-backed HVM Jessie instance. Many
+This next example creates a 50G EBS-backed HVM Stretch instance. Many
 defaults are used:
 
 ```
-./debian-image-builder ec2 --arch amd64 --codename jessie \
+./debian-image-builder ec2 --arch amd64 --codename stretch \
     --volume-size 50 \
     --plugin plugins/standard-packages --virt hvm \
     --name-suffix "$(date +%Y%m%d%H%M)" \
-    --description "Debian 8 (Jessie) 50Gb, HVM, EBS"
+    --description "Debian 8 (Stretch) 50Gb, HVM, EBS"
 ```
 
 This final example creates a Jessie x86_64 paravirtual image with a 5G
