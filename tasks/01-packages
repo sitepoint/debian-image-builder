@@ -31,4 +31,9 @@ then
 fi
 
 # Prevent urllib3 warnings about SOCKS support missing.
-host_packages+=('python-pysocks')
+if [ "${ID}" = "debian" ] && [ -n "${VERSION_ID}" ] && [ ${VERSION_ID} -le 8 ]
+then
+    host_packages+=('python-pysocks')
+else
+    host_packages+=('python-socks')
+fi

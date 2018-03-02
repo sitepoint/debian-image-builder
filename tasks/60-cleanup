@@ -17,3 +17,8 @@ fi
 rm -rf \
     "${imagedir}/var/log/{bootstrap,dpkg}.log" \
     "${imagedir}/tmp/"*
+
+# Delete resolvconf data as it will be obtained from the EC2 DHCP
+# server. This must be performed during the cleanup step so as to not
+# prevent packages from being downloaded.
+shred --remove "${imagedir}/etc/resolv.conf"
