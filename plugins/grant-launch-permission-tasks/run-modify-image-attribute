@@ -1,0 +1,13 @@
+declare account
+
+for account in $(echo ${LAUNCH_ACCOUNTS} | tr -d '-')
+do
+    # Remove any dashes that may be present.
+    account=$(echo "${account}" | tr -d '-')
+
+    aws ec2 modify-image-attribute \
+        --image-id "${ami_id}" \
+        --launch-permission "{\"Add\": [{\"UserId\":\"${account}\"}]}"
+done
+
+unset account
