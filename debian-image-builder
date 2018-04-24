@@ -62,7 +62,7 @@ timezone='UTC'
 ## Hardcoded params.
 # Currently only Debian is supported. May change in the future.
 distribution='debian'
-codename='jessie'
+codename='stretch'
 
 # Filesystem and image info
 partitioning='none'
