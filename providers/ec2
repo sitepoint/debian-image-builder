@@ -106,6 +106,7 @@ volume_id=
 volume_size='1'
 volume_inodes=
 volume_type='ebs'
+ena_support=0
 apt_mirrors='http://http.debian.net/debian'
 
 # EC2 known regions
@@ -145,6 +146,7 @@ ${txtund}Bootstrapping${txtdef}
     --volume-inodes SIZE                 Optionally set a custom inode count for
                                          ext2/3/4 volumes.
     --filesystem FS [ext2..4|xfs]        Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
+    --ena-support                        Enable Elastic Network Adapter (enaSupport) AMI attribute.
     --plugin FILE                        Path to plugin script.
                                          Can be specified more than once.
 
@@ -188,6 +190,7 @@ do
         --volume-size)      volume_size=${2};              shift 2 ;;
         --volume-inodes)    volume_inodes=${2};            shift 2 ;;
         --filesystem)       filesystem=${2};               shift 2 ;;
+        --ena-support)      ena_support=1;                 shift   ;;
         --name-suffix)      name_suffix=${2};              shift 2 ;;
         --description)      description=${2};              shift 2 ;;
         --apt-mirrors)      apt_mirrors=${2};              shift 2 ;;
@@ -219,9 +222,19 @@ export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID} \
        AWS_SECRET_KEY=${AWS_SECRET_ACCESS_KEY} \
        EC2_REGION=${AWS_DEFAULT_REGION}
 
-if [ "${virt}" != "hvm" ] && [ ${ena_support} -eq 1 ]
+if [ ${ena_support} -eq 1 ]
 then
-    die "ENA requires the HVM image type."
+    if [ "${virt}" != "hvm" ]
+    then
+        die "ENA requires the HVM image type."
+    elif [ "${volume_type}" = 'instance' ]
+    then
+        # I'm not aware of any way to have euca-register enable this
+        # feature. The awscli command cannot create an instance store
+        # AMI unless it is based on an existing AMI, and the AWS AMI
+        # Tools use a non-free license so are not supported.
+        die "ENA currently requires an EBS volume."
+    fi
 fi
 
 if [ "${volume_type}" = 'instance' ]

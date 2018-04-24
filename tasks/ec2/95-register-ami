@@ -3,6 +3,7 @@
 # Register the new AMI
 
 declare kernel=""
+declare ena=""
 declare s3_path="${custom_s3_path-${S3_BUCKET}}"
 declare ami_arch
 
@@ -27,6 +28,13 @@ then
     else
         # We're using awscli syntax.
         kernel="--kernel-id ${aki}"
+    fi
+else
+    if [ "${ena_support}" -eq 1 ]
+    then
+        ena="--ena-support"
+    else
+        ena=""
     fi
 fi
 
@@ -61,6 +69,7 @@ else
         --name "${ami_name}" --description "${description}" \
         --architecture "${ami_arch}" ${kernel} \
         --virtualization-type "${virt}" \
+        ${ena} \
         --snapshot "${snapshot_id}" \
         --root-device-name /dev/xvda | \
         jq -r '.ImageId')
