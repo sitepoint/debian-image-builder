@@ -51,7 +51,7 @@ then
 
     # In case of registraion failure, give the AMI registration command to the
     # user.
-    if [[ ! "${ami_id}" =~ ^ami-[0-9a-z]{8}$ ]]
+    if [[ ! "${ami_id}" =~ ^ami-[0-9a-z]*$ ]]
     then
         die \
             "Unable to register an AMI." \
@@ -76,7 +76,7 @@ else
 
     # In case of registraion failure, give the AMI registration command to the
     # user.
-    if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]
+    if [[ ! "$ami_id" =~ ^ami-[0-9a-z]*$ ]]
     then
         die \
             "Unable to register an AMI." \
