@@ -12,5 +12,5 @@ fi
 # CUSTOM_S3_PATH is what the user requested. We add the architecture and date.
 custom_s3_path="${CUSTOM_S3_PATH}/${ami_arch}/$(date +'%Y%m%d%H%M')"
 
-s3cmd -p mv s3://${S3_BUCKET}/* s3://${custom_s3_path}/
-s3cmd setacl --recursive --acl-grant=read:za-team@amazon.com s3://${custom_s3_path}/
+aws s3 mv s3://${S3_BUCKET}/ s3://${custom_s3_path}/ \
+    --recursive --grant-read emailaddress=za-team@amazon.com
