@@ -1,0 +1,16 @@
+## install-euca2ools-deps
+#
+
+# euca2ools is okay to install in Stretch, so we don't need to worry
+# about dependencies.
+if [ "${ID}" = "debian" ] && [ -n "${VERSION_ID}" ] && [ ${VERSION_ID} -ge 9 ]
+then
+    host_packages+=('euca2ools')
+else
+    host_packages+=(
+        'build-essential' 'gzip' 'libxslt1-dev' 'openssl'
+        'python-boto' 'python-dev' 'python-lxml' 'python-m2crypto'
+        'python-requests' 'python-setuptools' 'python-six'
+        'python-support'
+    )
+fi
