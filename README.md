@@ -48,19 +48,11 @@ while retaining the power and flexibility of alternatives.
 ### Advantages of debian-image-builder over bootstrap-vz include: ###
 
 * No dependendencies on anything outside of what is packaged within
-  Debian (aside from euca2ools which is automatically fetched and
-  installed if required).
+  Debian (aside from euca2ools on Debian Jessie and below).
 
 * A commitment to using only free software tools.
   debian-image-builder uses only free software in accordance with the
   [Debian Social Contract](http://www.debian.org/social_contract).
-  Unlike other solutions, we use
-  [euca2ools](http://www.eucalyptus.com/download/euca2ools) instead of
-  Amazon's proprietary
-  [EC2 API Tools](http://aws.amazon.com/developertools/351) software.
-  Work to this effect has been contributed to projects
-  debian-image-builder depends on. eg.
-  https://eucalyptus.atlassian.net/browse/TOOLS-294
 
 * The ``no-systemd`` plugin. Keep your AMIs as free from Systemd as is
   reasonably possible (still using only official Debian packages).
@@ -110,31 +102,27 @@ your own plugin (see HOWTO.md in the plugins directory).
 ### EC2 usage examples ###
 
 Start by switching to the root user, and exporting the environment
-variables required by euca2ools:
+variables required by awscli:
 
 ```
-export AWS_ACCESS_KEY='access_key'
-export AWS_SECRET_KEY='secret_key'
+export AWS_ACCESS_KEY_ID='access_key'
+export AWS_SECRET_ACCESS_KEY='secret_key'
 ```
-
-The above are imported into /etc/euca2ools/euca2ools.ini automatically
-upon first execution, and are ignored for subsequent executions.
 
 Also be sure to export the following:
+
+```
+export AWS_DEFAULT_REGION="us-west-2"
+```
+
+If creating an instance store AMI, you will also require the
+following:
 
 ```
 export EC2_CERT="${HOME}/x.509/cert.pem"
 export EC2_PRIVATE_KEY="${HOME}/x.509/pk.pem"
 export EC2_USER_ID="5555-5555-5555"
-export EC2_REGION="us-west-2"
 ```
-
-Note: Do *not* export EC2_URL or any other endpoint
-variable. euca2ools includes the various AWS endpoints in the included
-configuration files (which debian-image-builder will deploy
-automatically provided EC2_REGION is set correctly. In my testing,
-exporting EC2_URL will result in failure of some euca2ools commands,
-even if correct!
 
 If creating AMIs with instance-store volumes, you will need to set
 S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
