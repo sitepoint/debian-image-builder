@@ -1,2 +1,5 @@
-euca-modify-snapshot-attribute --create-volume-permission --add all \
-    "${snapshot_id}"
+aws ec2 modify-snapshot-attribute \
+    --snapshot-id "${snapshot_id}" \
+    --attribute createVolumePermission \
+    --operation-type add \
+    --group-names all
