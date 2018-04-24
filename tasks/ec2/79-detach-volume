@@ -2,9 +2,8 @@
 #
 # Detach the EBS volume
 
-euca-detach-volume ${volume_id}
+aws ec2 detach-volume --volume-id "${volume_id}"
 
-# The grep command is for compatibility with euca2ools>=3.0.0 which
-# prints all volumes.
-dotdot "euca-describe-volumes ${volume_id} | grep ${volume_id} "\
-"| grep 'available'"
+# Wait until the volume has transitioned from 'in-use' to 'available'.
+dotdot "aws --output json ec2 describe-volumes --volume-ids ${volume_id} | \
+       jq -r '.Volumes[0].State' | grep 'available'"
