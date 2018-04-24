@@ -14,7 +14,8 @@ declare urllib3_ver
 declare -r s3cfg="${HOME}/.s3cfg"
 
 for var in EC2_CERT EC2_PRIVATE_KEY \
-    AWS_ACCESS_KEY AWS_SECRET_KEY EC2_REGION EC2_USER_ID S3_BUCKET \
+    AWS_ACCESS_KEY AWS_SECRET_KEY \
+    AWS_DEFAULT_REGION EC2_USER_ID S3_BUCKET \
     CUSTOM_S3_PATH LAUNCH_ACCOUNTS
 do
     # Check variable is not empty.
