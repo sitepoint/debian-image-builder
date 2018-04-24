@@ -20,7 +20,14 @@ fi
 # always set to "instance-store").
 if [ "${virt}" = 'paravirtual' ]
 then
-    kernel="--kernel ${aki}"
+    if [ "${volume_type}" = 'instance' ]
+    then
+        # We're using euca2ools syntax.
+        kernel="--kernel ${aki}"
+    else
+        # We're using awscli syntax.
+        kernel="--kernel-id ${aki}"
+    fi
 fi
 
 if [ "${volume_type}" = 'instance' ]
@@ -31,8 +38,8 @@ then
         --name "${ami_name}" --description "${description}" \
         --architecture "${ami_arch}" ${kernel} \
         --virtualization-type "${virt}" \
-        "${s3_path}/${ami_name}.manifest.xml" \
-        | awk '{print $2}')
+        "${s3_path}/${ami_name}.manifest.xml" | \
+        awk '{print $2}')
 
     # In case of registraion failure, give the AMI registration command to the
     # user.
@@ -50,13 +57,13 @@ then
 else
     log "Registering an AMI with the snapshot '${snapshot_id}'"
 
-    ami_id=$(euca-register \
+    ami_id=$(aws ec2 register-image \
         --name "${ami_name}" --description "${description}" \
         --architecture "${ami_arch}" ${kernel} \
         --virtualization-type "${virt}" \
         --snapshot "${snapshot_id}" \
-        --root-device-name /dev/xvda \
-        | awk '{print $2}')
+        --root-device-name /dev/xvda | \
+        jq -r '.ImageId')
 
     # In case of registraion failure, give the AMI registration command to the
     # user.
@@ -65,7 +72,7 @@ else
         die \
             "Unable to register an AMI." \
             "You can do it manually with:" \
-            "$(which euca-register) \\\\" \
+            "$(which aws) ec2 register-image \\\\" \
             "--name '${ami_name}' --description '${description}' \\\\" \
             "--architecture '${ami_arch}' ${kernel} \\\\" \
             "--virtualization-type '${virt}' \\\\" \
