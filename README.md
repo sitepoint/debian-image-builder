@@ -225,7 +225,7 @@ defaults are used:
     --volume-size 50 \
     --plugin plugins/standard-packages --virt hvm \
     --name-suffix "$(date +%Y%m%d%H%M)" \
-    --description "Debian 8 (Stretch) 50Gb, HVM, EBS"
+    --description "Debian 9 (Stretch) 50Gb, HVM, EBS"
 ```
 
 This final example creates a Jessie x86_64 paravirtual image with a 5G
