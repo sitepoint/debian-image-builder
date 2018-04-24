@@ -14,17 +14,15 @@
 
 euca2ools_sha1sum='e8c0381bbbe8c3f1511f7919c8cbdc9279fc735e'
 euca2ools_version='3.3.1'
-euca2ools_version_match='3.3-devel'
-
 
 function install_euca2ools {
-
     # We want to fail if make fails, so don't start a subshell with
     # (). Remember the old directory.
 
-    local orig_pwd="$(pwd)"
+    local temp_dir="$(mktemp -d /tmp/${prog_name}.XXXXXXXX)"
 
-    # Install build dependencies. Hopefully this covers everything.
+    # Install build dependencies. Hopefully this covers everything we
+    # might have missed installing previously.
     apt-get -y build-dep euca2ools
 
     wget -qO "${temp_dir}/euca2ools-${euca2ools_version}.tar.gz" \
@@ -38,7 +36,7 @@ function install_euca2ools {
     tar zxf "${temp_dir}/euca2ools-${euca2ools_version}.tar.gz" \
         -C "${temp_dir}"
 
-    cd "${temp_dir}/euca2ools-${euca2ools_version}"
+    pushd "${temp_dir}/euca2ools-${euca2ools_version}"
     python setup.py install || die "Bootstrapping failed!"
 
     # Install configuration files and certs. See INSTALL.
@@ -53,26 +51,17 @@ function install_euca2ools {
         cp -R certs/* /usr/share/euca2ools/certs
     fi
 
-    cd "${orig_pwd}"
+    popd
+
+    rm -r "${temp_dir}"
+    unset temp_dir
 }
 
-
-temp_dir="$(mktemp -d /tmp/${prog_name}.XXXXXXXX)"
-
-# Install euca2ools from source if they are not already present or are
-# the wrong version.
+# Install euca2ools from source if they are not already present.
 if ! command -v euca-version > /dev/null 2>&1
 then
     install_euca2ools
-elif [ "$(euca-version 2>&1 | cut -d ' ' -f 2)" != \
-    "${euca2ools_version_match}" ]
-then
-    # The version installed is older than ${suca2ools_version}.
-    install_euca2ools
 fi
-
-rm -r "${temp_dir}"
-unset temp_dir
 
 if ! euca-describe-regions >/dev/null
 then
