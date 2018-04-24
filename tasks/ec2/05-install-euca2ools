@@ -46,24 +46,7 @@ function install_euca2ools {
     then
         mkdir -p /etc/euca2ools
         cp -R conf/* /etc/euca2ools
-
-        mv /etc/euca2ools/euca2ools.ini{,.example}
-        touch /etc/euca2ools/euca2ools.ini
-        chmod 0640 /etc/euca2ools/euca2ools.ini
-        cat <<EOF >/etc/euca2ools/euca2ools.ini
-[user debian-image-builder]
-key-id = ${AWS_ACCESS_KEY}
-secret-key = ${AWS_SECRET_KEY}
-
-[region aws:*]
-user = debian-image-builder
-
-[global]
-default-region = ${region}
-debug = false
-EOF
     fi
-
     if [ ! -d /usr/share/euca2ools/certs ]
     then
         mkdir -p /usr/share/euca2ools/certs
