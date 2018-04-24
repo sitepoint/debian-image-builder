@@ -149,14 +149,13 @@ the bucket and path name for the CUSTOM_S3_PATH environment variable
 (again, sans the s3:// prefix) and the AMI will be registered there
 instead.
 
-Note that due to limitations of AWS and/or euca2ools, the AMI will be
-uploaded to S3_BUCKET first, and then moved automatically (using
-``s3cmd``) to CUSTOM_S3_PATH during a later step before finally being
-registered. While it's generally safe to execute debian-image-builder
-multiple times simultaneously for quickly building a large number of
-AMIs, you will need to make sure no two builds are using S3_BUCKET at
-the same time (and debian-image-builder will fail to start if it
-detects this condition).
+Note that due to AWS limitations, the AMI will be uploaded to
+S3_BUCKET first, and then moved automatically to CUSTOM_S3_PATH during
+a later step before finally being registered. While it's generally
+safe to execute debian-image-builder multiple times simultaneously for
+quickly building a large number of AMIs, you will need to make sure no
+two builds are using S3_BUCKET at the same time (and
+debian-image-builder will fail to start if it detects this condition).
 
 Be careful to ensure that S3 buckets specified by S3_BUCKET and
 CUSTOM_S3_PATH are located in the same region as the instance running
@@ -171,17 +170,6 @@ template files is a trivial process.
 ```
 export S3_BUCKET="my-temporary-build-bucket"
 export CUSTOM_S3_PATH="my-${EC2_REGION}-images/debian-gnu_linux/jessie"
-```
-
-The next part of the setup process (if generating instance-store AMIs
-using the move-s3-path plugin) is to install and configure
-``s3cmd``. The s3cmd configure step will run you though a quick setup
-wizard, since the tool does not recognise the EC2_* environment
-variables.
-
-```
-apt-get install s3cmd
-s3cmd --configure
 ```
 
 If using the grant-launch-permission-tasks plugin, you will also need
