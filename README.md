@@ -63,8 +63,8 @@ while retaining the power and flexibility of alternatives.
   a dedicated plugin for a once-off custom AMI, or if you are just
   trying to debug something.
 
-* The ``move-s3-path`` plugin. Have all of your instance-backed AMIs
-  stored safely in the same bucket, using your preferred directory
+* Have all of your instance-backed AMIs stored safely in the same
+  bucket with different prefixes, using your preferred directory
   structure!
 
 * The ``grant-launch-permission`` plugin. Automatically add launch
@@ -125,40 +125,26 @@ export EC2_USER_ID="5555-5555-5555"
 ```
 
 If creating AMIs with instance-store volumes, you will need to set
-S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
-variables. S3_BUCKET is used to specify the S3 bucket (minus the s3://
-prefix and any suffix path) you wish to bundle and upload your AMI
-to. If you do not specify CUSTOM_S3_PATH (and don't use the
-``move-s3-path`` plugin), your AMI will be registered here. However if
-you would rather have a more organised path like
-s3://my-company-region/debian-gnu_linux/stretch/x86_64/201804201821/
-where you can consolidate multiple AMIs into a single bucket, specify
-the bucket and path name for the CUSTOM_S3_PATH environment variable
-(again, sans the s3:// prefix) and the AMI will be registered there
-instead.
+S3_BUCKET using the `BUCKET[/PREFIX]` format. S3_BUCKET is used to
+specify the S3 bucket (minus the s3:// prefix) you wish to bundle and
+upload your AMI to.
 
-Note that due to AWS limitations, the AMI will be uploaded to
-S3_BUCKET first, and then moved automatically to CUSTOM_S3_PATH during
-a later step before finally being registered. While it's generally
-safe to execute debian-image-builder multiple times simultaneously for
-quickly building a large number of AMIs, you will need to make sure no
-two builds are using S3_BUCKET at the same time (and
-debian-image-builder will fail to start if it detects this condition).
-
-Be careful to ensure that S3 buckets specified by S3_BUCKET and
-CUSTOM_S3_PATH are located in the same region as the instance running
+Be careful to ensure that S3 buckets specified by S3_BUCKET are
+located in the same region as the instance running
 debian-image-builder. Failure to do so will result in a "Bucket is not
 available from endpoint" error near the end of the build process.
 
-Also note that all included templates make use of the ``move-s3-path``
-plugin so you will need to set CUSTOM_S3_PATH if using those, or
-otherwise delete the plugin reference from the templates. Modifying
-template files is a trivial process.
+If you would like to have an organised path like
+s3://my-company-region-ami/debian-gnu_linux/stretch/x86_64/201804201821/
+where you can consolidate multiple AMIs into a single bucket, you
+could specify the following S3_BUCKET value:
 
 ```
-export S3_BUCKET="my-temporary-build-bucket"
-export CUSTOM_S3_PATH="my-${EC2_REGION}-images/debian-gnu_linux/jessie"
+export S3_BUCKET="my-company-${AWS_DEFAULT_REGION}-ami/debian-gnu_linux/stretch/x86_64/$(date +'%Y%m%d%H%M')"
 ```
+
+debian-image-builder aims to be safe to execute multiple times
+simultaneously for quickly building a large number of AMIs.
 
 If using the grant-launch-permission-tasks plugin, you will also need
 to set the following environment variable:
@@ -214,7 +200,6 @@ is the date and time of execution:
     --volume-type instance \
     --filesystem ext4 --volume-size 5 --volume-inodes 5000000 \
     --plugin plugins/standard-packages \
-    --plugin plugins/move-s3-path \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name-suffix "$(date +%Y%m%d%H%M)" \
     --description "Debian 8 (Jessie) 5Gb, paravirtual, instance-store"
