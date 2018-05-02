@@ -5,7 +5,7 @@ declare -i essentials=0  # Print essentials in place message
 
 # These variables work differently to normal expectations. If they
 # equal 0, they are good to use.
-declare -i move_s3_path=2
+declare -i instance_backed=1
 declare -i partitioning=2
 declare -i python=1
 declare -i grant_launch_permission=1
@@ -15,15 +15,14 @@ declare -r s3cfg="${HOME}/.s3cfg"
 
 for var in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY \
     AWS_DEFAULT_REGION EC2_USER_ID S3_BUCKET \
-    CUSTOM_S3_PATH LAUNCH_ACCOUNTS \
-    EC2_PRIVATE_KEY EC2_CERT
+    LAUNCH_ACCOUNTS EC2_PRIVATE_KEY EC2_CERT
 do
     # Check variable is not empty.
     if [ -z "${!var}" ]
     then
         echo "  unset ${var}"
         # Some missing variables are acceptable.
-        if ! [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH|LAUNCH_ACCOUNTS ]]
+        if ! [[ "${var}" =~ S3_BUCKET|LAUNCH_ACCOUNTS ]]
         then
             exit_status=1
         fi
@@ -40,11 +39,10 @@ do
     # Checks against the variable passed.
     else
         echo "   good ${var}=${!var}"
-        # Cross off a required variable for the optional move_s3_path
-        # plugin.
-        if [[ "${var}" =~ S3_BUCKET|CUSTOM_S3_PATH ]]
+        # Cross off a required variable for instance-backed AMIs.
+        if [ "${var}" = 'S3_BUCKET' ]
         then
-            move_s3_path=$(( --move_s3_path ))
+            instance_backed=$(( --instance_backed ))
         # Cross of the required variable for the optional
         # grant-launch-permission-tasks plugin.
         elif [[ "${var}" =~ LAUNCH_ACCOUNTS ]]
@@ -93,9 +91,9 @@ if [ "${exit_status}" -ne 0 ]
 then
     echo "Environment not ready."
 else
-    if [ ${move_s3_path} -ne 0 ]
+    if [ ${instance_backed} -ne 0 ]
     then
-        echo "move-s3-path is unavailable."
+        echo "Instance-backed AMI creation is unavailable."
         essentials=1
     fi
     if [ ${grant_launch_permission} -ne 0 ]
