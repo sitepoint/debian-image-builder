@@ -28,8 +28,9 @@ Features
   Jessie (oldstable) images.
 
 Note: To create an AMI, debian-image-builder needs to be run on an
-Amazon EC2 instance - we'll be attaching an EBS volume temporarily
-during execution, regardless of the type of AMI being created.
+Amazon EC2 instance - we'll be attaching a new EBS volume temporarily
+during execution regardless of the type of AMI being created, which
+will be deleted afterwards.
 
 
 Why debian-image-builder?
@@ -94,9 +95,10 @@ entirely unattended from start to finish. Plugins can optionally
 change this behaviour (eg. ``pause-before-umount``).
 
 A number of plugins are included in the plugins directory. A list of
-external plugins is also provided there in the README.md file. If
-none of those scratch your itch, you can of course very easily write
-your own plugin (see HOWTO.md in the plugins directory).
+external plugins is also provided there in the
+[README.md](./plugins/README.md) file. If none of those scratch your
+itch, you can of course very easily write your own plugin (see
+[HOWTO.md](./plugins/HOWTO.md) in the plugins directory).
 
 
 ### EC2 usage examples ###
@@ -125,52 +127,53 @@ export EC2_USER_ID="5555-5555-5555"
 ```
 
 If creating AMIs with instance-store volumes, you will need to set
-S3_BUCKET using the `BUCKET[/PREFIX]` format. S3_BUCKET is used to
-specify the S3 bucket (minus the s3:// prefix) you wish to bundle and
-upload your AMI to.
+`S3_BUCKET` using the `BUCKET[/PREFIX]` format. `S3_BUCKET` is used to
+specify the S3 bucket (minus the `s3://` prefix) you wish to bundle
+and upload your AMI to.
 
-Be careful to ensure that S3 buckets specified by S3_BUCKET are
+Be careful to ensure that S3 buckets specified by `S3_BUCKET` are
 located in the same region as the instance running
 debian-image-builder. Failure to do so will result in a "Bucket is not
 available from endpoint" error near the end of the build process.
 
 If you would like to have an organised path like
-s3://my-company-region-ami/debian-gnu_linux/stretch/x86_64/201804201821/
+`s3://my-company-region-ami/debian-gnu_linux/stretch/x86_64/201804201821/`
 where you can consolidate multiple AMIs into a single bucket, you
-could specify the following S3_BUCKET value:
+could specify the following `S3_BUCKET` value:
 
 ```
 export S3_BUCKET="my-company-${AWS_DEFAULT_REGION}-ami/debian-gnu_linux/stretch/x86_64/$(date +'%Y%m%d%H%M')"
 ```
 
-Also note that there is currently a bug running euca-upload-bundle
-(called if creating instance-backed AMIs) on Stretch that results in
-an InvalidHeader exception. For now this can be avoided by temporarily
-editing /usr/lib/python2.7/dist-packages/requests/models.py and
-commenting out check_header_validity(header) (line 427). This bug
+Also note that there is currently a bug running the
+`euca-upload-bundle` command (which is called automatically if
+creating instance-backed AMIs) on Stretch that results in an
+`InvalidHeader` exception. For now this can be avoided by temporarily
+editing `/usr/lib/python2.7/dist-packages/requests/models.py` and
+commenting out `check_header_validity(header)` (line 427). This bug
 doesn't affect the creation of the more common EBS backed AMI types.
 
-debian-image-builder aims to be safe to execute multiple times
-simultaneously for quickly building a large number of AMIs.
-
-If using the grant-launch-permission-tasks plugin, you will also need
+If using the `grant-launch-permission` plugin, you will also need
 to set the following environment variable:
 
 ```
 export LAUNCH_ACCOUNTS="1234-5678-9012 4321-8765-2190 9876-5432-1098"
 ```
 
-This will allow the grant-launch-permission-tasks plugin to grant
-launch authorizatinon to accounts specified in the space-separated
-string (with optional dashes). This can come in handy when, for
-example, you want to share access to your AMIs with a separate account
-for staging or development.
+This will allow the `grant-launch-permission` plugin to grant launch
+authorizatinon to accounts specified in the space-separated string
+(with optional dashes). This can come in handy when, for example, you
+want to share access to your AMIs with a separate account for staging
+or development.
 
 Getting the environment into a good state to generate images can take
 some time and it's easy to overlook something, so you may want to run
-the included ``envcheck`` script to verify that everything appears to
+the included `envcheck` script to verify that everything appears to
 be in place. However debian-image-builder generally does a good job of
 failing gracefully when something is amiss.
+
+debian-image-builder aims to be safe to execute multiple times
+simultaneously for quickly building a large number of AMIs.
 
 
 Usage
