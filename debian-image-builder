@@ -58,6 +58,8 @@ arch='amd64'
 locale='en_US'
 charmap='UTF-8'
 timezone='UTC'
+# An alternate name for ${arch}
+machine_arch='x86_64'
 
 ## Hardcoded params.
 # Currently only Debian is supported. May change in the future.
@@ -131,6 +133,14 @@ case ${filesystem} in
         "Valid filesystems are ext[2-4] and xfs"
         ;;
 esac
+
+# Set machine_arch (`uname -m`-style).
+if [ "${arch}" = 'amd64' ]
+then
+    machine_arch='x86_64'
+else
+    machine_arch="${arch}"
+fi
 
 # Put all tasks in the tasks folder into an array. Tolerate the
 # absence of some possible directories.

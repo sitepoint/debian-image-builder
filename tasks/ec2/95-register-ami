@@ -7,14 +7,6 @@ declare ena=""
 declare s3_path="${custom_s3_path-${S3_BUCKET}}"
 declare ami_arch
 
-if [ ${arch} = 'amd64' ]
-then
-    ami_arch='x86_64'
-elif [ ${arch} = 'i386' ]
-then
-    ami_arch='i386'
-fi
-
 # HVM instances don't use AKIs, but our paravirtual instances require the
 # PvGRUB AKI. Note that the virt type is completely independent of the volume
 # type. Ignore the PvGRUB AKI "rootDeviceType" debug description (which is
