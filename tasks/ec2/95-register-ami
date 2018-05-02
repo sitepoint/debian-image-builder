@@ -3,30 +3,24 @@
 # Register the new AMI
 
 declare kernel=""
+declare kernel_die=""
 declare ena=""
-declare s3_path="${custom_s3_path-${S3_BUCKET}}"
-declare ami_arch
+declare ena_die=""
 
-# HVM instances don't use AKIs, but our paravirtual instances require the
-# PvGRUB AKI. Note that the virt type is completely independent of the volume
-# type. Ignore the PvGRUB AKI "rootDeviceType" debug description (which is
-# always set to "instance-store").
+# HVM instances don't use AKIs, but our paravirtual instances require
+# the PvGRUB AKI. Note that the virt type is completely independent of
+# the volume type. Ignore the PvGRUB AKI "rootDeviceType" debug
+# description (which is always set to "instance-store").
 if [ "${virt}" = 'paravirtual' ]
 then
-    if [ "${volume_type}" = 'instance' ]
-    then
-        # We're using euca2ools syntax.
-        kernel="--kernel ${aki}"
-    else
-        # We're using awscli syntax.
-        kernel="--kernel-id ${aki}"
-    fi
+    # We're using awscli syntax.
+    kernel="--kernel-id ${aki}"
+    kernel_die="\\\\\n${kernel} "
 else
     if [ "${ena_support}" -eq 1 ]
     then
         ena="--ena-support"
-    else
-        ena=""
+        ena_die="\\\\\n${ena} "
     fi
 fi
 
@@ -36,51 +30,59 @@ then
 
     ami_id=$(aws ec2 register-image \
              --name "${ami_name}" \
-	     --description "${description}" \
+             --description "${description}" \
              --architecture "${machine_arch}" \
-	     ${kernel} \
+             ${kernel} \
              --virtualization-type "${virt}" \
              --image-location "${S3_BUCKET}/${ami_name}.manifest.xml" | \
-		jq -r .ImageId)
+                 jq -r .ImageId)
 
-    # In case of registraion failure, give the AMI registration command to the
-    # user.
+    # In case of registraion failure, give the AMI registration
+    # command to the user.
     if [[ ! "${ami_id}" =~ ^ami-[0-9a-z]*$ ]]
     then
         die \
             "Unable to register an AMI." \
             "You can do it manually with:" \
-            "$(which euca-register) \\\\" \
-            "--name '${ami_name}' --description '${description}' \\\\" \
-            "--architecture '${ami_arch}' ${kernel} \\\\" \
+            "$(which aws) ec2 register-image \\\\" \
+            "--name '${ami_name}' \\\\" \
+            "--description '${description}' \\\\" \
+            "--architecture '${machine_arch}' ${kernel_die} \\\\" \
             "--virtualization-type '${virt}' \\\\" \
-            "'${s3_path}/${ami_name}.manifest.xml'"
+            "--image-location '${S3_BUCKET}/${ami_name}.manifest.xml'"
     fi
 else
     log "Registering an AMI with the snapshot '${snapshot_id}'"
 
     ami_id=$(aws ec2 register-image \
-        --name "${ami_name}" --description "${description}" \
-        --architecture "${ami_arch}" ${kernel} \
-        --virtualization-type "${virt}" \
-        ${ena} \
-        --snapshot "${snapshot_id}" \
-        --root-device-name /dev/xvda | \
-        jq -r '.ImageId')
+                 --name "${ami_name}" \
+                 --description "${description}" \
+                 --architecture "${machine_arch}" \
+                 ${kernel} \
+                 --virtualization-type "${virt}" \
+                 ${ena} \
+                 --block-device-mappings "[{\"DeviceName\": \"/dev/xvda\","\
+"\"Ebs\":{\"SnapshotId\":\"${snapshot_id}\",\"DeleteOnTermination\":true}}]" \
+                 --root-device-name /dev/xvda | \
+                    jq -r '.ImageId')
 
-    # In case of registraion failure, give the AMI registration command to the
-    # user.
+    # In case of registraion failure, give the AMI registration
+    # command to the user.
     if [[ ! "$ami_id" =~ ^ami-[0-9a-z]*$ ]]
     then
         die \
             "Unable to register an AMI." \
             "You can do it manually with:" \
             "$(which aws) ec2 register-image \\\\" \
-            "--name '${ami_name}' --description '${description}' \\\\" \
-            "--architecture '${ami_arch}' ${kernel} \\\\" \
+            "--name '${ami_name}' \\\\" \
+            "--description '${description}' \\\\" \
+            "--architecture '${machine_arch}' ${kernel_die} \\\\" \
             "--virtualization-type '${virt}' \\\\" \
-            "--snapshot '${snapshot_id}' \\\\" \
-            "--root-device-name /dev/xvda"
+            "--block-device-mappings \"[{"\
+"\\\\\"DeviceName\\\\\": \\\\\"/dev/xvda\\\\\",\\\\\"Ebs\\\\\":{"\
+"\\\\\"SnapshotId\\\\\":\\\\\"${snapshot_id}\\\\\","\
+"\\\\\"DeleteOnTermination\\\\\":true}}]\" \\\\" \
+            "--root-device-name /dev/xvda ${ena_die}"
     fi
 fi
 
