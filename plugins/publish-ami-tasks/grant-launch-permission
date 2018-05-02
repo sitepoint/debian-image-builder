@@ -1,1 +1,3 @@
-euca-modify-image-attribute --launch-permission --add all "${ami_id}"
+aws ec2 modify-image-attribute \
+    --image-id "${ami_id}" \
+    --launch-permission "{\"Add\": [{\"Group\":\"all\"}]}"

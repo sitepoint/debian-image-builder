@@ -1,0 +1,14 @@
+# update-command-not-found
+#
+# We don't install command-not-found by default, but the user may have
+# added the package via a template or plugin. If the package exists,
+# it won't be useful until update-command-not-found is executed. Since
+# it can take a long time to run, we'll run it here and bake the
+# results into the AMI.
+
+chroot "${imagedir}" << EOF 1>/dev/null 2>&1
+if command -v update-command-not-found
+then
+    update-command-not-found
+fi
+EOF

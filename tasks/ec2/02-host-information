@@ -7,8 +7,7 @@ instance_information="$(wget -qO - \
 
 # We need the region, for the apt sources and the availability zone
 # for the EBS volume
-instance_id=$(printf -- "${instance_information}" | grep instanceId \
-    | awk -F\" '{print $4}')
+instance_id="$(echo ${instance_information} | jq -r .instanceId)"
 if [ -z "${instance_id}" ]
 then
     die \
@@ -16,15 +15,13 @@ then
         "This script must be running on ec2 in order to mount EBS volumes."
 fi
 
-region=$(printf -- "${instance_information}" | grep region \
-    | awk -F\" '{print $4}')
+region="$(echo ${instance_information} | jq -r .region)"
 if [ -z "${region}" ]
 then
     die "Unable to fetch the region of this machine."
 fi
 
-availability_zone=$(printf -- "${instance_information}" \
-    | grep availabilityZone | awk -F\" '{print $4}')
+availability_zone="$(echo ${instance_information} | jq -r .availabilityZone)"
 if [ -z "${availability_zone}" ]
 then
     die "Unable to fetch the availability zone of this machine."

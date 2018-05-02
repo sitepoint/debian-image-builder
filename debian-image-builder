@@ -58,11 +58,13 @@ arch='amd64'
 locale='en_US'
 charmap='UTF-8'
 timezone='UTC'
+# An alternate name for ${arch}
+machine_arch='x86_64'
 
 ## Hardcoded params.
 # Currently only Debian is supported. May change in the future.
 distribution='debian'
-codename='jessie'
+codename='stretch'
 
 # Filesystem and image info
 partitioning='none'
@@ -117,7 +119,7 @@ else
 fi
 
 
-# Check if the chosen fs is on we can handle.
+# Check if the chosen fs is one we can handle.
 case ${filesystem} in
     xfs)
         ;;
@@ -131,6 +133,14 @@ case ${filesystem} in
         "Valid filesystems are ext[2-4] and xfs"
         ;;
 esac
+
+# Set machine_arch (`uname -m`-style).
+if [ "${arch}" = 'amd64' ]
+then
+    machine_arch='x86_64'
+else
+    machine_arch="${arch}"
+fi
 
 # Put all tasks in the tasks folder into an array. Tolerate the
 # absence of some possible directories.

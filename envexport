@@ -1,8 +1,10 @@
 #!/bin/bash
 
 declare -a vars=(
-    EC2_CERT EC2_PRIVATE_KEY AWS_ACCESS_KEY AWS_SECRET_KEY
-    EC2_REGION EC2_USER_ID S3_BUCKET
+    AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION
+    EC2_USER_ID S3_BUCKET
+    EC2_PRIVATE_KEY EC2_CERT
 )
 declare -a vars_missing=()
 declare -a files=("${EC2_CERT}" "${EC2_PRIVATE_KEY}")

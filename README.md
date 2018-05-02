@@ -28,8 +28,9 @@ Features
   Jessie (oldstable) images.
 
 Note: To create an AMI, debian-image-builder needs to be run on an
-Amazon EC2 instance - we'll be attaching an EBS volume temporarily
-during execution, regardless of the type of AMI being created.
+Amazon EC2 instance - we'll be attaching a new EBS volume temporarily
+during execution regardless of the type of AMI being created, which
+will be deleted afterwards.
 
 
 Why debian-image-builder?
@@ -48,19 +49,11 @@ while retaining the power and flexibility of alternatives.
 ### Advantages of debian-image-builder over bootstrap-vz include: ###
 
 * No dependendencies on anything outside of what is packaged within
-  Debian (aside from euca2ools which is automatically fetched and
-  installed if required).
+  Debian (aside from euca2ools on Debian Jessie and below).
 
 * A commitment to using only free software tools.
   debian-image-builder uses only free software in accordance with the
   [Debian Social Contract](http://www.debian.org/social_contract).
-  Unlike other solutions, we use
-  [euca2ools](http://www.eucalyptus.com/download/euca2ools) instead of
-  Amazon's proprietary
-  [EC2 API Tools](http://aws.amazon.com/developertools/351) software.
-  Work to this effect has been contributed to projects
-  debian-image-builder depends on. eg.
-  https://eucalyptus.atlassian.net/browse/TOOLS-294
 
 * The ``no-systemd`` plugin. Keep your AMIs as free from Systemd as is
   reasonably possible (still using only official Debian packages).
@@ -71,8 +64,8 @@ while retaining the power and flexibility of alternatives.
   a dedicated plugin for a once-off custom AMI, or if you are just
   trying to debug something.
 
-* The ``move-s3-path`` plugin. Have all of your instance-backed AMIs
-  stored safely in the same bucket, using your preferred directory
+* Have all of your instance-backed AMIs stored safely in the same
+  bucket with different prefixes, using your preferred directory
   structure!
 
 * The ``grant-launch-permission`` plugin. Automatically add launch
@@ -102,106 +95,85 @@ entirely unattended from start to finish. Plugins can optionally
 change this behaviour (eg. ``pause-before-umount``).
 
 A number of plugins are included in the plugins directory. A list of
-external plugins is also provided there in the README.md file. If
-none of those scratch your itch, you can of course very easily write
-your own plugin (see HOWTO.md in the plugins directory).
+external plugins is also provided there in the
+[README.md](./plugins/README.md) file. If none of those scratch your
+itch, you can of course very easily write your own plugin (see
+[HOWTO.md](./plugins/HOWTO.md) in the plugins directory).
 
 
 ### EC2 usage examples ###
 
 Start by switching to the root user, and exporting the environment
-variables required by euca2ools:
+variables required by awscli:
 
 ```
-export AWS_ACCESS_KEY='access_key'
-export AWS_SECRET_KEY='secret_key'
+export AWS_ACCESS_KEY_ID='access_key'
+export AWS_SECRET_ACCESS_KEY='secret_key'
 ```
-
-The above are imported into /etc/euca2ools/euca2ools.ini automatically
-upon first execution, and are ignored for subsequent executions.
 
 Also be sure to export the following:
+
+```
+export AWS_DEFAULT_REGION="us-west-2"
+```
+
+If creating an instance store AMI, you will also require the
+following:
 
 ```
 export EC2_CERT="${HOME}/x.509/cert.pem"
 export EC2_PRIVATE_KEY="${HOME}/x.509/pk.pem"
 export EC2_USER_ID="5555-5555-5555"
-export EC2_REGION="us-west-2"
 ```
 
-Note: Do *not* export EC2_URL or any other endpoint
-variable. euca2ools includes the various AWS endpoints in the included
-configuration files (which debian-image-builder will deploy
-automatically provided EC2_REGION is set correctly. In my testing,
-exporting EC2_URL will result in failure of some euca2ools commands,
-even if correct!
-
 If creating AMIs with instance-store volumes, you will need to set
-S3_BUCKET, and optionally also the CUSTOM_S3_PATH environment
-variables. S3_BUCKET is used to specify the S3 bucket (minus the s3://
-prefix and any suffix path) you wish to bundle and upload your AMI
-to. If you do not specify CUSTOM_S3_PATH (and don't use the
-``move-s3-path`` plugin), your AMI will be registered here. However if
-you would rather have a more organised path like
-s3://my-company-region/debian-gnu_linux/jessie/x86_64/201506191210/
-where you can consolidate multiple AMIs into a single bucket, specify
-the bucket and path name for the CUSTOM_S3_PATH environment variable
-(again, sans the s3:// prefix) and the AMI will be registered there
-instead.
+`S3_BUCKET` using the `BUCKET[/PREFIX]` format. `S3_BUCKET` is used to
+specify the S3 bucket (minus the `s3://` prefix) you wish to bundle
+and upload your AMI to.
 
-Note that due to limitations of AWS and/or euca2ools, the AMI will be
-uploaded to S3_BUCKET first, and then moved automatically (using
-``s3cmd``) to CUSTOM_S3_PATH during a later step before finally being
-registered. While it's generally safe to execute debian-image-builder
-multiple times simultaneously for quickly building a large number of
-AMIs, you will need to make sure no two builds are using S3_BUCKET at
-the same time (and debian-image-builder will fail to start if it
-detects this condition).
-
-Be careful to ensure that S3 buckets specified by S3_BUCKET and
-CUSTOM_S3_PATH are located in the same region as the instance running
+Be careful to ensure that S3 buckets specified by `S3_BUCKET` are
+located in the same region as the instance running
 debian-image-builder. Failure to do so will result in a "Bucket is not
 available from endpoint" error near the end of the build process.
 
-Also note that all included templates make use of the ``move-s3-path``
-plugin so you will need to set CUSTOM_S3_PATH if using those, or
-otherwise delete the plugin reference from the templates. Modifying
-template files is a trivial process.
+If you would like to have an organised path like
+`s3://my-company-region-ami/debian-gnu_linux/stretch/x86_64/201804201821/`
+where you can consolidate multiple AMIs into a single bucket, you
+could specify the following `S3_BUCKET` value:
 
 ```
-export S3_BUCKET="my-temporary-build-bucket"
-export CUSTOM_S3_PATH="my-${EC2_REGION}-images/debian-gnu_linux/jessie"
+export S3_BUCKET="my-company-${AWS_DEFAULT_REGION}-ami/debian-gnu_linux/stretch/x86_64/$(date +'%Y%m%d%H%M')"
 ```
 
-The next part of the setup process (if generating instance-store AMIs
-using the move-s3-path plugin) is to install and configure
-``s3cmd``. The s3cmd configure step will run you though a quick setup
-wizard, since the tool does not recognise the EC2_* environment
-variables.
+Also note that there is currently a bug running the
+`euca-upload-bundle` command (which is called automatically if
+creating instance-backed AMIs) on Stretch that results in an
+`InvalidHeader` exception. For now this can be avoided by temporarily
+editing `/usr/lib/python2.7/dist-packages/requests/models.py` and
+commenting out `check_header_validity(header)` (line 427). This bug
+doesn't affect the creation of the more common EBS backed AMI types.
 
-```
-apt-get install s3cmd
-s3cmd --configure
-```
-
-If using the grant-launch-permission-tasks plugin, you will also need
+If using the `grant-launch-permission` plugin, you will also need
 to set the following environment variable:
 
 ```
 export LAUNCH_ACCOUNTS="1234-5678-9012 4321-8765-2190 9876-5432-1098"
 ```
 
-This will allow the grant-launch-permission-tasks plugin to grant
-launch authorizatinon to accounts specified in the space-separated
-string (with optional dashes). This can come in handy when, for
-example, you want to share access to your AMIs with a separate account
-for staging or development.
+This will allow the `grant-launch-permission` plugin to grant launch
+authorizatinon to accounts specified in the space-separated string
+(with optional dashes). This can come in handy when, for example, you
+want to share access to your AMIs with a separate account for staging
+or development.
 
 Getting the environment into a good state to generate images can take
 some time and it's easy to overlook something, so you may want to run
-the included ``envcheck`` script to verify that everything appears to
+the included `envcheck` script to verify that everything appears to
 be in place. However debian-image-builder generally does a good job of
 failing gracefully when something is amiss.
+
+debian-image-builder aims to be safe to execute multiple times
+simultaneously for quickly building a large number of AMIs.
 
 
 Usage
@@ -225,7 +197,7 @@ defaults are used:
     --volume-size 50 \
     --plugin plugins/standard-packages --virt hvm \
     --name-suffix "$(date +%Y%m%d%H%M)" \
-    --description "Debian 8 (Stretch) 50Gb, HVM, EBS"
+    --description "Debian 9 (Stretch) 50Gb, HVM, EBS"
 ```
 
 This final example creates a Jessie x86_64 paravirtual image with a 5G
@@ -238,7 +210,6 @@ is the date and time of execution:
     --volume-type instance \
     --filesystem ext4 --volume-size 5 --volume-inodes 5000000 \
     --plugin plugins/standard-packages \
-    --plugin plugins/move-s3-path \
     --timezone Australia/Melbourne --locale en_AU --charmap UTF-8 \
     --virt paravirtual --name-suffix "$(date +%Y%m%d%H%M)" \
     --description "Debian 8 (Jessie) 5Gb, paravirtual, instance-store"

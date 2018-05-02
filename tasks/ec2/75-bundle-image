@@ -9,14 +9,8 @@ then
 
     ami_name="${distribution}-${codename}-${arch}-${name_suffix}"
 
-    b_arch="${arch}"
-    if [ "${arch}" = "amd64" ]
-    then
-        b_arch="x86_64"
-    fi
-
-    euca-bundle-image -r "${b_arch}" -i "${image_file}" -d "${bundledir}" \
-        -p "${ami_name}"
+    euca-bundle-image -r "${machine_arch}" -i "${image_file}" \
+        -d "${bundledir}" -p "${ami_name}"
     if [ $? -ne 0 ]
     then
         die "Unable to bundle instance image."

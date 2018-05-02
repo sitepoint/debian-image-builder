@@ -4,19 +4,20 @@
 
 if [ "${volume_type}" = 'ebs' ]
 then
-    logn "Creating snapshot of the EBS volume"
+    logplain "Creating snapshot of the EBS volume..."
 
-    snapshot="$(euca-create-snapshot ${volume_id})"
-    if [ -z "${snapshot}" ]
+    snapshot_id="$(aws --output json ec2 create-snapshot \
+                       --volume-id ${volume_id} | \
+                       jq -r '.SnapshotId')"
+    if [ -z "${snapshot_id}" ]
     then
-        die "\nUnable to create snapshot from the volume '$volume_id'"
+        die "Unable to create snapshot from the volume '${volume_id}'."
     fi
 
-    snapshot_id=$(printf -- "${snapshot}" | awk '{print $2}')
+    log "The EBS snapshot id is ${snapshot_id}."
 
     # Wait for the snapshot to be completed, can take quite some time.
-    # The grep command is for compatibility with euca2ools>=3.0.0
-    # which prints all snapshots.
-    dotdot "euca-describe-snapshots ${snapshot_id} | grep ${snapshot_id} \
-        | grep 'completed'"
+    dotdot "aws --output json ec2 describe-snapshots \
+                --snapshot-ids ${snapshot_id} 2>/dev/null |
+                jq -e -r '.Snapshots[0].State' | grep completed"
 fi

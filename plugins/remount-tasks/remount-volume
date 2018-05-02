@@ -21,8 +21,11 @@ then
 fi
 
 logn "Reattaching the bootstrapped volume"
-euca-attach-volume --instance "${instance_id}" \
-    --device "/dev/xv${device_letter}" "${volume_id}"
+aws ec2 attach-volume \
+    --volume-id "${volume_id}" \
+    --instance-id "${instance_id}" \
+    --device "/dev/xv${device_letter}"
+
 # Wait until the volume is attached
 dotdot "test -b ${block_device_path} && echo attached"
 
@@ -45,5 +48,5 @@ log "Run the following commands to unmount and remove the volume:"
 logplain \
     "umount ${imagedir}" \
     "rm -rf ${imagedir}" \
-    "euca-detach-volume ${volume_id}" \
-    "euca-delete-volume ${volume_id}"
+    "aws ec2 detach-volume --volume-id ${volume_id}" \
+    "aws ec2 delete-volume --volume-id ${volume_id}"

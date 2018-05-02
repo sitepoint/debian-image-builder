@@ -17,13 +17,12 @@ then
     die "No free device letters found (tried xvdf to xvdz)!"
 fi
 
-# The attach command fails in modern euca2ools versions when ran
-# immediately after euca-create-volume - most probably because the
-# command now executes too quickly for AWS's API to keep up!
-
-while [ ${attempt} -ne 0 -a \
-    $(euca-describe-volumes --filter status=available \
-    "${volume_id}" 2>/dev/null | grep VOLUME | wc -l) -lt 1 ]
+# Wait until the volume has a status of 'available' before attempting
+# to attach to ensure success.
+while [ ${attempt} -ne 0 -a "$(aws --output json \
+    ec2 describe-volumes \
+    --volume-ids "${volume_id}" | \
+    jq -e -r '.Volumes[0].State')" != "available" ]
 do
     sleep 5
     (( --attempt ))
@@ -34,8 +33,9 @@ then
     die "It seems we were unable to create ${volume_id}."
 fi
 
-euca-attach-volume --instance "${instance_id}" \
-    --device "/dev/xvd${device_letter}" "${volume_id}"
+aws ec2 attach-volume --volume-id "${volume_id}" \
+    --instance-id "${instance_id}" \
+    --device "/dev/xvd${device_letter}" >/dev/null
 
 # Wait until the volume is attached
 dotdot "test -b ${block_device_path} && echo attached"

@@ -7,19 +7,9 @@ then
     packages+=('grub-pc')
 fi
 
-# Apparently isc-dhcp-client didn't work properly with ec2. It is
-# unclear if this is still the case. For now, we use dhcpcd instead.
-packages+=('dhcpcd5')
-
-# We use dhcpcd instead
-exclude_packages+=('isc-dhcp-client')
-exclude_packages+=('isc-dhcp-common')
-
-# euca2ools dependencies
-host_packages+=('build-essential')
-host_packages+=('python-boto')
-host_packages+=('python-m2crypto')
-host_packages+=('libxslt1-dev')
+# jq is used for parsing JSON output of the various aws commands.
+host_packages+=('awscli')
+host_packages+=('jq')
 
 if [ "${volume_type}" = 'instance' ]
 then

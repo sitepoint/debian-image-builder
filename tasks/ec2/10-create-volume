@@ -2,12 +2,14 @@
 #
 # Create the EBS volume
 
-volume_id=$(euca-create-volume --size ${volume_size} \
-    -z "${availability_zone}" | awk '{print $2}')
+volume_id=$(aws --output json ec2 create-volume \
+                --size ${volume_size} \
+                --availability-zone "${availability_zone}" | \
+                jq -r '.VolumeId')
 
 if [ -z "${volume_id}" ]
 then
     die "Unable to create volume."
 fi
 
-log "The EBS volume id is ${volume_id}"
+log "The EBS volume id is ${volume_id}."

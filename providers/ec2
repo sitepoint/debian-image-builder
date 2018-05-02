@@ -6,14 +6,17 @@ then
     return
 fi
 
-function check_arg()
+function check_args()
 {
-    local var_name="${1}"
+    local var_name
 
-    if [ -z "${!var_name}" ]
-    then
-        die "Variable \$${var_name} must be set!"
-    fi
+    for var_name in ${@}
+    do
+        if [ -z "${!var_name}" ]
+        then
+            die "Variable \$${var_name} must be set!"
+        fi
+    done
 }
 
 function check_partitioning()
@@ -43,7 +46,7 @@ function rm_bucket_lock()
 {
     if [ -f "${bucket_lock_file}" ]
     then
-        sed -i "/^${S3_BUCKET}$/d" "${bucket_lock_file}"
+        sed -i "#^${S3_BUCKET}$#d" "${bucket_lock_file}"
     fi
 }
 
@@ -57,7 +60,7 @@ function check_bucket_lock()
     then
         > "${bucket_lock_file}"
     fi
-    if grep -q "${lock_request}" "${bucket_lock_file}"
+    if grep -q "^${lock_request}$" "${bucket_lock_file}"
     then
         die "${S3_BUCKET} looks to already be in use."
     else
@@ -66,16 +69,19 @@ function check_bucket_lock()
     fi
 }
 
-function test_file()
+function test_files()
 {
-    local file_name="${1}"
+    local file_name
 
-    check_arg "${file_name}"
+    for file_name in ${@}
+    do
+        check_args "${file_name}"
 
-    if [ ! -f "${!file_name}" ]
-    then
-        die "Could not find \$${file_name} file ${!file_name}!"
-    fi
+        if [ ! -f "${!file_name}" ]
+        then
+            die "Could not find \$${file_name} file ${!file_name}!"
+        fi
+    done
 }
 
 # Source specified template files.
@@ -100,6 +106,7 @@ volume_id=
 volume_size='1'
 volume_inodes=
 volume_type='ebs'
+ena_support=0
 apt_mirrors='http://http.debian.net/debian'
 
 # EC2 known regions
@@ -139,6 +146,7 @@ ${txtund}Bootstrapping${txtdef}
     --volume-inodes SIZE                 Optionally set a custom inode count for
                                          ext2/3/4 volumes.
     --filesystem FS [ext2..4|xfs]        Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
+    --ena-support                        Enable Elastic Network Adapter (enaSupport) AMI attribute.
     --plugin FILE                        Path to plugin script.
                                          Can be specified more than once.
 
@@ -182,6 +190,7 @@ do
         --volume-size)      volume_size=${2};              shift 2 ;;
         --volume-inodes)    volume_inodes=${2};            shift 2 ;;
         --filesystem)       filesystem=${2};               shift 2 ;;
+        --ena-support)      ena_support=1;                 shift   ;;
         --name-suffix)      name_suffix=${2};              shift 2 ;;
         --description)      description=${2};              shift 2 ;;
         --apt-mirrors)      apt_mirrors=${2};              shift 2 ;;
@@ -205,27 +214,26 @@ do
 done
 
 # Required and default parameters
-if test -f /etc/euca2ools/euca2ools.ini &&
-    ! grep -q key-id /etc/euca2ools/euca2ools.ini
+check_args AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION
+export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION
+
+# euca2ools uses a slightly different environment variable name.
+export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID} \
+       AWS_SECRET_KEY=${AWS_SECRET_ACCESS_KEY} \
+       EC2_REGION=${AWS_DEFAULT_REGION}
+
+if [ ${ena_support} -eq 1 ]
 then
-    check_arg AWS_ACCESS_KEY
-    export AWS_ACCESS_KEY
-fi
-if test -f /etc/euca2ools/euca2ools.ini &&
-    ! grep -q secret-key /etc/euca2ools/euca2ools.ini
-then
-    check_arg AWS_SECRET_KEY
-    export AWS_SECRET_KEY
+    if [ "${virt}" != "hvm" ]
+    then
+        die "ENA requires the HVM image type."
+    fi
 fi
 
 if [ "${volume_type}" = 'instance' ]
 then
-    check_arg EC2_USER_ID
-    check_arg S3_BUCKET
-
-    test_file EC2_PRIVATE_KEY
-    test_file EC2_CERT
-
+    check_args EC2_USER_ID S3_BUCKET
+    test_files EC2_PRIVATE_KEY EC2_CERT
     export EC2_USER_ID S3_BUCKET EC2_PRIVATE_KEY EC2_CERT
 
     check_bucket_lock "${S3_BUCKET}"
