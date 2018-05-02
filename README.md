@@ -143,6 +143,13 @@ could specify the following S3_BUCKET value:
 export S3_BUCKET="my-company-${AWS_DEFAULT_REGION}-ami/debian-gnu_linux/stretch/x86_64/$(date +'%Y%m%d%H%M')"
 ```
 
+Also note that there is currently a bug running euca-upload-bundle
+(called if creating instance-backed AMIs) on Stretch that results in
+an InvalidHeader exception. For now this can be avoided by temporarily
+editing /usr/lib/python2.7/dist-packages/requests/models.py and
+commenting out check_header_validity(header) (line 427). This bug
+doesn't affect the creation of the more common EBS backed AMI types.
+
 debian-image-builder aims to be safe to execute multiple times
 simultaneously for quickly building a large number of AMIs.
 
