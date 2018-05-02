@@ -119,7 +119,7 @@ else
 fi
 
 
-# Check if the chosen fs is on we can handle.
+# Check if the chosen fs is one we can handle.
 case ${filesystem} in
     xfs)
         ;;
