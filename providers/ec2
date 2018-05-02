@@ -46,7 +46,7 @@ function rm_bucket_lock()
 {
     if [ -f "${bucket_lock_file}" ]
     then
-        sed -i "/^${S3_BUCKET}$/d" "${bucket_lock_file}"
+        sed -i "#^${S3_BUCKET}$#d" "${bucket_lock_file}"
     fi
 }
 
