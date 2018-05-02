@@ -60,7 +60,7 @@ function check_bucket_lock()
     then
         > "${bucket_lock_file}"
     fi
-    if grep -q "${lock_request}" "${bucket_lock_file}"
+    if grep -q "^${lock_request}$" "${bucket_lock_file}"
     then
         die "${S3_BUCKET} looks to already be in use."
     else
