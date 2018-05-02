@@ -42,12 +42,14 @@ if [ "${volume_type}" = 'instance' ]
 then
     log "Registering an AMI"
 
-    ami_id=$(euca-register \
-        --name "${ami_name}" --description "${description}" \
-        --architecture "${ami_arch}" ${kernel} \
-        --virtualization-type "${virt}" \
-        "${s3_path}/${ami_name}.manifest.xml" | \
-        awk '{print $2}')
+    ami_id=$(aws ec2 register-image \
+             --name "${ami_name}" \
+	     --description "${description}" \
+             --architecture "${machine_arch}" \
+	     ${kernel} \
+             --virtualization-type "${virt}" \
+             --image-location "${S3_BUCKET}/${ami_name}.manifest.xml" | \
+		jq -r .ImageId)
 
     # In case of registraion failure, give the AMI registration command to the
     # user.

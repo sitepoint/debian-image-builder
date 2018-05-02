@@ -6,10 +6,10 @@ if [ "${volume_type}" = 'ebs' ]
 then
     logn "Creating snapshot of the EBS volume"
 
-    snapshot="$(aws --output json ec2 create-snapshot \
-                    --volume-id ${volume_id} | \
-                    jq -r '.SnapshotId')"
-    if [ -z "${snapshot}" ]
+    snapshot_id="$(aws --output json ec2 create-snapshot \
+                       --volume-id ${volume_id} | \
+                       jq -r '.SnapshotId')"
+    if [ -z "${snapshot_id}" ]
     then
         die "\nUnable to create snapshot from the volume '${volume_id}'."
     fi

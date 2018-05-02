@@ -19,11 +19,10 @@ fi
 
 # Wait until the volume has a status of 'available' before attempting
 # to attach to ensure success.
-while [ ${attempt} -ne 0 ] &&
-    aws --output json ec2 describe-volumes \
-    --filters Name=status,Values=available \
+while [ ${attempt} -ne 0 -a "$(aws --output json \
+    ec2 describe-volumes \
     --volume-ids "${volume_id}" | \
-    jq -e -r '.Volumes[0].VolumeId' >/dev/null
+    jq -e -r '.Volumes[0].State')" != "available" ]
 do
     sleep 5
     (( --attempt ))
