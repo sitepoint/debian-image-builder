@@ -227,13 +227,6 @@ then
     if [ "${virt}" != "hvm" ]
     then
         die "ENA requires the HVM image type."
-    elif [ "${volume_type}" = 'instance' ]
-    then
-        # I'm not aware of any way to have euca-register enable this
-        # feature. The awscli command cannot create an instance store
-        # AMI unless it is based on an existing AMI, and the AWS AMI
-        # Tools use a non-free license so are not supported.
-        die "ENA currently requires an EBS volume."
     fi
 fi
 
