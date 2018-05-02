@@ -2,7 +2,7 @@
 #
 # Detach the EBS volume
 
-aws ec2 detach-volume --volume-id "${volume_id}"
+aws ec2 detach-volume --volume-id "${volume_id}" >/dev/null
 
 # Wait until the volume has transitioned from 'in-use' to 'available'.
 dotdot "aws --output json ec2 describe-volumes --volume-ids ${volume_id} | \
