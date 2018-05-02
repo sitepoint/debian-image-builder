@@ -18,13 +18,13 @@ args_hash=$(printf -- "${arch} ${include} -- ${exclude} ${codename}" |
 tarball="${tarballdir}/bootstrap-${args_hash:0:7}.tar"
 
 include_param=""
-if [ -n ${include} ]
+if [ -n "${include}" ]
 then
     include_param="--include=${include}"
 fi
 
 exclude_param=""
-if [ -n ${exclude} ]
+if [ -n "${exclude}" ]
 then
     exclude_param="--exclude=${exclude}"
 fi
