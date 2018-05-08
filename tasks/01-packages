@@ -37,3 +37,6 @@ then
 else
     host_packages+=('python-socks')
 fi
+
+# Ensure we can parse the cloud-init config file.
+host_packages+=('python-yaml')
