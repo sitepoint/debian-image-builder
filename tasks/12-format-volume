@@ -4,12 +4,27 @@
 
 log "Formatting the device ${fs_device_path} with ${filesystem}"
 
-if [ -n "${volume_inodes}" ] && [[ "${filesytem}" =~ "ext" ]]
+declare mkfs_cmd="mkfs.${filesystem}"
+
+if [[ "${filesystem}" =~ "ext" ]]
 then
-    mkfs.${filesystem} -N ${volume_inodes} "${fs_device_path}"
-else
-    mkfs.${filesystem} "${fs_device_path}"
+    # If running Stretch or newer to create an old release, disable
+    # the metadata_csum feature for compatibility with older kernels
+    # and e2fsprogs.
+    if [ "${ID}" = "debian" ] && [ -n "${VERSION_ID}" ] &&
+         [ ${VERSION_ID} -ge 9 ] && [[ ${codename} =~ (wheezy|jessie) ]]
+    then
+        mkfs_cmd+=" -O ^metadata_csum"
+    fi
+
+    # Explicitly set the user-requested number of inodes.
+    if [ -n "${volume_inodes}" ]
+    then
+        mkfs_cmd+=" -N ${volume_inodes}"
+    fi
 fi
+
+${mkfs_cmd} "${fs_device_path}"
 
 case ${filesystem} in
     ext*)

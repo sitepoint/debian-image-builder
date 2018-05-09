@@ -19,5 +19,7 @@ then
     die "Something is already mounted on ${imagedir}"
 fi
 
-mount "${fs_device_path}" "${imagedir}"
+mount "${fs_device_path}" "${imagedir}" ||
+    die "Unable to mount ${fs_device_path} on ${imagedir}."
+
 log "The volume is mounted at ${imagedir}."

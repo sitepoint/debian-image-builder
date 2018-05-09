@@ -6,7 +6,6 @@ declare -i essentials=0  # Print essentials in place message
 # These variables work differently to normal expectations. If they
 # equal 0, they are good to use.
 declare -i instance_backed=1
-declare -i partitioning=2
 declare -i python=1
 declare -i grant_launch_permission=1
 declare urllib3_ver
@@ -65,20 +64,6 @@ else
     echo "     ok AWS_CREDENTIAL_FILE=${AWS_CREDENTIAL_FILE}"
 fi
 
-# Check partitioning support.
-if ! command -v parted 1>/dev/null
-then
-    echo "parted is not installed."
-else
-    partitioning=$(( --partitioning ))
-fi
-if ! command -v hdparm 1>/dev/null
-then
-    echo "hdparm is not installed."
-else
-    partitioning=$(( --partitioning ))
-fi
-
 # Check for Python support.
 if ! command -v python 1>/dev/null
 then
@@ -99,11 +84,6 @@ else
     if [ ${grant_launch_permission} -ne 0 ]
     then
         echo "grant-launch-permission is unavailable."
-        essentials=1
-    fi
-    if [ ${partitioning} -ne 0 ]
-    then
-        echo "partitioning options are unavailable."
         essentials=1
     fi
     if [ ${essentials} -eq 1 ]
