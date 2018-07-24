@@ -145,13 +145,20 @@ could specify the following `S3_BUCKET` value:
 export S3_BUCKET="my-company-${AWS_DEFAULT_REGION}-ami/debian-gnu_linux/stretch/x86_64/$(date +'%Y%m%d%H%M')"
 ```
 
-Also note that there is currently a bug running the
-`euca-upload-bundle` command (which is called automatically if
-creating instance-backed AMIs) on Stretch that results in an
-`InvalidHeader` exception. For now this can be avoided by temporarily
-editing `/usr/lib/python2.7/dist-packages/requests/models.py` and
-commenting out `check_header_validity(header)` (line 427). This bug
-doesn't affect the creation of the more common EBS backed AMI types.
+Note there is currently a bug running the `euca-upload-bundle` command
+(which is called automatically if creating instance-backed AMIs) on
+Stretch that results in an `InvalidHeader` exception. For now this can
+be avoided by temporarily editing
+`/usr/lib/python2.7/dist-packages/requests/models.py` and making the
+changes shown
+[here](https://github.com/eucalyptus/euca2ools/pull/83/commits/4d3f5dddcb019f1ce02e9352fbea7a6e86ba8e3c). This
+bug doesn't affect the creation of the more common EBS backed AMI
+types. For details see
+[this](https://github.com/requests/requests/issues/3477)
+python-requests issue and
+[this](https://github.com/eucalyptus/euca2ools/pull/83) euca2ools
+PR. The included envcheck tool will try to detect hosts affected by
+this issue.
 
 If using the `grant-launch-permission` plugin, you will also need
 to set the following environment variable:
