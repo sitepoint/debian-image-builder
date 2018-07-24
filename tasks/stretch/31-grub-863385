@@ -2,7 +2,7 @@
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863385
 
 # Append net.ifnames=0 to kernel boot arguments.
-if [ "${virtt}" = 'paravirtual' ]
+if [ "${virt}" = 'paravirtual' ]
 then
     sed -i 's/^\(#\s\+kopt=.*\)$/\1 net.ifnames=0/' \
         "${imagedir}/boot/grub/menu.lst"
