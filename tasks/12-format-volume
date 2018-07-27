@@ -8,12 +8,21 @@ declare mkfs_cmd="mkfs.${filesystem}"
 
 if [[ "${filesystem}" =~ "ext" ]]
 then
+    # Disable filesystem features incompatible with Amazon's PV-GRUB kernel
+    # images if building for a paravirtual host. This isn't documented anywhere
+    # but was discovered via trial and error when testing against
+    # pv-grub-hd0_1.05 AKIs.
+    if [ "${virt}" = "paravirtual" ]
+    then
+        log "Ensuring filesystem compatibility with AWS PV-GRUB AKIs"
+        mkfs_cmd+=" -O uninit_bg,^metadata_csum,^64bit"
     # If running Stretch or newer to create an old release, disable
     # the metadata_csum feature for compatibility with older kernels
     # and e2fsprogs.
-    if [ "${ID}" = "debian" ] && [ -n "${VERSION_ID}" ] &&
-         [ ${VERSION_ID} -ge 9 ] && [[ ${codename} =~ (wheezy|jessie) ]]
+    elif [ "${ID}" = "debian" ] && [ -n "${VERSION_ID}" ] &&
+        [ ${VERSION_ID} -ge 9 ] && [[ ${codename} =~ (wheezy|jessie) ]]
     then
+        log "Ensuring filesystem compatibility with Debian oldstable"
         mkfs_cmd+=" -O ^metadata_csum"
     fi
 
