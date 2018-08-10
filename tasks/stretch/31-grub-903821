@@ -1,0 +1,13 @@
+# Work-around for #903821
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=903821
+
+# Append pti=off to kernel boot arguments for paravirtual hosts.
+if [ "${virt}" = 'paravirtual' ]
+then
+    sed -i 's/^\(#\s\+kopt=.*\)$/\1 pti=off/' \
+        "${imagedir}/boot/grub/menu.lst"
+
+    # Regenerate menu.lst.
+    chroot "${imagedir}" update-menu-lst
+    rm -f "${imagedir}/boot/grub/menu.lst~"
+fi

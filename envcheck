@@ -5,12 +5,22 @@ declare -i essentials=0  # Print essentials in place message
 
 # These variables work differently to normal expectations. If they
 # equal 0, they are good to use.
-declare -i instance_backed=1
+declare -i instance_backed=2
 declare -i python=1
 declare -i grant_launch_permission=1
 declare urllib3_ver
 
 declare -r s3cfg="${HOME}/.s3cfg"
+declare -r euca_ver=$(dpkg-query -W -f '${Version}\n' euca2ools 2>/dev/null)
+declare -r putobject='/usr/lib/python2.7/dist-packages/euca2ools/commands/s3/putobject.py'
+
+
+# Return 0 if the first argument is equal to the highest version.
+function version_ge()
+{
+    test "$(printf '%s\n' "$@" | sort -rV | head -n 1)" = "$1"
+}
+
 
 for var in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY \
     AWS_DEFAULT_REGION EC2_USER_ID S3_BUCKET \
@@ -69,6 +79,26 @@ if ! command -v python 1>/dev/null
 then
     echo "python is not installed."
     python=$(( --python ))
+fi
+
+# Check for python-requests compatibility with euca2ools.
+# ie. Was https://github.com/eucalyptus/euca2ools/pull/83 merged?
+if [ -z "${euca_ver}" ]
+then
+    echo "euca2ools package is not installed."
+elif ! version_ge ${euca_ver} 3.3.2
+then
+    # Old euca2ools version detected. Check if patched.
+    if grep -q -F "self.headers['Content-Length'] = source.size" \
+        "${putobject}"
+    then
+        echo "euca2ools requires patching"
+    else
+        instance_backed=$(( --instance_backed ))
+    fi
+else
+    # The euca2ools version is sufficiently high.
+    instance_backed=$(( --instance_backed ))
 fi
 
 echo
