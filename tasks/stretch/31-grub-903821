@@ -8,6 +8,6 @@ then
         "${imagedir}/boot/grub/menu.lst"
 
     # Regenerate menu.lst.
-    chroot "${imagedir}" update-menu-lst
+    chroot_cmd "${imagedir}" update-menu-lst
     rm -f "${imagedir}/boot/grub/menu.lst~"
 fi

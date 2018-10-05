@@ -11,7 +11,7 @@ then
     # (which is why it cannot be added to packages for normal
     # installation as part of the debootstrap process. This was taken
     # care of in 15-mount-specials.
-    chroot "${imagedir}" apt-get -y --install-recommends \
+    chroot_cmd "${imagedir}" apt-get -y --install-recommends \
         -o DPkg::Options::=--force-confnew \
         -o DPkg::Options::=--force-confdef \
         install pv-grub-menu
@@ -55,7 +55,7 @@ then
         "${imagedir}/boot/grub/menu.lst"
 
     # Regenerate menu.lst.
-    chroot "${imagedir}" update-menu-lst
+    chroot_cmd "${imagedir}" update-menu-lst
     rm -f "${imagedir}/boot/grub/menu.lst~"
 else
     # Disable the count-down.

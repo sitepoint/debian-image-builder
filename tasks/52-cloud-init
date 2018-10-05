@@ -6,7 +6,7 @@ new_cloud_init_cfg="$(mktemp /tmp/cloud-XXXXXXXX.cfg)"
 #
 # Note that installation fails on Stretch with --include=cloud-init
 # hence installing it here.
-chroot "${imagedir}" apt-get -y \
+chroot_cmd "${imagedir}" apt-get -y \
     -o DPkg::Options::=--force-confnew \
     -o DPkg::Options::=--force-confdef \
     install cloud-init || die "apt-get install cloud-init failed!"

@@ -8,7 +8,7 @@ then
         "${imagedir}/boot/grub/menu.lst"
 
     # Regenerate menu.lst.
-    chroot "${imagedir}" update-menu-lst
+    chroot_cmd "${imagedir}" update-menu-lst
     rm -f "${imagedir}/boot/grub/menu.lst~"
 else
     sed -i \
@@ -16,5 +16,5 @@ else
         "${imagedir}/etc/default/grub"
 
     # Regenerate grub.cfg.
-    chroot "${imagedir}" update-grub
+    chroot_cmd "${imagedir}" update-grub
 fi

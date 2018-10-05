@@ -3,10 +3,10 @@
 # Cleanup after apt-get
 
 # Purge all packages that are unused
-chroot "${imagedir}" apt-get autoremove --purge
+chroot_cmd "${imagedir}" apt-get autoremove --purge
 
 # Erase downloaded archive files
-chroot "${imagedir}" apt-get clean
+chroot_cmd "${imagedir}" apt-get clean
 
 # Avoid the possibility of including bad repository listings.
 # eg. https://serverfault.com/questions/722893/debian-mirror-hash-sum-mismatch

@@ -7,5 +7,5 @@ do
     scriptname=$(basename ${script})
     cp "${script}" "${imagedir}/etc/init.d/${scriptname}"
     chmod 755 "${imagedir}/etc/init.d/${scriptname}"
-    chroot "${imagedir}" insserv -d "${scriptname}"
+    chroot_cmd "${imagedir}" insserv -d "${scriptname}"
 done

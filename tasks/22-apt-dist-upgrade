@@ -11,14 +11,14 @@ chmod 755 "${imagedir}/usr/sbin/policy-rc.d"
 
 # Update the package cache to reflect changes to sources.list
 # contents.
-chroot "${imagedir}" apt-get update || die "apt-get update failed!"
+chroot_cmd "${imagedir}" apt-get update || die "apt-get update failed!"
 
 # Fix broken dependencies, if any.
-chroot "${imagedir}" \
+chroot_cmd "${imagedir}" \
     apt-get -f -y -o DPkg::Options::=--force-confnew install
 
 # Perform a dist-upgrade to ensure we pull in (for example) new kernel
 # packages from security.debian.org, if applicable.
-chroot "${imagedir}" \
+chroot_cmd "${imagedir}" \
     apt-get -y -o DPkg::Options::=--force-confnew dist-upgrade || \
     die "apt-get dist-upgrade failed!"
