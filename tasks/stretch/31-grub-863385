@@ -12,7 +12,7 @@ then
     rm -f "${imagedir}/boot/grub/menu.lst~"
 else
     sed -i \
-        's/^\(GRUB_CMDLINE_LINUX_DEFAULT\)="\?\([^"]*\)"\?$/\1="\2 net.ifnames=0"/' \
+        's/^\(GRUB_CMDLINE_LINUX\)="\?\([^"]*\)"\?$/\1="\2 net.ifnames=0"/' \
         "${imagedir}/etc/default/grub"
 
     # Regenerate grub.cfg.
