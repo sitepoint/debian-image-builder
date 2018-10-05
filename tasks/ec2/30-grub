@@ -66,15 +66,22 @@ else
         "${imagedir}/etc/default/grub"
 
     # Simplify grub.cfg to improve compatibility.
-    echo -e 'GRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
+    echo -e '\nGRUB_DISABLE_OS_PROBER=true\nGRUB_DISABLE_SUBMENU=y' \
          >> "${imagedir}/etc/default/grub"
 
-    # Set output console.
-    sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet console=ttyS0\"/" \
+    # Hide kernel info but show systemd status.
+    sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT\)=.*$/\1=\"quiet systemd.show_status=1\"/" \
         "${imagedir}/etc/default/grub"
 
+    # Set kernel output console to serial.
+    sed -i "s/^\(GRUB_CMDLINE_LINUX\)=.*$/\1=\"console=tty0 console=ttyS0,115200n8\"/" \
+        "${imagedir}/etc/default/grub"
 
-    ## HVM (standard GRUB) support.
+    # Have GRUB output to serial.
+    sed -i 's/^#\?\(GRUB_TERMINAL\)=.*$/\1=\"console serial\"/' \
+        "${imagedir}/etc/default/grub"
+    echo -e 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"' \
+         >> "${imagedir}/etc/default/grub"
 
     # Update grub.cfg using the script. This will now work correctly.
     chroot "${imagedir}" update-grub
