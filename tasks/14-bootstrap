@@ -14,8 +14,8 @@ bootstrap_mirror=${apt_mirrors%% *}
 
 args_hash=$(printf -- "${arch} ${include} -- ${exclude} ${codename}" |
     sha1sum)
-
-tarball="${tarballdir}/bootstrap-${args_hash:0:7}.tar"
+short_hash=${args_hash:0:7}
+tarball="${tarballdir}/bootstrap-${short_hash}.tar"
 
 include_param=""
 if [ -n "${include}" ]
@@ -39,7 +39,7 @@ fi
 # bootstrapping
 if [ ! -e "${tarball}" ]
 then
-    log "Creating the bootstrap tarball"
+    log "Creating the bootstrap tarball (${short_hash})"
     debootstrap --arch ${arch} --make-tarball="${tarball}" \
         --keep-debootstrap-dir \
         ${include_param} ${exclude_param} \
@@ -47,7 +47,7 @@ then
         || die "Creating bootstrap tarball failed!"
 fi
 
-log "Bootstrapping"
+log "Bootstrapping (${short_hash})"
 debootstrap --arch ${arch} --unpack-tarball="${tarball}" \
     ${include_param} ${exclude_param} \
     ${codename} "${imagedir}" ${bootstrap_mirror} \
