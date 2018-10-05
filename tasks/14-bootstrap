@@ -29,6 +29,11 @@ then
     exclude_param="--exclude=${exclude}"
 fi
 
+if [ ${refresh} -eq 1 ]
+then
+    rm -f "${tarball}"
+fi
+
 # When testing, some bootstraps can fail, instead of re-downloading it
 # all we create a tarball containing all the necessary things for
 # bootstrapping
