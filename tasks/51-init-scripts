@@ -1,6 +1,6 @@
 ## init-scripts
 #
-# Install startup scripts.
+# Install SysV-based startup scripts.
 
 for script in ${init_scripts[*]}
 do
