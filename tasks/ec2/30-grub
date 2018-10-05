@@ -83,11 +83,24 @@ else
     echo -e 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"' \
          >> "${imagedir}/etc/default/grub"
 
-    # Update grub.cfg using the script. This will now work correctly.
-    chroot "${imagedir}" update-grub
+    # Update grub.cfg using the update-grub script which applies the
+    # above settings in etc/default/grub.
+    chroot_cmd "${imagedir}" update-grub
 
-    # Install Grub to the start of the block device.
-    chroot "${imagedir}" grub-install --no-floppy --force "${block_device_path}"
+    # Install GRUB to the start of the block device.
+    if is_host_running_systemd && command -v systemd-nspawn 1>/dev/null
+    then
+        # If using systemd we can use /dev/xvda, which accurately
+        # reflects the device name that the AMI will use to access the
+        # block when booting.
+        chroot_cmd "${imagedir}" grub-install --no-floppy --force \
+                   /dev/xvda
+    else
+        # Running grub-install against /dev/xvdf, etc. shouldn't make
+        # any difference, but this is untested. Patches welcome.
+        chroot_cmd "${imagedir}" grub-install --no-floppy --force \
+                   "${block_device_path}"
+    fi
 
     # Sanity check values in grub.cfg
     if [ "${block_device_path:0:7}" = "/dev/sd" ]
