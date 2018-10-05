@@ -12,6 +12,13 @@ packages+=('locales')
 # Needed for the init scripts
 packages+=('file')
 
+# Ensure insserv is installed if init_scripts were provided. This is
+# used in a later task for installation.
+if [ ${#init_scripts[*]} -gt 0 ]
+then
+    packages+=('insserv')
+fi
+
 # We will need to format the volume, so we need xfsprogs.
 if [ ${filesystem} = 'xfs' ]
 then
