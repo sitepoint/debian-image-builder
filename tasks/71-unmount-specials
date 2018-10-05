@@ -2,8 +2,11 @@
 #
 # Unmount special devices
 
-unmount_chroot
-rm_from_trap unmount_chroot_on_failure ERR EXIT
+if ! is_host_running_systemd
+then
+    unmount_chroot
+    rm_from_trap unmount_chroot_on_failure ERR EXIT
+fi
 
 # Unmount the entire volume now
 
