@@ -47,3 +47,8 @@ fi
 
 # Ensure we can parse the cloud-init config file.
 host_packages+=('python-yaml')
+
+if is_host_running_systemd
+then
+    host_packages+=('systemd-container')
+fi
