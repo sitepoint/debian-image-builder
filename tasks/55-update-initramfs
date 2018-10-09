@@ -4,4 +4,4 @@
 # /dev/xvda1". Seems like a common problem. See
 # http://forums.debian.net/viewtopic.php?f=17&t=127039 for details.
 
-chroot "${imagedir}" update-initramfs -u
+chroot_cmd "${imagedir}" update-initramfs -u

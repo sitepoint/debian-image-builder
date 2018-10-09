@@ -36,16 +36,16 @@ then
 
     # Systemd also detects available serial ports and runs gettys on
     # those too! We need to disable that.
-    chroot "${imagedir}" systemctl mask serial-getty@ttyS0.service
-    chroot "${imagedir}" systemctl mask serial-getty@hvc0.service
+    chroot_cmd "${imagedir}" systemctl mask serial-getty@ttyS0.service
+    chroot_cmd "${imagedir}" systemctl mask serial-getty@hvc0.service
 
     # If dbus and logind are not present, Systemd's getty-static
     # service kicks in and executes getty@tty{2..6} services. Here we
     # disable getty-static, getty@tty1 (see above), and also
     # getty@tty{2..5} to be extra sure.
-    chroot "${imagedir}" systemctl mask getty-static.service
+    chroot_cmd "${imagedir}" systemctl mask getty-static.service
     for tty in {1..6}
     do
-        chroot "${imagedir}" systemctl mask getty@tty${tty}.service
+        chroot_cmd "${imagedir}" systemctl mask getty@tty${tty}.service
     done
 fi

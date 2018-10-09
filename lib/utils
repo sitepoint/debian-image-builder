@@ -227,3 +227,35 @@ function get_command_name
 
     echo ${command}
 }
+
+function chroot_cmd
+{
+    local -r bind_args="$(for i in ${fs_device_path%1}*
+        do
+            echo -n \
+                "--bind=${i} " \
+                "--bind=${i}:$(echo ${i} | sed 's/\/dev\/xvd[a-z]/\/dev\/xvda/g') "
+        done)"
+
+    if command -v systemd-nspawn 1>/dev/null
+    then
+        systemd-nspawn -M ${$} --bind=/dev/disk ${bind_args} -D "${@}"
+    else
+        # The following is expected to work but is untested.
+        mount "${1}/proc" -t proc -o nosuid,noexec,nodev &&
+            mount -t sysfs -o nosuid,noexec,nodev,ro sys "${1}/sys" &&
+            mount -t devtmpfs -o mode=0755,nosuid udev "${1}/dev" &&
+            mount -t devpts -o mode=0620,gid=5,nosuid,noexec devpts "${1}/dev/pts" &&
+            mount -t tmpfs -o mode=1777,nosuid,nodev shm "${1}/dev/shm" &&
+            mount -t tmpfs -o nosuid,nodev,mode=0755 run "${1}/run" &&
+            mount -t tmpfs -o mode=1777,strictatime,nodev,nosuid tmp "${1}/tmp"
+        chroot "${@}"
+        umount "${1}/tmp" "${1}/run" "${1}/dev/shm" \
+               "${1}/dev/pts" "${1}/dev" "${1}/sys"
+    fi
+}
+
+function is_host_running_systemd
+{
+    test "$(readlink /sbin/init)" = "/lib/systemd/systemd"
+}

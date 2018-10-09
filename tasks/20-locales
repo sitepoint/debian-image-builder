@@ -6,7 +6,7 @@ sed -i "s/# ${locale}.${charmap} ${charmap}/${locale}.${charmap} ${charmap}/" \
     "${imagedir}/etc/locale.gen"
 
 # Generate the locale
-chroot "${imagedir}" dpkg-reconfigure --priority=critical locales
+chroot_cmd "${imagedir}" dpkg-reconfigure --priority=critical locales
 
 # Set timezone
 # https://serverfault.com/questions/84521/automate-dpkg-reconfigure-tzdata/84528#84528
@@ -22,7 +22,7 @@ then
     # /etc/timezone may still be required for jessie.
     echo "${timezone}" > "${imagedir}/etc/timezone"
     ln -sf "/usr/share/zoneinfo/${timezone}" "${imagedir}/etc/localtime"
-    chroot "${imagedir}" dpkg-reconfigure -f noninteractive tzdata
+    chroot_cmd "${imagedir}" dpkg-reconfigure -f noninteractive tzdata
 else
     die "Failed to set the timezone to '${timezone}'!"
 fi

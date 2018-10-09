@@ -6,7 +6,7 @@
 # it can take a long time to run, we'll run it here and bake the
 # results into the AMI.
 
-chroot "${imagedir}" << EOF 1>/dev/null 2>&1
+chroot_cmd "${imagedir}" << EOF 1>/dev/null 2>&1
 if command -v update-command-not-found
 then
     update-command-not-found

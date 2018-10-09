@@ -7,8 +7,8 @@ function unmount_chroot()
 {
     cd ${originaldir}
 
-    # We unmount from inside the image, otherwise the system apparently won't
-    # boot
+    # We unmount from inside the image, otherwise the system
+    # apparently won't boot
     chroot ${imagedir} umount /dev/pts
     chroot ${imagedir} umount /sys
     chroot ${imagedir} umount /proc
@@ -21,10 +21,18 @@ function unmount_chroot_on_failure()
     unmount_chroot
 }
 
-add_to_trap unmount_chroot_on_failure ERR EXIT
+function mount_chroot()
+{
+    # Mount all the different special devices, other installers depend
+    # on their existence
+    mount --bind /dev "${imagedir}/dev"
+    chroot "${imagedir}" mount -t proc none /proc
+    chroot "${imagedir}" mount -t sysfs none /sys
+    chroot "${imagedir}" mount -t devpts none /dev/pts
+}
 
-# Mount all the different special devices, other installers depend on their existence
-mount --bind /dev "${imagedir}/dev"
-chroot "${imagedir}" mount -t proc none /proc
-chroot "${imagedir}" mount -t sysfs none /sys
-chroot "${imagedir}" mount -t devpts none /dev/pts
+if ! is_host_running_systemd
+then
+    add_to_trap unmount_chroot_on_failure ERR EXIT
+    mount_chroot
+fi

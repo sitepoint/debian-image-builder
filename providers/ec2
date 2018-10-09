@@ -108,6 +108,7 @@ volume_inodes=
 volume_type='ebs'
 ena_support=0
 apt_mirrors='http://http.debian.net/debian'
+refresh=0
 
 # EC2 known regions
 known_regions=('us-east-1')
@@ -175,6 +176,7 @@ ${txtund}instance-store requirements${txtdef}  (for when '--volume-type instance
 
 ${txtund}Other options${txtdef}
     --debug                              Print debugging information
+    --refresh                            Re-download bootstrap tarball (if present)
     --help                               Prints this help message
 "
 
@@ -206,6 +208,7 @@ do
         --debootstrap-dir)  debootstrap_dir=${2};          shift 2 ;;
         --plugin)           plugins+=("${2}");             shift 2 ;;
         --debug)            set -x;                        shift   ;;
+        --refresh)          refresh=1;                     shift   ;;
         -h|--help)          printf -- "$help";             exit 0  ;;
         *)
             die "Unrecognized option: ${1}" \

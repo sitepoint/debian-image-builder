@@ -4,6 +4,11 @@
 
 if [ "${virt}" != 'paravirtual' ]
 then
+    # Plymouth is required for systemd to output to both tty0 and
+    # ttyS0. The applicable systemd bug report is here:
+    # https://github.com/systemd/systemd/issues/3403
+    packages+=('plymouth')
+
     packages+=('grub-pc')
 fi
 

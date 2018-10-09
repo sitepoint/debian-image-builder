@@ -1,6 +1,8 @@
 ## format-volume
 #
 # Format the volume
+#
+# Note ${fs_device_path} must be set by the provider.
 
 log "Formatting the device ${fs_device_path} with ${filesystem}"
 
