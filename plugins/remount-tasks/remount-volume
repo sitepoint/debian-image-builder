@@ -15,9 +15,29 @@ do
     fi
 done
 
+# Nitro hypervisors use NVMe EBS volumes. Check if our instance is
+# using that.
+#
+# Note: we still use device_letter (set in the above loop) later for
+# the aws ec2 attach-volume command.
+if ! is_nitro
+then
+    # As above, but for /dev/nvme... block device types. Such devices
+    # always start from 0, which is already known to be in use for
+    # root from the above if condition.
+    for device_number in {1..21}
+    do
+        block_device_path="/dev/nvme${device_number}n1"
+        if [ ! -b "${block_device_path}" ]
+        then
+            break
+        fi
+    done
+fi
+
 if [ -b "${block_device_path}" ]
 then
-    die "No free device letters found (tried xvdf to xvdz)!"
+    die "No free device letters found!"
 fi
 
 logn "Reattaching the bootstrapped volume"
@@ -32,7 +52,12 @@ dotdot "test -b ${block_device_path} && echo attached"
 # Set ${fs_device_path}
 if [ "${fs_device_path:$((${#fs_device_path} - 1)):1}" = 1 ]
 then
-    fs_device_path="${block_device_path}1"
+    if ! is_nitro
+    then
+        fs_device_path="${block_device_path}1"
+    else
+        fs_device_path="${block_device_path}p1"
+    fi
 else
     fs_device_path="${block_device_path}"
 fi
