@@ -9,7 +9,10 @@ declare -i attempt=24
 for device_letter in {f..z}
 do
     block_device_path="/dev/xvd${device_letter}"
-    [ ! -b "${block_device_path}" ] && break
+    if [ ! -b "${block_device_path}" ]
+    then
+        break
+    fi
 done
 
 if [ -b "${block_device_path}" ]
