@@ -42,7 +42,7 @@ fi
 
 # Wait until the volume has a status of 'available' before attempting
 # to attach to ensure success.
-while [ ${attempt} -ne 0 -a "$(aws --output json \
+while [ ${attempt} -gt 0 -a "$(aws --output json \
     ec2 describe-volumes \
     --volume-ids "${volume_id}" | \
     jq -e -r '.Volumes[0].State')" != "available" ]
@@ -51,7 +51,7 @@ do
     (( --attempt ))
 done
 
-if [ ${attempt} -eq 0 ]
+if [ ${attempt} -le 0 ]
 then
     die "It seems we were unable to create ${volume_id}."
 fi
