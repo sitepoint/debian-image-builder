@@ -4,8 +4,8 @@
 
 declare -i attempt=24
 
-# Get a random device letter, we will hang forever if we try to attach
-# a volume to an already mapped device.
+# Get a random device letter, we will hang forever if we try
+# to attach a volume to an already mapped device.
 for device_letter in {f..z}
 do
     block_device_path="/dev/xvd${device_letter}"
