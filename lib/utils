@@ -228,14 +228,29 @@ function get_command_name
     echo ${command}
 }
 
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances
+function is_nitro
+{
+    if mount | grep -q '^\/dev\/nvme0n1p[0-9]\ on\ \/\ type\ '
+    then
+        return 0
+    fi
+    return 1
+}
+
 function chroot_cmd
 {
-    local -r bind_args="$(for i in ${fs_device_path%1}*
+    local -r bind_args="$(
+        for i in ${block_device_path%1}*
         do
             echo -n \
                 "--bind=${i} " \
-                "--bind=${i}:$(echo ${i} | sed 's/\/dev\/xvd[a-z]/\/dev\/xvda/g') "
-        done)"
+                "--bind=${i}:$(echo ${i} | \
+                    sed -e 's/\/dev\/xvd[a-z]/\/dev\/xvda/g' \
+                        -e 's/\/dev\/nvme[0-9]n1p\([0-9]\+\)/\/dev\/xvda\1/g' \
+                        -e 's/\/dev\/nvme[0-9]n1/\/dev\/xvda/g') "
+        done
+    )"
 
     if command -v systemd-nspawn 1>/dev/null
     then
