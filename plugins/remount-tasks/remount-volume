@@ -44,7 +44,7 @@ logn "Reattaching the bootstrapped volume"
 aws ec2 attach-volume \
     --volume-id "${volume_id}" \
     --instance-id "${instance_id}" \
-    --device "/dev/xvd${device_letter}"
+    --device "/dev/xvd${device_letter}" >/dev/null
 
 # Wait until the volume is attached
 dotdot "test -b ${block_device_path} && echo attached"
