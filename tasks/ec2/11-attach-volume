@@ -2,7 +2,7 @@
 #
 # Attach the EBS volume, and partition if necessary.
 
-declare -i attempt=12
+declare -i attempt=24
 
 # Get a random device letter, we will hang forever if we try to attach
 # a volume to an already mapped device.
