@@ -29,6 +29,7 @@ then
     log "Registering an AMI"
 
     ami_id=$(aws ec2 register-image \
+             --output json \
              --name "${ami_name}" \
              --description "${description}" \
              --architecture "${machine_arch}" \
@@ -56,6 +57,7 @@ else
     log "Registering an AMI with the snapshot '${snapshot_id}'"
 
     ami_id=$(aws ec2 register-image \
+                 --output json \
                  --name "${ami_name}" \
                  --description "${description}" \
                  --architecture "${machine_arch}" \
