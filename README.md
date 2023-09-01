@@ -38,15 +38,17 @@ Why debian-image-builder?
 
 This project started out as a fork of the Bash version of
 [build-debian-cloud](https://github.com/camptocamp/build-debian-cloud),
-prior to the project switching to bootstrap-vz (Python). This was
-initially due to bootstrap-vz proving to be too inflexible for my
-needs, and my pull requests for build-debian-cloud were no longer
-accepted due to the desire to see bootstrap-vz gain traction.
+prior to the project switching to
+[bootstrap-vz](https://github.com/andsens/bootstrap-vz/) (a rewrite in
+Python). This was initially due to bootstrap-vz proving to be too
+inflexible for my needs, and my pull requests for build-debian-cloud
+were no longer accepted due to the desire to see bootstrap-vz gain
+traction.
 
 In my opinion, debian-image-builder is easier to read and understand,
 while retaining the power and flexibility of alternatives.
 
-### Advantages of debian-image-builder over bootstrap-vz include: ###
+### The debian-image-builder advantages ###
 
 * No dependendencies on anything outside of what is packaged within
   Debian (aside from euca2ools on Debian Jessie and below).
@@ -76,6 +78,16 @@ while retaining the power and flexibility of alternatives.
   you covered.
 
 * Uses the ``cloud-init`` package by default.
+
+
+Alternatives
+------------
+
+* [FAI - Fully Automatic Installation](https://fai-project.org/)
+  While not a Debian-specific project, FAI is used to build official
+  Debian AMIs for EC2 — which are also worth a look. Things have come
+  a long way since work on the debian-image-builder fork began
+  development.
 
 
 Setup
