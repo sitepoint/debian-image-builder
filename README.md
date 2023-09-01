@@ -1,10 +1,10 @@
-debian-image-builder
+﻿debian-image-builder
 ====================
 
 Debian GNU/Linux image builder for multiple IaaS providers.
 
 This script bootstraps a basic Debian GNU/Linux installation to create
-a Amazon Machine Image. The image contains no latent logfiles, no
+a Amazon Machine Image. The image contains no latent log files, no
 .bash\_history or even the apt package cache. In fact, the image is
 created via debootstrap and never booted during the creation process,
 providing a very clean setup without surprises.
@@ -12,7 +12,7 @@ providing a very clean setup without surprises.
 The machine configuration this script creates has been thoroughly
 tested on EC2. I am open to accepting patches to support other
 providers, if they will be maintained. Adding new providers should be
-quite straighforward.
+quite straightforward.
 
 
 Features
@@ -83,7 +83,7 @@ Setup
 
 The script is started with ``./debian-image-builder``.  The first
 argument should be the provider. Currently only ec2 is supported
-(``./debian-image-builder ec2``) however additing additional providers
+(``./debian-image-builder ec2``) however adding additional providers
 should be straightforward (and patches are welcome). Supported
 environments should have sensible defaults and can be configured with
 options and plugins. To see a list of options use ``--help``. When
@@ -170,7 +170,7 @@ export LAUNCH_ACCOUNTS="1234-5678-9012 4321-8765-2190 9876-5432-1098"
 ```
 
 This will allow the `grant-launch-permission` plugin to grant launch
-authorizatinon to accounts specified in the space-separated string
+authorization to accounts specified in the space-separated string
 (with optional dashes). This can come in handy when, for example, you
 want to share access to your AMIs with a separate account for staging
 or development.
